@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/brstu-traffic-simulation-tool.iml" filepath="$PROJECT_DIR$/brstu-traffic-simulation-tool.iml" />
-      <module fileurl="file://$PROJECT_DIR$/osm-parsing/osm-parsing.iml" filepath="$PROJECT_DIR$/osm-parsing/osm-parsing.iml" />
-    </modules>
-  </component>
-</project>

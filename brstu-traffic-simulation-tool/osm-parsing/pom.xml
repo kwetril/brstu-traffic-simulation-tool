@@ -12,10 +12,33 @@
   <version>0.1</version>
   <name>osm-parsing</name>
   <url>http://maven.apache.org</url>
+
+  <repositories>
+    <repository>
+      <id>osm4j-repo</id>
+      <url>http://mvn.topobyte.de</url>
+    </repository>
+  </repositories>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>de.topobyte</groupId>
+      <artifactId>osm4j-core</artifactId>
+      <version>0.0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>de.topobyte</groupId>
+      <artifactId>osm4j-utils</artifactId>
+      <version>0.0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>de.topobyte</groupId>
+      <artifactId>osm4j-xml</artifactId>
+      <version>0.0.3</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
