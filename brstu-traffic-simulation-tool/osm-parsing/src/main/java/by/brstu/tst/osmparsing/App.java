@@ -1,12 +1,14 @@
 package by.brstu.tst.osmparsing;
 
 import de.topobyte.osm4j.core.access.OsmIterator;
+import de.topobyte.osm4j.core.model.iface.OsmNode;
 import de.topobyte.osm4j.xml.dynsax.OsmXmlIterator;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Hello world!
@@ -24,7 +26,9 @@ public class App
         try (InputStream osmStream = new FileInputStream(fileName)) {
             OsmIterator iterator = new OsmXmlIterator(osmStream, false);
             OsmXmlParser parser = new OsmXmlParser();
-            parser.parse(iterator);
+            List<OsmNode> nodes = parser.parse(iterator);
+            MapRenderer renderer = new MapRenderer();
+            renderer.render(nodes);
         }
         catch (FileNotFoundException exception) {
             System.out.println("File by given path was not found!");
@@ -32,6 +36,10 @@ public class App
         }
         catch (IOException exception) {
             System.out.println("Error during file processing!");
+            return;
+        }
+        catch (Exception exception) {
+            System.out.println("Error during map rendering!");
             return;
         }
     }

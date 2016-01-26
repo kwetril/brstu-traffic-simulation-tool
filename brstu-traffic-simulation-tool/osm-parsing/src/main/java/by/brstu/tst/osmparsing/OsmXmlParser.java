@@ -5,7 +5,6 @@ import de.topobyte.osm4j.core.model.iface.*;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.referencing.CRS;
-import org.opengis.geometry.Geometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by kwetril on 1/26/16.
  */
 public class OsmXmlParser {
-    public void parse(OsmIterator iterator) {
+    public List<OsmNode> parse(OsmIterator iterator) {
         List<OsmNode> nodes = new ArrayList<>();
         for (EntityContainer container : iterator) {
             switch (container.getType()) {
@@ -58,5 +57,6 @@ public class OsmXmlParser {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return nodes;
     }
 }
