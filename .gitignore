@@ -2,6 +2,7 @@
 **/target
 
 *.class
+*.swp
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -19,3 +20,6 @@ hs_err_pid*
 
 #IPython notebook checkpoints
 **/.ipynb_checkpoints
+
+documents/notebooks/*.png
+documents/notebooks/*.gif
