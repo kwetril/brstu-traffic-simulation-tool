@@ -23,11 +23,13 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="osm-parsing" />
+        <module name="user-interface" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="brstu-traffic-simulation-tool" target="1.8" />
       <module name="osm-parsing" target="1.8" />
+      <module name="user-interface" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

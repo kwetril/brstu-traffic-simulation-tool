@@ -8,5 +8,10 @@
   <name>brstu-traffic-simulation-tool</name>
   <modules>
     <module>osm-parsing</module>
+    <module>user-interface</module>
   </modules>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
 </project>
