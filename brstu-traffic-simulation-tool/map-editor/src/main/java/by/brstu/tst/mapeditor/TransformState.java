@@ -1,6 +1,8 @@
 package by.brstu.tst.mapeditor;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 
 /**
  * Created by kwetril on 7/12/16.
@@ -10,21 +12,23 @@ public class TransformState {
     private int maxScalePower;
     private int scalePower;
     private double scaleFactor;
-    private Point translation;
-    private double rotationAngle;
+    AffineTransform transform;
 
     public TransformState(int minScalePower, int maxScalePower, int initScalePower, double scaleFactor) {
-        this(minScalePower, maxScalePower, initScalePower, scaleFactor, new Point(0, 0), 0);
+        this(minScalePower, maxScalePower, initScalePower, scaleFactor, 0, 0, 0);
     }
 
     public TransformState(int minScalePower, int maxScalePower, int initScalePower, double scaleFactor,
-                          Point offset, double angle) {
+                          double translateX, double translateY, double angle) {
         this.minScalePower = minScalePower;
         this.maxScalePower = maxScalePower;
         this.scalePower = initScalePower;
         this.scaleFactor = scaleFactor;
-        this.translation = offset;
-        this.rotationAngle = angle;
+        double scale = getScale();
+        transform = new AffineTransform();
+        transform.scale(scale, scale);
+        transform.translate(translateX, translateY);
+        transform.rotate(angle);
     }
 
     public double getScale() {
@@ -39,25 +43,52 @@ public class TransformState {
         return scalePower - minScalePower;
     }
 
-    public Point getTranslation() {
-        return translation;
+    public double getTranslate() {
+        return transform.getTranslateX();
+    }
+
+    public double getTranslateY() {
+        return transform.getTranslateY();
     }
 
     public void updateScalePower(int value) {
-        scalePower = Math.min(Math.max(scalePower + value, minScalePower), maxScalePower);
+        updateScalePower(value, 0, 0);
+    }
+
+    public void updateScalePower(int value, double x, double y) {
+        int newScalePower = Math.min(Math.max(scalePower + value, minScalePower), maxScalePower);
+        int deltaScalePower = newScalePower - scalePower;
+        if (deltaScalePower == 0) {
+            return;
+        }
+        double deltaScale = Math.pow(scaleFactor, deltaScalePower);
+        Point2D clickPoint = new Point2D.Double(x, y);
+        Point2D oldMapPoint = new Point2D.Double();
+        Point2D newMapPoint = new Point2D.Double();
+        try {
+            transform.inverseTransform(clickPoint, oldMapPoint);
+            transform.scale(deltaScale, deltaScale);
+            scalePower = newScalePower;
+            transform.inverseTransform(clickPoint, newMapPoint);
+            transform.translate(newMapPoint.getX() - oldMapPoint.getX(),
+                    newMapPoint.getY() - oldMapPoint.getY());
+        }
+        catch (Exception ex) {
+            System.out.printf("Err\n");
+        }
     }
 
     public void updateTranslation(double dx, double dy) {
         dx = dx / getScale();
         dy = dy / getScale();
-        translation.setLocation(translation.getX() + dx, translation.getY() + dy);
-    }
-
-    public double getRotationAngle() {
-        return rotationAngle;
+        transform.translate(dx, dy);
     }
 
     public void updateRotationAngle(double angle) {
-        rotationAngle += angle;
+        transform.rotate(angle);
+    }
+
+    public AffineTransform getTransform() {
+        return transform;
     }
 }

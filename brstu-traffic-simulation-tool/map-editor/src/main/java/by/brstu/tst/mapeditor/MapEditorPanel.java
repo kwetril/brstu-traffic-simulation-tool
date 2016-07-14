@@ -33,6 +33,9 @@ public class MapEditorPanel extends TransformableCanvas {
 
             graphics2D.drawOval((int)container.point1.getX(), (int)container.point1.getY(), 3, 3);
 
+            graphics2D.draw(container.line1);
+            graphics2D.draw(container.line2);
+
             graphics2D.fill(container.rectangle);
         }
         System.out.println("PaintComponent");

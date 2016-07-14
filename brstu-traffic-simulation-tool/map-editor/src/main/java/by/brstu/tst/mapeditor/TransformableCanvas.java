@@ -17,7 +17,8 @@ public class TransformableCanvas extends JPanel {
 
     public void addMouseScalingTool() {
         addMouseWheelListener(mouseWheelEvent -> {
-            transformState.updateScalePower(mouseWheelEvent.getWheelRotation());
+            transformState.updateScalePower(mouseWheelEvent.getWheelRotation(),
+                    mouseWheelEvent.getX(), mouseWheelEvent.getY());
             repaint();
         });
     }
@@ -59,10 +60,6 @@ public class TransformableCanvas extends JPanel {
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D g2d = (Graphics2D) graphics;
-        double scale = transformState.getScale();
-        g2d.scale(scale, scale);
-        Point translation = transformState.getTranslation();
-        g2d.translate(translation.getX(), translation.getY());
-        g2d.rotate(transformState.getRotationAngle());
+        g2d.transform(transformState.getTransform());
     }
 }
