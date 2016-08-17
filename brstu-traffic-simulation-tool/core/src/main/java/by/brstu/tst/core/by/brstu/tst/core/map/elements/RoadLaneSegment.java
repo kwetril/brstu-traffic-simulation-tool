@@ -1,4 +1,4 @@
-package by.brstu.tst.core.by.brstu.tst.core.map;
+package by.brstu.tst.core.by.brstu.tst.core.map.elements;
 
 import java.util.List;
 

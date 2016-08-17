@@ -1,21 +1,15 @@
-package by.brstu.tst.core.by.brstu.tst.core.map;
+package by.brstu.tst.core.by.brstu.tst.core.map.elements;
 
 /**
  * Created by kwetril on 7/7/16.
  */
 public class Point {
-    private int id;
     private float lon;
     private float lat;
 
-    public Point(int id, float lon, float lat) {
-        this.id = id;
+    public Point(float lon, float lat) {
         this.lon = lon;
         this.lat = lat;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public float getLon() {
