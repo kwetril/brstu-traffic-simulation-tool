@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class RoadLaneSegment {
     private int id;
-    private Point startPoint;
-    private Point endPoint;
+    private MapPoint startPoint;
+    private MapPoint endPoint;
 
     private RoadLaneSegment leftLane;
     private RoadLaneSegment rightLane;

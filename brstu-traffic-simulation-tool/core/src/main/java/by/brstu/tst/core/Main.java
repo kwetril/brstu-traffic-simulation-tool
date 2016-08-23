@@ -2,6 +2,7 @@ package by.brstu.tst.core;
 
 import by.brstu.tst.core.by.brstu.tst.core.map.elements.Map;
 import by.brstu.tst.core.by.brstu.tst.core.map.elements.MapBuilder;
+import by.brstu.tst.core.by.brstu.tst.core.map.elements.MapPoint;
 
 /**
  * Created by kwetril on 8/16/16.
@@ -11,15 +12,15 @@ public class Main {
         MapBuilder mapBuilder = new MapBuilder();
 
         mapBuilder
-            .addSourceElement("src-1")
-            .addDestinationElement("dst-1")
-            .addSourceElement("src-2")
-            .addDestinationElement("dst-2")
-            .addSourceElement("src-3")
-            .addDestinationElement("dst-3")
-            .addSourceElement("src-4")
-            .addDestinationElement("dst-4")
-            .addIntersection("crs-1");
+            .addSourceElement("src-1", new MapPoint(0.0f, 9.0f))
+            .addDestinationElement("dst-1", new MapPoint(20.0f, 9.0f))
+            .addSourceElement("src-2", new MapPoint(20.0f, 11.0f))
+            .addDestinationElement("dst-2", new MapPoint(0.0f, 11.0f))
+            .addSourceElement("src-3", new MapPoint(9.0f, 0.0f))
+            .addDestinationElement("dst-3", new MapPoint(9.0f, 20.0f))
+            .addSourceElement("src-4", new MapPoint(11.0f, 20.0f))
+            .addDestinationElement("dst-4", new MapPoint(11.0f, 0.0f))
+            .addIntersection("crs-1", new MapPoint(10.0f, 10.0f));
 
         mapBuilder
             .addRoad("rd-1", "src-1", "crs-1")
