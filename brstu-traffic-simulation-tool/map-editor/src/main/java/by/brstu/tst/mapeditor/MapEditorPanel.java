@@ -1,12 +1,15 @@
 package by.brstu.tst.mapeditor;
 
+import by.brstu.tst.core.map.elements.Map;
+import by.brstu.tst.core.map.elements.IRoadElementVisitor;
+
 import java.awt.*;
 
 /**
  * Created by kwetril on 7/11/16.
  */
 public class MapEditorPanel extends TransformableCanvas {
-    private ShapesContainer container;
+    private Map map;
 
     public MapEditorPanel() {
         super(-3, 2, 0, 2.0);
@@ -14,8 +17,8 @@ public class MapEditorPanel extends TransformableCanvas {
         addMouseMovingTool();
     }
 
-    public void showMap(ShapesContainer container) {
-        this.container = container;
+    public void showMap(Map map) {
+        this.map = map;
         repaint();
     }
 
@@ -28,15 +31,10 @@ public class MapEditorPanel extends TransformableCanvas {
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        if (container != null) {
+        if (map != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
-
-            graphics2D.drawOval((int)container.point1.getX(), (int)container.point1.getY(), 3, 3);
-
-            graphics2D.draw(container.line1);
-            graphics2D.draw(container.line2);
-
-            graphics2D.fill(container.rectangle);
+            IRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
+            map.visitElements(mapDrawingVisitor);
         }
         System.out.println("PaintComponent");
     }

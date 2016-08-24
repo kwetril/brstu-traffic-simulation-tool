@@ -1,4 +1,4 @@
-package by.brstu.tst.core.by.brstu.tst.core.map.elements;
+package by.brstu.tst.core.map.elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,5 +22,18 @@ public class DirectedRoad extends EdgeRoadElement {
         fromNode.getOutputElements().add(this);
         toNode.getInputElements().add(this);
         this.innerPoints = innerPoints;
+    }
+
+    public NodeRoadElement getStartNode() {
+        return fromNode;
+    }
+
+    public NodeRoadElement getEndNode() {
+        return toNode;
+    }
+
+    @Override
+    public void accept(IRoadElementVisitor visitor) {
+        visitor.visit(this);
     }
 }

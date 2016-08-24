@@ -1,4 +1,4 @@
-package by.brstu.tst.core.by.brstu.tst.core.map.elements;
+package by.brstu.tst.core.map.elements;
 
 /**
  * Created by kwetril on 8/17/16.

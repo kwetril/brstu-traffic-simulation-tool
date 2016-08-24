@@ -1,4 +1,4 @@
-package by.brstu.tst.core.by.brstu.tst.core.map.elements;
+package by.brstu.tst.core.map.elements;
 
 import java.util.HashMap;
 
@@ -15,5 +15,14 @@ public class Map {
         this.name = name;
         this.nodeElements = nodeElements;
         this.edgeElements = edgeElements;
+    }
+
+    public void visitElements(IRoadElementVisitor visitor) {
+        for (NodeRoadElement nodes : nodeElements.values()) {
+            nodes.accept(visitor);
+        }
+        for (EdgeRoadElement edge : edgeElements.values()) {
+            edge.accept(visitor);
+        }
     }
 }

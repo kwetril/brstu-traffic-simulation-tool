@@ -1,8 +1,8 @@
 package by.brstu.tst.core;
 
-import by.brstu.tst.core.by.brstu.tst.core.map.elements.Map;
-import by.brstu.tst.core.by.brstu.tst.core.map.elements.MapBuilder;
-import by.brstu.tst.core.by.brstu.tst.core.map.elements.MapPoint;
+import by.brstu.tst.core.map.elements.Map;
+import by.brstu.tst.core.map.elements.MapBuilder;
+import by.brstu.tst.core.map.elements.MapPoint;
 
 /**
  * Created by kwetril on 8/16/16.

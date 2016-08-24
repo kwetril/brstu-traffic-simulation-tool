@@ -1,4 +1,4 @@
-package by.brstu.tst.core.by.brstu.tst.core.map.elements;
+package by.brstu.tst.core.map.elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,5 +24,14 @@ public abstract class NodeRoadElement extends BaseRoadElement {
 
     public List<EdgeRoadElement> getOutputElements() {
         return outputElements;
+    }
+
+    public MapPoint getBasePoint() {
+        return basePoint;
+    }
+
+    @Override
+    public void accept(IRoadElementVisitor visitor) {
+        visitor.visit(this);
     }
 }

@@ -1,4 +1,4 @@
-package by.brstu.tst.core.by.brstu.tst.core.map.elements;
+package by.brstu.tst.core.map.elements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class MapBuilder {
     }
 
     private boolean checkNameUniquness(String name) {
-        return  (nodeElements.containsKey(name) || edgeElements.containsKey(name));
+        return  !(nodeElements.containsKey(name) || edgeElements.containsKey(name));
     }
 
     private void addNodeElement(String name, NodeRoadElement element) {
