@@ -1,4 +1,4 @@
-package by.brstu.tst.core.map.elements;
+package by.brstu.tst.core.map.primitives;
 
 /**
  * Created by kwetril on 7/7/16.

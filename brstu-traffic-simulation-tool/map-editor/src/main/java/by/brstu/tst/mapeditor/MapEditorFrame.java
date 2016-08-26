@@ -1,10 +1,11 @@
 package by.brstu.tst.mapeditor;
 
-import by.brstu.tst.core.map.elements.Map;
+import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.MapBuilder;
-import by.brstu.tst.core.map.elements.MapPoint;
+import by.brstu.tst.core.map.primitives.MapPoint;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 
 /**
@@ -13,18 +14,29 @@ import java.awt.*;
 public class MapEditorFrame extends JFrame {
 
     private MapEditorPanel editorPanel;
+    private JLabel statusLabel;
 
     public MapEditorFrame() {
         setTitle("Traffic simulation tool");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(600, 400));
-        editorPanel = new MapEditorPanel();
+        editorPanel = new MapEditorPanel(this);
         add(editorPanel, BorderLayout.CENTER);
-
+        add(createStatusPanel(), BorderLayout.SOUTH);
         JMenuBar menuBar = createMenu();
         setJMenuBar(menuBar);
 
         pack();
+    }
+
+    private JPanel createStatusPanel() {
+        JPanel statusPanel = new JPanel();
+        statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+        statusLabel = new JLabel("Status");
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        statusPanel.add(statusLabel);
+        return statusPanel;
     }
 
     private JMenuBar createMenu() {
@@ -39,6 +51,10 @@ public class MapEditorFrame extends JFrame {
 
         menuBar.add(fileMenu);
         return menuBar;
+    }
+
+    public void setStatus(String status) {
+        statusLabel.setText(status);
     }
 
     private void openMap() {

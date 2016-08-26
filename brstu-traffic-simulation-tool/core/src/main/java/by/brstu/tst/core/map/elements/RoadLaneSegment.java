@@ -1,5 +1,7 @@
 package by.brstu.tst.core.map.elements;
 
+import by.brstu.tst.core.map.primitives.MapPoint;
+
 import java.util.List;
 
 /**

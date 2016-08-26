@@ -35,7 +35,11 @@ public class TransformState {
         return Math.pow(scaleFactor, scalePower);
     }
 
-    public double getScalePower() {
+    public double getScaleFactor() {
+        return scaleFactor;
+    }
+
+    public int getScalePower() {
         return scalePower;
     }
 
@@ -49,6 +53,10 @@ public class TransformState {
 
     public double getTranslateY() {
         return transform.getTranslateY();
+    }
+
+    public void setScalePower(int scalePower) {
+        updateScalePower(scalePower - this.scalePower);
     }
 
     public void updateScalePower(int value) {
@@ -79,8 +87,16 @@ public class TransformState {
     }
 
     public void updateTranslation(double dx, double dy) {
-        dx = dx / getScale();
-        dy = dy / getScale();
+        dx /= getScale();
+        dy /= getScale();
+        transform.translate(dx, dy);
+    }
+
+    public void setTranslation(double dx, double dy) {
+        dx -= transform.getTranslateX();
+        dy -= transform.getTranslateY();
+        dx /= getScale();
+        dy /= getScale();
         transform.translate(dx, dy);
     }
 

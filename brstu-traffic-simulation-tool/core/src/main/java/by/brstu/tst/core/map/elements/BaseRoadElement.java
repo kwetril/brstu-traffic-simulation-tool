@@ -14,7 +14,7 @@ public abstract class BaseRoadElement {
         this.name = name;
     }
 
-    public void accept(IRoadElementVisitor visitor) {
+    public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);
     }
 }

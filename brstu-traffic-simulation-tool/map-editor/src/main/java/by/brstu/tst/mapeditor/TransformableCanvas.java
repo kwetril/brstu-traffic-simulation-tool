@@ -29,6 +29,11 @@ public class TransformableCanvas extends JPanel {
             private int y;
 
             @Override
+            public void mouseMoved(MouseEvent e) {
+                System.out.printf("Mouse x: %s; y: %s\n", e.getX(), e.getY());
+            }
+
+            @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 x = mouseEvent.getX();
                 y = mouseEvent.getY();
@@ -61,5 +66,23 @@ public class TransformableCanvas extends JPanel {
         super.paintComponent(graphics);
         Graphics2D g2d = (Graphics2D) graphics;
         g2d.transform(transformState.getTransform());
+    }
+
+    protected void showBounds(float x0, float y0, float x1, float y1) {
+        double lenX = x1 - x0;
+        double lenY = y1 - y0;
+        double preferedScaleX = getWidth() / lenX;
+        double preferedScaleY = getHeight() / lenY;
+        double preferedScale = Math.min(preferedScaleX, preferedScaleY);
+        int preferedScalePower = (int) (Math.log(preferedScale) / Math.log(transformState.getScaleFactor()));
+        transformState.setScalePower(preferedScalePower);
+
+        double boundsCenterX = (x0 + x1) / 2 * transformState.getScale();
+        double boundsCenterY = (y0 + y1) / 2 * transformState.getScale();
+        double windowCenterX = getWidth() / 2;
+        double windowCenterY = getHeight() / 2;
+        transformState.setTranslation(windowCenterX - boundsCenterX, windowCenterY - boundsCenterY);
+
+        repaint();
     }
 }

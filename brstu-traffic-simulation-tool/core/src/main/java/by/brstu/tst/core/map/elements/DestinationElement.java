@@ -1,5 +1,7 @@
 package by.brstu.tst.core.map.elements;
 
+import by.brstu.tst.core.map.primitives.MapPoint;
+
 /**
  * Created by kwetril on 8/17/16.
  */
@@ -9,7 +11,7 @@ public class DestinationElement extends NodeRoadElement {
     }
 
     @Override
-    public void accept(IRoadElementVisitor visitor) {
+    public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);
     }
 }

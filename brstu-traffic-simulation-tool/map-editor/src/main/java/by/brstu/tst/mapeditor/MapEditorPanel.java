@@ -1,7 +1,8 @@
 package by.brstu.tst.mapeditor;
 
-import by.brstu.tst.core.map.elements.Map;
-import by.brstu.tst.core.map.elements.IRoadElementVisitor;
+import by.brstu.tst.core.map.Map;
+import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
+import by.brstu.tst.core.map.primitives.MapRectangle;
 
 import java.awt.*;
 
@@ -10,22 +11,27 @@ import java.awt.*;
  */
 public class MapEditorPanel extends TransformableCanvas {
     private Map map;
+    private MapEditorFrame parentFrame;
 
-    public MapEditorPanel() {
-        super(-3, 2, 0, 2.0);
+    public MapEditorPanel(MapEditorFrame parentFrame) {
+        super(-3, 4, 0, 2.0);
+        this.parentFrame = parentFrame;
         addMouseScalingTool();
         addMouseMovingTool();
     }
 
     public void showMap(Map map) {
         this.map = map;
-        repaint();
+        FindMapBoundsVisitor mapBoundsVisitor = new FindMapBoundsVisitor();
+        map.visitElements(mapBoundsVisitor);
+        MapRectangle bounds = mapBoundsVisitor.getMapBounds();
+        showBounds(bounds.getMinLon(), bounds.getMinLat(),
+                bounds.getMaxLon(), bounds.getMaxLat());
     }
 
     @Override
     public void update(Graphics graphics) {
         super.update(graphics);
-        System.out.println("Update");
     }
 
     @Override
@@ -33,15 +39,17 @@ public class MapEditorPanel extends TransformableCanvas {
         super.paintComponent(graphics);
         if (map != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
-            IRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
+            BaseRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
             map.visitElements(mapDrawingVisitor);
         }
-        System.out.println("PaintComponent");
+        parentFrame.setStatus(String.format("Scale: %s; Scale power: %s; Translate X: %s; Translate Y: %s; (W, H)=%s,%s",
+                transformState.getScale(), transformState.getScalePower(),
+                transformState.getTranslate(), transformState.getTranslateY(),
+                getWidth(), getHeight()));
     }
 
     @Override
     public void paint(Graphics graphics) {
         super.paint(graphics);
-        System.out.println("Paint");
     }
 }

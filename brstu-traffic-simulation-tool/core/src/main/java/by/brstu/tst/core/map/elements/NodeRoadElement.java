@@ -1,5 +1,7 @@
 package by.brstu.tst.core.map.elements;
 
+import by.brstu.tst.core.map.primitives.MapPoint;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public abstract class NodeRoadElement extends BaseRoadElement {
     }
 
     @Override
-    public void accept(IRoadElementVisitor visitor) {
+    public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);
     }
 }

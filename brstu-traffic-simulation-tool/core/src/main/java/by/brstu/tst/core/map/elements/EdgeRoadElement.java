@@ -8,7 +8,7 @@ public abstract class EdgeRoadElement extends BaseRoadElement {
     NodeRoadElement destinationElement;
 
     @Override
-    public void accept(IRoadElementVisitor visitor) {
+    public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);
     }
 }

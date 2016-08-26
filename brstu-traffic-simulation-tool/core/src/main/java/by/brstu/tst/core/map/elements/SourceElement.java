@@ -1,5 +1,7 @@
 package by.brstu.tst.core.map.elements;
 
+import by.brstu.tst.core.map.primitives.MapPoint;
+
 /**
  * Created by kwetril on 8/17/16.
  */

@@ -1,4 +1,8 @@
-package by.brstu.tst.core.map.elements;
+package by.brstu.tst.core.map;
+
+import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
+import by.brstu.tst.core.map.elements.EdgeRoadElement;
+import by.brstu.tst.core.map.elements.NodeRoadElement;
 
 import java.util.HashMap;
 
@@ -17,12 +21,20 @@ public class Map {
         this.edgeElements = edgeElements;
     }
 
-    public void visitElements(IRoadElementVisitor visitor) {
+    public void visitElements(BaseRoadElementVisitor visitor) {
         for (NodeRoadElement nodes : nodeElements.values()) {
             nodes.accept(visitor);
         }
         for (EdgeRoadElement edge : edgeElements.values()) {
             edge.accept(visitor);
         }
+    }
+
+    public void visitNode(String name, BaseRoadElementVisitor visitor) {
+        nodeElements.get(name).accept(visitor);
+    }
+
+    public void visitEdge(String name, BaseRoadElementVisitor visitor) {
+        edgeElements.get(name).accept(visitor);
     }
 }
