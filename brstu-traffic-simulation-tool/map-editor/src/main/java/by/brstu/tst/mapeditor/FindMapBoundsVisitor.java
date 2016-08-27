@@ -22,15 +22,15 @@ public class FindMapBoundsVisitor extends BaseRoadElementVisitor {
     public void visit(NodeRoadElement roadElement) {
         MapPoint point = roadElement.getBasePoint();
         if (firstVisitFlag) {
-            minLon = maxLon = point.getLon();
-            minLat = maxLat = point.getLat();
+            minLon = maxLon = point.getX();
+            minLat = maxLat = point.getY();
             firstVisitFlag = false;
         }
         else {
-            minLon = Math.min(minLon, point.getLon());
-            maxLon = Math.max(maxLon, point.getLon());
-            minLat = Math.min(minLat, point.getLat());
-            maxLat = Math.max(maxLat, point.getLat());
+            minLon = Math.min(minLon, point.getX());
+            maxLon = Math.max(maxLon, point.getX());
+            minLat = Math.min(minLat, point.getY());
+            maxLat = Math.max(maxLat, point.getY());
         }
     }
 

@@ -25,8 +25,8 @@ public class MapEditorPanel extends TransformableCanvas {
         FindMapBoundsVisitor mapBoundsVisitor = new FindMapBoundsVisitor();
         map.visitElements(mapBoundsVisitor);
         MapRectangle bounds = mapBoundsVisitor.getMapBounds();
-        showBounds(bounds.getMinLon(), bounds.getMinLat(),
-                bounds.getMaxLon(), bounds.getMaxLat());
+        showBounds(bounds.getMinX(), bounds.getMinY(),
+                bounds.getMaxX(), bounds.getMaxY());
     }
 
     @Override

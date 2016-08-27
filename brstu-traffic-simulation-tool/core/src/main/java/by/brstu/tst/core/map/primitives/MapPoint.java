@@ -2,27 +2,29 @@ package by.brstu.tst.core.map.primitives;
 
 /**
  * Created by kwetril on 7/7/16.
+ *
+ * Coordinates in EPSG:3785
  */
 public class MapPoint {
-    private float lon;
-    private float lat;
+    private float x;
+    private float y;
 
     public MapPoint(float lon, float lat) {
-        this.lon = lon;
-        this.lat = lat;
+        this.x = lon;
+        this.y = lat;
     }
 
-    public float getLon() {
-        return lon;
+    public float getX() {
+        return x;
     }
 
-    public float getLat() {
-        return lat;
+    public float getY() {
+        return y;
     }
 
     public float calculateDistance(MapPoint point) {
-        float dlon = lon - point.lon;
-        float dlat = lat - point.lat;
+        float dlon = x - point.x;
+        float dlat = y - point.y;
         return (float) Math.sqrt(dlon * dlon + dlat * dlat);
     }
 }
