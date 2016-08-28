@@ -32,4 +32,12 @@ public class MapRectangle {
     public float getMaxY() {
         return maxY;
     }
+
+    public float getWidth() {
+        return maxX - minX;
+    }
+
+    public float getHeight() {
+        return maxY - minY;
+    }
 }

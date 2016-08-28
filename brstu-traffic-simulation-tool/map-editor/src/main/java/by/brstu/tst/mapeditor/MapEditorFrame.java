@@ -1,7 +1,9 @@
 package by.brstu.tst.mapeditor;
 
+import by.brstu.tst.core.config.Configuration;
+import by.brstu.tst.core.config.ConfigurationReader;
 import by.brstu.tst.core.map.Map;
-import by.brstu.tst.core.map.elements.MapBuilder;
+import by.brstu.tst.core.map.MapBuilder;
 import by.brstu.tst.core.map.primitives.MapPoint;
 
 import javax.swing.*;
@@ -58,7 +60,9 @@ public class MapEditorFrame extends JFrame {
     }
 
     private void openMap() {
-        MapBuilder mapBuilder = new MapBuilder();
+        ConfigurationReader configReader = new ConfigurationReader();
+        Configuration config = configReader.read();
+        MapBuilder mapBuilder = new MapBuilder(config);
         mapBuilder
                 .addSourceElement("src-1", new MapPoint(2637872.9f, 6815772.77f))
                 .addDestinationElement("dst-1", new MapPoint(2639162.77f, 6816176.45f))
@@ -71,14 +75,14 @@ public class MapEditorFrame extends JFrame {
                 .addIntersection("crs-1", new MapPoint(2638577.55f, 6815992.52f));
 
         mapBuilder
-                .addRoad("rd-1", "src-1", "crs-1")
-                .addRoad("rd-2", "src-2", "crs-1")
-                .addRoad("rd-3", "src-3", "crs-1")
-                .addRoad("rd-4", "src-4", "crs-1")
-                .addRoad("rd-5", "crs-1", "dst-1")
-                .addRoad("rd-6", "crs-1", "dst-2")
-                .addRoad("rd-7", "crs-1", "dst-3")
-                .addRoad("rd-8", "crs-1", "dst-4");
+                .addRoad("rd-1", "src-1", "crs-1", 3)
+                .addRoad("rd-2", "src-2", "crs-1", 3)
+                .addRoad("rd-3", "src-3", "crs-1", 3)
+                .addRoad("rd-4", "src-4", "crs-1", 3)
+                .addRoad("rd-5", "crs-1", "dst-1", 3)
+                .addRoad("rd-6", "crs-1", "dst-2", 3)
+                .addRoad("rd-7", "crs-1", "dst-3", 3)
+                .addRoad("rd-8", "crs-1", "dst-4", 3);
 
         Map map = mapBuilder.build("map-1");
 

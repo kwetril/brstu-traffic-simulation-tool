@@ -29,4 +29,5 @@ public class MapUtils {
         distanceCalculator.setDestinationGeographicPoint(destinationPoint.getX(), destinationPoint.getY());
         return distanceCalculator.getOrthodromicDistance();
     }
+
 }
