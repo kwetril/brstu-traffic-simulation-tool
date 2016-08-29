@@ -7,6 +7,11 @@ import by.brstu.tst.core.map.primitives.Vector;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by kwetril on 8/24/16.
@@ -32,14 +37,28 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
     @Override
     public void visit(NodeRoadElement roadElement) {
         MapPoint point = roadElement.getBasePoint();
+        List<MapPoint> points = new ArrayList<>();
+        roadElement.getInputElements()
+                .stream()
+                .map(edgeRoadElement -> ((DirectedRoad) edgeRoadElement).getEndPoint())
+                .collect(Collectors.toCollection(() -> points));
+        roadElement.getOutputElements()
+                .stream()
+                .map(edgeRoadElement -> ((DirectedRoad) edgeRoadElement).getStartPoint())
+                .collect(Collectors.toCollection(() -> points));
+        Path2D.Float path = new Path2D.Float();
+        path.moveTo(points.get(0).getX(), points.get(0).getY());
+        points.stream().skip(1).forEach(pt -> path.lineTo(pt.getX(), pt.getY()));
+        path.closePath();
         graphics.setColor(nodeElementColor);
+        graphics.fill(path);
         graphics.draw(new Ellipse2D.Float(point.getX() - 4, point.getY() - 4, 8, 8));
     }
 
     @Override
     public void visit(DirectedRoad roadElement) {
-        MapPoint from = roadElement.getStartNode().getBasePoint();
-        MapPoint to = roadElement.getEndNode().getBasePoint();
+        MapPoint from = roadElement.getStartPoint();
+        MapPoint to = roadElement.getEndPoint();
         Line2D line = new Line2D.Float(from.getX(), from.getY(), to.getX(), to.getY());
         int numLanes = roadElement.getNumLanes();
         float laneWidth = roadElement.getLaneWidth();

@@ -64,25 +64,33 @@ public class MapEditorFrame extends JFrame {
         Configuration config = configReader.read();
         MapBuilder mapBuilder = new MapBuilder(config);
         mapBuilder
-                .addSourceElement("src-1", new MapPoint(2637872.9f, 6815772.77f))
-                .addDestinationElement("dst-1", new MapPoint(2639162.77f, 6816176.45f))
-                .addSourceElement("src-2", new MapPoint(2639081.56f, 6816202.73f))
-                .addDestinationElement("dst-2", new MapPoint(2637791.68f, 6815801.43f))
-                .addSourceElement("src-3", new MapPoint(2638369.74f, 6816678.07f))
-                .addDestinationElement("dst-3", new MapPoint(2638728.04f, 6815366.7f))
-                .addSourceElement("src-4", new MapPoint(2638785.37f, 6815385.81f))
-                .addDestinationElement("dst-4", new MapPoint(2638417.51f, 6816666.13f))
-                .addIntersection("crs-1", new MapPoint(2638577.55f, 6815992.52f));
+                .addSourceElement("from-west", new MapPoint(2637887.23f, 6815777.55f))
+                .addDestinationElement("to-east", new MapPoint(2639344.31f, 6816231.39f))
+                .addSourceElement("from-east", new MapPoint(2639339.53f, 6816255.28f))
+                .addDestinationElement("to-west", new MapPoint(2637884.84f, 6815799.04f))
+                .addSourceElement("from-north", new MapPoint(2638374.52f, 6816670.9f))
+                .addDestinationElement("to-south", new MapPoint(2638737.59f, 6815357.14f))
+                .addSourceElement("from-south", new MapPoint(2638787.75f, 6815369.08f))
+                .addDestinationElement("to-north", new MapPoint(2638417.51f, 6816673.29f))
+                .addIntersection("intersection", new MapPoint(2638579.94f, 6815994.91f));
 
         mapBuilder
-                .addRoad("rd-1", "src-1", "crs-1", 3)
-                .addRoad("rd-2", "src-2", "crs-1", 3)
-                .addRoad("rd-3", "src-3", "crs-1", 3)
-                .addRoad("rd-4", "src-4", "crs-1", 3)
-                .addRoad("rd-5", "crs-1", "dst-1", 3)
-                .addRoad("rd-6", "crs-1", "dst-2", 3)
-                .addRoad("rd-7", "crs-1", "dst-3", 3)
-                .addRoad("rd-8", "crs-1", "dst-4", 3);
+                .addRoad("rd-1", "from-west", null,
+                        "intersection", new MapPoint(2638548.89f, 6815973.42f), 3)
+                .addRoad("rd-2", "from-east", null,
+                        "intersection", new MapPoint(2638613.38f, 6816011.63f), 3)
+                .addRoad("rd-3", "from-north", null,
+                        "intersection", new MapPoint(2638551.28f, 6816002.08f), 3)
+                .addRoad("rd-4", "from-south", null,
+                        "intersection", new MapPoint(2638601.44f, 6815985.36f), 3)
+                .addRoad("rd-5", "intersection", new MapPoint(2638618.16f, 6815992.52f),
+                        "to-east", null, 3)
+                .addRoad("rd-6", "intersection", new MapPoint(2638534.56f, 6815992.52f),
+                        "to-west", null, 3)
+                .addRoad("rd-7", "intersection", new MapPoint(2638563.22f, 6815963.86f),
+                        "to-south", null, 3)
+                .addRoad("rd-8", "intersection", new MapPoint(2638589.5f, 6816018.8f),
+                        "to-north", null, 3);
 
         Map map = mapBuilder.build("map-1");
 

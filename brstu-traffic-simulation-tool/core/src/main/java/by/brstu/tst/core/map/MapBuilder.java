@@ -49,7 +49,8 @@ public class MapBuilder {
         nodeElements.put(name, element);
     }
 
-    public MapBuilder addRoad(String name, String fromName, String toName, List<MapPoint> innerPoints,
+    public MapBuilder addRoad(String name, String fromName, MapPoint fromPoint,
+                              String toName, MapPoint toPoint, List<MapPoint> innerPoints,
                               int numLanes) {
         if (!checkNameUniquness(name)) {
             throw new RuntimeException("Name of the road element should be unique");
@@ -65,14 +66,22 @@ public class MapBuilder {
         }
         NodeRoadElement fromNode = nodeElements.get(fromName);
         NodeRoadElement toNode = nodeElements.get(toName);
-        DirectedRoad road = new DirectedRoad(name, fromNode, toNode,
+        if (fromPoint == null) {
+            fromPoint = fromNode.getBasePoint();
+        }
+        if (toPoint == null) {
+            toPoint = toNode.getBasePoint();
+        }
+        DirectedRoad road = new DirectedRoad(name, fromNode, fromPoint,
+                toNode, toPoint,
                 innerPoints, numLanes, config.roadWidth());
         edgeElements.put(name, road);
         return this;
     }
 
-    public MapBuilder addRoad(String name, String fromName, String toName, int numLanes) {
-        return addRoad(name, fromName, toName, new ArrayList<>(), numLanes);
+    public MapBuilder addRoad(String name, String fromName, MapPoint fromPoint,
+                              String toName, MapPoint toPoint, int numLanes) {
+        return addRoad(name, fromName, fromPoint, toName, toPoint, new ArrayList<>(), numLanes);
     }
 
     public Map build(String name) {

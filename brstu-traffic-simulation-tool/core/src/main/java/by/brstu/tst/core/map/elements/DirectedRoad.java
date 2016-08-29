@@ -1,5 +1,6 @@
 package by.brstu.tst.core.map.elements;
 
+import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.primitives.MapPoint;
 
 import java.util.ArrayList;
@@ -10,21 +11,27 @@ import java.util.List;
  */
 public class DirectedRoad extends EdgeRoadElement {
     private NodeRoadElement fromNode;
+    private MapPoint startPoint;
     private NodeRoadElement toNode;
+    private MapPoint endPoint;
     private List<MapPoint> innerPoints;
     private int numLanes;
     private float laneWidth;
 
-    public DirectedRoad(String name, NodeRoadElement fromNode, NodeRoadElement toNode,
+    public DirectedRoad(String name, NodeRoadElement fromNode, MapPoint startPoint,
+                        NodeRoadElement toNode, MapPoint endPoint,
                         int numLanes, float laneWidth) {
-        this(name, fromNode, toNode, new ArrayList<>(), numLanes, laneWidth);
+        this(name, fromNode, startPoint, toNode, endPoint, new ArrayList<>(), numLanes, laneWidth);
     }
 
-    public DirectedRoad(String name, NodeRoadElement fromNode, NodeRoadElement toNode,
+    public DirectedRoad(String name, NodeRoadElement fromNode, MapPoint startPoint,
+                        NodeRoadElement toNode, MapPoint endPoint,
                         List<MapPoint> innerPoints, int numLanes, float laneWidth) {
         this.name = name;
         this.fromNode = fromNode;
         this.toNode = toNode;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
         fromNode.getOutputElements().add(this);
         toNode.getInputElements().add(this);
         this.innerPoints = innerPoints;
@@ -39,6 +46,15 @@ public class DirectedRoad extends EdgeRoadElement {
     public NodeRoadElement getEndNode() {
         return toNode;
     }
+
+    public MapPoint getStartPoint() {
+        return startPoint;
+    }
+
+    public MapPoint getEndPoint() {
+        return endPoint;
+    }
+
 
     @Override
     public void accept(BaseRoadElementVisitor visitor) {
