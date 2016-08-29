@@ -17,7 +17,7 @@ public class TransformableCanvas extends JPanel {
 
     public void addMouseScalingTool() {
         addMouseWheelListener(mouseWheelEvent -> {
-            transformState.updateScalePower(mouseWheelEvent.getWheelRotation(),
+            transformState.updateScalePower(-mouseWheelEvent.getWheelRotation(),
                     mouseWheelEvent.getX(), mouseWheelEvent.getY());
             repaint();
         });
