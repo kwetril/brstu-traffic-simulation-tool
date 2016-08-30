@@ -50,8 +50,8 @@ public class MapEditorPanel extends TransformableCanvas {
             map.visitElements(mapDrawingVisitor);
         }
         parentFrame.setStatus(String.format("Scale: %s; Scale power: %s; Translate X: %s; Translate Y: %s; (W, H)=%s,%s",
-                transformState.getScale(), transformState.getScalePower(),
-                transformState.getTranslate(), transformState.getTranslateY(),
+                transformState.getScaleX(), transformState.getScalePower(),
+                transformState.getTranslateX(), transformState.getTranslateY(),
                 getWidth(), getHeight()));
     }
 

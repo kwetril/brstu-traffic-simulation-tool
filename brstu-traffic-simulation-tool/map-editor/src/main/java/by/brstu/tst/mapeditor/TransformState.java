@@ -1,6 +1,5 @@
 package by.brstu.tst.mapeditor;
 
-import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
@@ -24,15 +23,19 @@ public class TransformState {
         this.maxScalePower = maxScalePower;
         this.scalePower = initScalePower;
         this.scaleFactor = scaleFactor;
-        double scale = getScale();
+        double scale = getScaleX();
         transform = new AffineTransform();
-        transform.scale(scale, scale);
+        transform.scale(scale, -scale);
         transform.translate(translateX, translateY);
         transform.rotate(angle);
     }
 
-    public double getScale() {
+    public double getScaleX() {
         return Math.pow(scaleFactor, scalePower);
+    }
+
+    public double getScaleY() {
+        return -getScaleX();
     }
 
     public double getScaleFactor() {
@@ -47,7 +50,7 @@ public class TransformState {
         return scalePower - minScalePower;
     }
 
-    public double getTranslate() {
+    public double getTranslateX() {
         return transform.getTranslateX();
     }
 
@@ -87,16 +90,16 @@ public class TransformState {
     }
 
     public void updateTranslation(double dx, double dy) {
-        dx /= getScale();
-        dy /= getScale();
+        dx /= getScaleX();
+        dy /= getScaleY();
         transform.translate(dx, dy);
     }
 
     public void setTranslation(double dx, double dy) {
         dx -= transform.getTranslateX();
         dy -= transform.getTranslateY();
-        dx /= getScale();
-        dy /= getScale();
+        dx /= getScaleX();
+        dy /= getScaleY();
         transform.translate(dx, dy);
     }
 

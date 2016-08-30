@@ -77,8 +77,8 @@ public class TransformableCanvas extends JPanel {
         int preferedScalePower = (int) (Math.log(preferedScale) / Math.log(transformState.getScaleFactor()));
         transformState.setScalePower(preferedScalePower);
 
-        double boundsCenterX = (x0 + x1) / 2 * transformState.getScale();
-        double boundsCenterY = (y0 + y1) / 2 * transformState.getScale();
+        double boundsCenterX = (x0 + x1) / 2 * transformState.getScaleX();
+        double boundsCenterY = (y0 + y1) / 2 * transformState.getScaleY();
         double windowCenterX = getWidth() / 2;
         double windowCenterY = getHeight() / 2;
         transformState.setTranslation(windowCenterX - boundsCenterX, windowCenterY - boundsCenterY);
