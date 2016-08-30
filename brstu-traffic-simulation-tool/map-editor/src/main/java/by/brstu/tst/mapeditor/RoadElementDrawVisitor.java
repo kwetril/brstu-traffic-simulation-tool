@@ -10,7 +10,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -46,12 +45,20 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
                 .stream()
                 .map(edgeRoadElement -> ((DirectedRoad) edgeRoadElement).getStartPoint())
                 .collect(Collectors.toCollection(() -> points));
-        Path2D.Float path = new Path2D.Float();
-        path.moveTo(points.get(0).getX(), points.get(0).getY());
-        points.stream().skip(1).forEach(pt -> path.lineTo(pt.getX(), pt.getY()));
-        path.closePath();
+
+        if (points.size() > 1) {
+            graphics.setStroke(new BasicStroke(3.5f * 3));
+            graphics.setColor(roadColor);
+            sortPointsAroundBasePoint(points, point);
+            Path2D.Float path = new Path2D.Float();
+            path.moveTo(points.get(0).getX(), points.get(0).getY());
+            points.stream().skip(1).forEach(pt -> path.lineTo(pt.getX(), pt.getY()));
+            path.closePath();
+            graphics.fill(path);
+            graphics.draw(path);
+        }
         graphics.setColor(nodeElementColor);
-        graphics.fill(path);
+        graphics.setStroke(roadEdgeStroke);
         graphics.draw(new Ellipse2D.Float(point.getX() - 4, point.getY() - 4, 8, 8));
     }
 
@@ -111,5 +118,22 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
                     edgeTo.getX(), edgeTo.getY());
             graphics.draw(markupLine);
         }
+    }
+
+    private void sortPointsAroundBasePoint(List<MapPoint> points, MapPoint basePoint) {
+        Vector baseVector = new Vector(basePoint, new MapPoint(0, 0));
+        points.sort((pt1, pt2) -> {
+            Vector firstVector = new Vector(basePoint, pt1);
+            Vector secondVector = new Vector(basePoint, pt2);
+            float firstAngle = baseVector.angleClockwise(firstVector);
+            float secondAngle = baseVector.angleClockwise(secondVector);
+            System.out.println(firstAngle + " " + secondAngle);
+            if (firstAngle < secondAngle) {
+                return -1;
+            } else if (firstAngle > secondAngle) {
+                return 1;
+            }
+            return 0;
+        });
     }
 }

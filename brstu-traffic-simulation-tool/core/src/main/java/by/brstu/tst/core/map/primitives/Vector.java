@@ -60,6 +60,16 @@ public class Vector implements Cloneable {
         return this;
     }
 
+    public float angleClockwise(Vector anotherVector) {
+        float crossProduct = scalarMultiply(anotherVector);
+        float angle = (float) Math.acos(crossProduct / getLength() / anotherVector.getLength());
+        float vectorProduct = x * anotherVector.y - anotherVector.x * y;
+        if (vectorProduct > 0) {
+            angle = (float) (2 * Math.PI - angle);
+        }
+        return angle;
+    }
+
     @Override
     public Vector clone() {
         return new Vector(x, y);
