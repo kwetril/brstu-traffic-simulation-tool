@@ -76,13 +76,13 @@ public class MapEditorFrame extends JFrame {
 
         mapBuilder
                 .addRoad("rd-1", "from-west", null,
-                        "intersection", new MapPoint(2638548.89f, 6815973.42f), 3)
+                        "intersection", new MapPoint(2638544.11f, 6815972.22f), 3)
                 .addRoad("rd-2", "from-east", null,
                         "intersection", new MapPoint(2638613.38f, 6816011.63f), 3)
                 .addRoad("rd-3", "from-north", null,
-                        "intersection", new MapPoint(2638551.28f, 6816002.08f), 3)
+                        "intersection", new MapPoint(2638551.28f, 6816005.66f), 3)
                 .addRoad("rd-4", "from-south", null,
-                        "intersection", new MapPoint(2638601.44f, 6815985.36f), 3)
+                        "intersection", new MapPoint(2638605.02f, 6815978.19f), 3)
                 .addRoad("rd-5", "intersection", new MapPoint(2638618.16f, 6815992.52f),
                         "to-east", null, 3)
                 .addRoad("rd-6", "intersection", new MapPoint(2638534.56f, 6815992.52f),

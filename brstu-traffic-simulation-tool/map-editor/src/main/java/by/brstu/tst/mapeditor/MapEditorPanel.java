@@ -4,8 +4,11 @@ import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
 import by.brstu.tst.core.map.primitives.MapRectangle;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 /**
  * Created by kwetril on 7/11/16.
@@ -41,10 +44,24 @@ public class MapEditorPanel extends TransformableCanvas {
         super.paintComponent(graphics);
         if (map != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
-            graphics2D.setColor(Color.GREEN);
+
+            BufferedImage grassTileImage = null;
+            try {
+                grassTileImage = ImageIO.read(new File("map-editor/img/grass-tile-400.jpg"));
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            TexturePaint grassTexture = new TexturePaint(grassTileImage,
+                    new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
+                    mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
+            Paint oldPaint = graphics2D.getPaint();
+            graphics2D.setPaint(grassTexture);
             graphics2D.fill(new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
                     mapBounds.getMinY() - 0.1f * mapBounds.getHeight(),
                     1.2f * mapBounds.getWidth(), 1.2f * mapBounds.getHeight()));
+            graphics2D.setPaint(oldPaint);
+
             graphics.setColor(Color.BLACK);
             BaseRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
             map.visitElements(mapDrawingVisitor);
