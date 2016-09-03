@@ -17,5 +17,6 @@
     <orderEntry type="library" name="Maven: org.geotools:gt-api:14.2" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-epsg-hsql:14.2" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-opengis:14.2" level="project" />
+    <orderEntry type="module" module-name="ui-utils" />
   </component>
 </module>

@@ -11,6 +11,7 @@
     <module>user-interface</module>
     <module>core</module>
     <module>map-editor</module>
+      <module>ui-utils</module>
   </modules>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>

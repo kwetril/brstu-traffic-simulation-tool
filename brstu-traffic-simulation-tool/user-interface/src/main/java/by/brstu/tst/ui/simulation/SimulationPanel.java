@@ -1,11 +1,13 @@
-package by.brstu.tst.mapeditor;
+package by.brstu.tst.ui.simulation;
 
 import by.brstu.tst.core.ModelState;
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
 import by.brstu.tst.core.map.primitives.MapRectangle;
 import by.brstu.tst.core.vehicle.IVehicleVisitor;
-import sun.awt.windows.ThemeReader;
+import by.brstu.tst.ui.utils.FindMapBoundsVisitor;
+import by.brstu.tst.ui.utils.RoadElementDrawVisitor;
+import by.brstu.tst.ui.utils.TransformableCanvas;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,20 +16,25 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 /**
- * Created by kwetril on 7/11/16.
+ * Created by kwetril on 7/5/16.
  */
-public class MapEditorPanel extends TransformableCanvas {
+public class SimulationPanel extends TransformableCanvas {
     private Map map;
     private ModelState modelState;
-    private MapEditorFrame parentFrame;
+    private SimulationFrame parentFrame;
     private MapRectangle mapBounds;
     private volatile boolean simulationStarted;
 
-    public MapEditorPanel(MapEditorFrame parentFrame) {
+    public SimulationPanel(SimulationFrame parentFrame) {
         super(-3, 5, 0, 2.0);
         this.parentFrame = parentFrame;
+        this.simulationStarted = false;
         addMouseScalingTool();
         addMouseMovingTool();
+    }
+
+    public boolean isSimulationStarted() {
+        return simulationStarted;
     }
 
     public void showMap(Map map, ModelState modelState) {
@@ -61,11 +68,6 @@ public class MapEditorPanel extends TransformableCanvas {
     }
 
     @Override
-    public void update(Graphics graphics) {
-        super.update(graphics);
-    }
-
-    @Override
     protected void paintComponent(Graphics graphics) {
         long startTime = System.nanoTime();
         super.paintComponent(graphics);
@@ -81,7 +83,7 @@ public class MapEditorPanel extends TransformableCanvas {
             }
             TexturePaint grassTexture = new TexturePaint(grassTileImage,
                     new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
-                    mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
+                            mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
             Paint oldPaint = graphics2D.getPaint();
             graphics2D.setPaint(grassTexture);
             graphics2D.fill(new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
@@ -104,10 +106,5 @@ public class MapEditorPanel extends TransformableCanvas {
                 getWidth(), getHeight()));
         long endTime = System.nanoTime();
         System.out.printf("Time: %s ms\n", (endTime - startTime) / 1000000.0);
-    }
-
-    @Override
-    public void paint(Graphics graphics) {
-        super.paint(graphics);
     }
 }

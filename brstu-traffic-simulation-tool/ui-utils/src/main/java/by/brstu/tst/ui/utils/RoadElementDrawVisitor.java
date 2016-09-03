@@ -1,4 +1,4 @@
-package by.brstu.tst.mapeditor;
+package by.brstu.tst.ui.utils;
 
 import by.brstu.tst.core.map.elements.*;
 import by.brstu.tst.core.map.primitives.MapPoint;

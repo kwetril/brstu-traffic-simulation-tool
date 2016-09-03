@@ -1,4 +1,4 @@
-package by.brstu.tst.mapeditor;
+package by.brstu.tst.ui.simulation;
 
 import by.brstu.tst.core.vehicle.IVehicleVisitor;
 import by.brstu.tst.core.vehicle.Vehicle;

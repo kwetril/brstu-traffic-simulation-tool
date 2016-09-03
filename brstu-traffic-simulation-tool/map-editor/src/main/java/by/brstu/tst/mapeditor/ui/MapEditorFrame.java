@@ -1,18 +1,14 @@
-package by.brstu.tst.mapeditor;
+package by.brstu.tst.mapeditor.ui;
 
-import by.brstu.tst.core.ModelState;
 import by.brstu.tst.core.config.Configuration;
 import by.brstu.tst.core.config.ConfigurationReader;
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.MapBuilder;
 import by.brstu.tst.core.map.primitives.MapPoint;
-import by.brstu.tst.core.map.primitives.Vector;
-import by.brstu.tst.core.vehicle.Vehicle;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Created by kwetril on 7/11/16.
@@ -21,7 +17,6 @@ public class MapEditorFrame extends JFrame {
 
     private MapEditorPanel editorPanel;
     private JLabel statusLabel;
-    private JMenuItem startSimulationMenuItem;
     private boolean simulationStarted;
 
     public MapEditorFrame() {
@@ -58,33 +53,7 @@ public class MapEditorFrame extends JFrame {
         });
         fileMenu.add(openMapMenuItem);
         menuBar.add(fileMenu);
-
-        JMenu simulationMenu = new JMenu("Simulation");
-        startSimulationMenuItem = new JMenuItem("Start");
-        startSimulationMenuItem.setEnabled(false);
-        startSimulationMenuItem.addActionListener(actionEvent -> {
-            if (simulationStarted) {
-                stopSimulation();
-                simulationStarted = false;
-                startSimulationMenuItem.setText("Start");
-            } else {
-                startSimulation();
-                simulationStarted = true;
-                startSimulationMenuItem.setText("Stop");
-            }
-        });
-        simulationMenu.add(startSimulationMenuItem);
-        menuBar.add(simulationMenu);
-
         return menuBar;
-    }
-
-    private void startSimulation() {
-        editorPanel.startSimulation();
-    }
-
-    private void stopSimulation() {
-        editorPanel.stopSimulation();
     }
 
     public void setStatus(String status) {
@@ -126,13 +95,6 @@ public class MapEditorFrame extends JFrame {
 
         Map map = mapBuilder.build("map-1");
 
-        ArrayList<Vehicle> vehicles = new ArrayList<>();
-        vehicles.add(new Vehicle(map.getNode("from-west").getBasePoint(),
-                new Vector(map.getNode("from-west").getBasePoint(),
-                        map.getNode("to-east").getBasePoint()).setLength(10)));
-        ModelState modelState = new ModelState(map, vehicles);
-
-        editorPanel.showMap(map, modelState);
-        startSimulationMenuItem.setEnabled(true);
+        editorPanel.showMap(map);
     }
 }

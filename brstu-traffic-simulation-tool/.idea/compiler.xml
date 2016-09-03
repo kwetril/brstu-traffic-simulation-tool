@@ -25,6 +25,7 @@
         <module name="core" />
         <module name="map-editor" />
         <module name="osm-parsing" />
+        <module name="ui-utils" />
         <module name="user-interface" />
       </profile>
     </annotationProcessing>
@@ -33,6 +34,7 @@
       <module name="core" target="1.8" />
       <module name="map-editor" target="1.8" />
       <module name="osm-parsing" target="1.8" />
+      <module name="ui-utils" target="1.8" />
       <module name="user-interface" target="1.8" />
     </bytecodeTargetLevel>
   </component>

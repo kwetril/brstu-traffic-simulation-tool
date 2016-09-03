@@ -1,10 +1,10 @@
-package by.brstu.tst.mapeditor;
+package by.brstu.tst.ui.utils;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
 /**
- * Created by kwetril on 7/12/16.
+ * Created by a.klimovich on 03.09.2016.
  */
 public class TransformState {
     private int minScalePower;

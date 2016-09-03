@@ -1,4 +1,4 @@
-package by.brstu.tst.mapeditor;
+package by.brstu.tst.ui.utils;
 
 import javax.swing.*;
 import java.awt.*;
