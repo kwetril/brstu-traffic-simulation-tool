@@ -1,8 +1,11 @@
 package by.brstu.tst.mapeditor;
 
+import by.brstu.tst.core.ModelState;
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
 import by.brstu.tst.core.map.primitives.MapRectangle;
+import by.brstu.tst.core.vehicle.IVehicleVisitor;
+import sun.awt.windows.ThemeReader;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,8 +18,10 @@ import java.io.File;
  */
 public class MapEditorPanel extends TransformableCanvas {
     private Map map;
+    private ModelState modelState;
     private MapEditorFrame parentFrame;
     private MapRectangle mapBounds;
+    private volatile boolean simulationStarted;
 
     public MapEditorPanel(MapEditorFrame parentFrame) {
         super(-3, 5, 0, 2.0);
@@ -25,13 +30,34 @@ public class MapEditorPanel extends TransformableCanvas {
         addMouseMovingTool();
     }
 
-    public void showMap(Map map) {
+    public void showMap(Map map, ModelState modelState) {
         this.map = map;
+        this.modelState = modelState;
         FindMapBoundsVisitor mapBoundsVisitor = new FindMapBoundsVisitor();
         map.visitElements(mapBoundsVisitor);
         mapBounds = mapBoundsVisitor.getMapBounds();
         showBounds(mapBounds.getMinX(), mapBounds.getMinY(),
                 mapBounds.getMaxX(), mapBounds.getMaxY());
+    }
+
+    public void startSimulation() {
+        simulationStarted = true;
+        new Thread(() -> {
+            IVehicleVisitor updateStateVisitor = new UpdateVehicleStateVisitor(0.1f);
+            while (simulationStarted) {
+                modelState.visitVehicles(updateStateVisitor);
+                repaint();
+                try {
+                    Thread.sleep(1000 / 25);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void stopSimulation() {
+        simulationStarted = false;
     }
 
     @Override
@@ -41,6 +67,7 @@ public class MapEditorPanel extends TransformableCanvas {
 
     @Override
     protected void paintComponent(Graphics graphics) {
+        long startTime = System.nanoTime();
         super.paintComponent(graphics);
         if (map != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
@@ -66,10 +93,17 @@ public class MapEditorPanel extends TransformableCanvas {
             BaseRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
             map.visitElements(mapDrawingVisitor);
         }
+        if (modelState != null) {
+            Graphics2D graphics2D = (Graphics2D) graphics;
+            IVehicleVisitor vehicleDrawVisitor = new VehicleDrawVisitor(graphics2D);
+            modelState.visitVehicles(vehicleDrawVisitor);
+        }
         parentFrame.setStatus(String.format("Scale: %s; Scale power: %s; Translate X: %s; Translate Y: %s; (W, H)=%s,%s",
                 transformState.getScaleX(), transformState.getScalePower(),
                 transformState.getTranslateX(), transformState.getTranslateY(),
                 getWidth(), getHeight()));
+        long endTime = System.nanoTime();
+        System.out.printf("Time: %s ms\n", (endTime - startTime) / 1000000.0);
     }
 
     @Override

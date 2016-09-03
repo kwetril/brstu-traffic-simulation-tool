@@ -127,7 +127,6 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
             Vector secondVector = new Vector(basePoint, pt2);
             float firstAngle = baseVector.angleClockwise(firstVector);
             float secondAngle = baseVector.angleClockwise(secondVector);
-            System.out.println(firstAngle + " " + secondAngle);
             if (firstAngle < secondAngle) {
                 return -1;
             } else if (firstAngle > secondAngle) {

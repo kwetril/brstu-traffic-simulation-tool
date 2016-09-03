@@ -30,7 +30,7 @@ public class TransformableCanvas extends JPanel {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                System.out.printf("Mouse x: %s; y: %s\n", e.getX(), e.getY());
+                //System.out.printf("Mouse x: %s; y: %s\n", e.getX(), e.getY());
             }
 
             @Override
