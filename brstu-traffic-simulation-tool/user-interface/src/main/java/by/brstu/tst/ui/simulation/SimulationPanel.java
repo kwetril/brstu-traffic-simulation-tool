@@ -23,12 +23,14 @@ public class SimulationPanel extends TransformableCanvas {
     private ModelState modelState;
     private SimulationFrame parentFrame;
     private MapRectangle mapBounds;
+    private MapImageCache mapImageCache;
     private volatile boolean simulationStarted;
 
     public SimulationPanel(SimulationFrame parentFrame) {
         super(-3, 5, 0, 2.0);
         this.parentFrame = parentFrame;
         this.simulationStarted = false;
+        mapImageCache = new MapImageCache();
         addMouseScalingTool();
         addMouseMovingTool();
     }
@@ -73,27 +75,11 @@ public class SimulationPanel extends TransformableCanvas {
         super.paintComponent(graphics);
         if (map != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
-
-            BufferedImage grassTileImage = null;
-            try {
-                grassTileImage = ImageIO.read(new File("map-editor/img/grass-tile-400.jpg"));
+            drawMapToGraphics(graphics2D);
+            if (mapImageCache.getImage(transformState.getScaleIndex()) == null) {
+                Image img = createImageMap();
+                mapImageCache.putImage(transformState.getScaleIndex(), img);
             }
-            catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            TexturePaint grassTexture = new TexturePaint(grassTileImage,
-                    new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
-                            mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
-            Paint oldPaint = graphics2D.getPaint();
-            graphics2D.setPaint(grassTexture);
-            graphics2D.fill(new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
-                    mapBounds.getMinY() - 0.1f * mapBounds.getHeight(),
-                    1.2f * mapBounds.getWidth(), 1.2f * mapBounds.getHeight()));
-            graphics2D.setPaint(oldPaint);
-
-            graphics.setColor(Color.BLACK);
-            BaseRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
-            map.visitElements(mapDrawingVisitor);
         }
         if (modelState != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
@@ -106,5 +92,49 @@ public class SimulationPanel extends TransformableCanvas {
                 getWidth(), getHeight()));
         long endTime = System.nanoTime();
         System.out.printf("Time: %s ms\n", (endTime - startTime) / 1000000.0);
+    }
+
+    private Image createImageMap() {
+        double scale = transformState.getScaleX();
+        int height = (int) Math.round(mapBounds.getHeight() * scale * 1.2);
+        int width = (int) Math.round(mapBounds.getWidth() * scale * 1.2);
+        System.out.printf("Width: %s; Height: %s.\n", width, height);
+        Image image = createImage(width, height);
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        graphics.setTransform(transformState.getTransform());
+
+        //graphics.translate(-mapBounds.getMinX(), -mapBounds.getMinY());
+        double dx = -(mapBounds.getMinX() - 0.1 * mapBounds.getWidth()) * transformState.getScaleX();
+        double dy = -(mapBounds.getMaxY() + 0.1 * mapBounds.getHeight()) * transformState.getScaleY();
+        dx -= transformState.getTranslateX();
+        dy -= transformState.getTranslateY();
+        dx /= transformState.getScaleX();
+        dy /= transformState.getScaleY();
+        graphics.translate(dx, dy);
+        drawMapToGraphics(graphics);
+        return image;
+    }
+
+    private void drawMapToGraphics(Graphics2D graphics2D) {
+        BufferedImage grassTileImage = null;
+        try {
+            grassTileImage = ImageIO.read(new File("map-editor/img/grass-tile-400.jpg"));
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        TexturePaint grassTexture = new TexturePaint(grassTileImage,
+                new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
+                        mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
+        Paint oldPaint = graphics2D.getPaint();
+        graphics2D.setPaint(grassTexture);
+        graphics2D.fill(new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
+                mapBounds.getMinY() - 0.1f * mapBounds.getHeight(),
+                1.2f * mapBounds.getWidth(), 1.2f * mapBounds.getHeight()));
+        graphics2D.setPaint(oldPaint);
+
+        graphics2D.setColor(Color.BLACK);
+        BaseRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
+        map.visitElements(mapDrawingVisitor);
     }
 }

@@ -43,7 +43,6 @@ public class MapEditorPanel extends TransformableCanvas {
         super.paintComponent(graphics);
         if (map != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
-
             BufferedImage grassTileImage = null;
             try {
                 grassTileImage = ImageIO.read(new File("map-editor/img/grass-tile-400.jpg"));
@@ -53,7 +52,7 @@ public class MapEditorPanel extends TransformableCanvas {
             }
             TexturePaint grassTexture = new TexturePaint(grassTileImage,
                     new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
-                    mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
+                            mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
             Paint oldPaint = graphics2D.getPaint();
             graphics2D.setPaint(grassTexture);
             graphics2D.fill(new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
@@ -61,7 +60,7 @@ public class MapEditorPanel extends TransformableCanvas {
                     1.2f * mapBounds.getWidth(), 1.2f * mapBounds.getHeight()));
             graphics2D.setPaint(oldPaint);
 
-            graphics.setColor(Color.BLACK);
+            graphics2D.setColor(Color.BLACK);
             BaseRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
             map.visitElements(mapDrawingVisitor);
         }
