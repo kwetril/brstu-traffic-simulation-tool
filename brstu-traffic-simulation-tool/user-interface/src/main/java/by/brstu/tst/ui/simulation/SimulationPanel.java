@@ -11,6 +11,8 @@ import by.brstu.tst.ui.utils.TransformableCanvas;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -75,10 +77,19 @@ public class SimulationPanel extends TransformableCanvas {
         super.paintComponent(graphics);
         if (map != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
-            drawMapToGraphics(graphics2D);
-            if (mapImageCache.getImage(transformState.getScaleIndex()) == null) {
-                Image img = createImageMap();
-                mapImageCache.putImage(transformState.getScaleIndex(), img);
+            Image cachedImage = mapImageCache.getImage(transformState.getScaleIndex());
+            if (cachedImage == null) {
+                cachedImage = createImageMap();
+                if (cachedImage == null) {
+                    drawMapToGraphics(graphics2D);
+                }
+                else {
+                    mapImageCache.putImage(transformState.getScaleIndex(), cachedImage);
+                    paintImageMap(graphics2D, cachedImage);
+                }
+            }
+            else {
+                paintImageMap(graphics2D, cachedImage);
             }
         }
         if (modelState != null) {
@@ -96,14 +107,16 @@ public class SimulationPanel extends TransformableCanvas {
 
     private Image createImageMap() {
         double scale = transformState.getScaleX();
-        int height = (int) Math.round(mapBounds.getHeight() * scale * 1.2);
-        int width = (int) Math.round(mapBounds.getWidth() * scale * 1.2);
-        System.out.printf("Width: %s; Height: %s.\n", width, height);
-        Image image = createImage(width, height);
+        long height = Math.round(mapBounds.getHeight() * scale * 1.2);
+        long width = Math.round(mapBounds.getWidth() * scale * 1.2);
+        System.out.printf("Width: %s; Height: %s; W*H: %s.\n", width, height, width * height);
+        if (height * width > 50000000) {
+            return null;
+        }
+        Image image = createImage((int) width, (int) height);
         Graphics2D graphics = (Graphics2D) image.getGraphics();
         graphics.setTransform(transformState.getTransform());
 
-        //graphics.translate(-mapBounds.getMinX(), -mapBounds.getMinY());
         double dx = -(mapBounds.getMinX() - 0.1 * mapBounds.getWidth()) * transformState.getScaleX();
         double dy = -(mapBounds.getMaxY() + 0.1 * mapBounds.getHeight()) * transformState.getScaleY();
         dx -= transformState.getTranslateX();
@@ -113,6 +126,20 @@ public class SimulationPanel extends TransformableCanvas {
         graphics.translate(dx, dy);
         drawMapToGraphics(graphics);
         return image;
+    }
+
+    private void paintImageMap(Graphics2D graphics, Image image) {
+        BufferedImage bufferedImage = (BufferedImage) image;
+        AffineTransform transform = graphics.getTransform();
+        graphics.setTransform(new AffineTransform());
+        double dx = (mapBounds.getMinX() - 0.1 * mapBounds.getWidth());
+        double dy = (mapBounds.getMaxY() + 0.1 * mapBounds.getHeight());
+        Point2D.Float startPoint = new Point2D.Float((float) dx, (float) dy);
+        Point2D.Float endPoint = new Point2D.Float(0, 0);
+        transform.transform(startPoint, endPoint);
+        graphics.drawImage(bufferedImage, (int) endPoint.getX(), (int) endPoint.getY(),
+                bufferedImage.getWidth(), bufferedImage.getHeight(), null);
+        graphics.setTransform(transform);
     }
 
     private void drawMapToGraphics(Graphics2D graphics2D) {
