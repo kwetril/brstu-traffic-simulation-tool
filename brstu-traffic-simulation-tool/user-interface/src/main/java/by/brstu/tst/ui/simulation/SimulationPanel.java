@@ -1,6 +1,6 @@
 package by.brstu.tst.ui.simulation;
 
-import by.brstu.tst.core.ModelState;
+import by.brstu.tst.core.SimulationModel;
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
 import by.brstu.tst.core.map.primitives.MapRectangle;
@@ -22,7 +22,7 @@ import java.io.File;
  */
 public class SimulationPanel extends TransformableCanvas {
     private Map map;
-    private ModelState modelState;
+    private SimulationModel simulationModel;
     private SimulationFrame parentFrame;
     private MapRectangle mapBounds;
     private MapImageCache mapImageCache;
@@ -41,9 +41,9 @@ public class SimulationPanel extends TransformableCanvas {
         return simulationStarted;
     }
 
-    public void showMap(Map map, ModelState modelState) {
+    public void showMap(Map map, SimulationModel simulationModel) {
         this.map = map;
-        this.modelState = modelState;
+        this.simulationModel = simulationModel;
         FindMapBoundsVisitor mapBoundsVisitor = new FindMapBoundsVisitor();
         map.visitElements(mapBoundsVisitor);
         mapBounds = mapBoundsVisitor.getMapBounds();
@@ -52,17 +52,52 @@ public class SimulationPanel extends TransformableCanvas {
     }
 
     public void startSimulation() {
+        final int FRAMES_PER_SECOND = 20;
+        final long NANO_SEC_PER_FRAME = 1000000000 / FRAMES_PER_SECOND;
+        final int MAX_FRAMES_SKIP = 5;
+        final float simulationPlayVelocity = 2.0f;
+        final float simulationTimeStepSec = 0.1f;
+
         simulationStarted = true;
         new Thread(() -> {
-            IVehicleVisitor updateStateVisitor = new UpdateVehicleStateVisitor(0.1f);
+            long nextFrameNanos = System.nanoTime() + NANO_SEC_PER_FRAME;
+            float numSteps = 0;
+            int skippedFrames = 0;
+            //calculate how many simulation steps are in one iteration
+            float stepsPerIteration = NANO_SEC_PER_FRAME / (1000000000.0f * simulationTimeStepSec) * simulationPlayVelocity;
             while (simulationStarted) {
-                modelState.visitVehicles(updateStateVisitor);
-                repaint();
-                try {
-                    Thread.sleep(1000 / 25);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                //one iteration should run NANO_SEC_PER_FRAME nanoseconds
+                long iterationStartTime = System.nanoTime();
+
+                numSteps += stepsPerIteration;
+                int intNumSteps = Math.round(numSteps);
+                if (intNumSteps > 0) {
+                    simulationModel.performSimulationSteps(intNumSteps);
+                    numSteps -= intNumSteps;
+
+                    //repaint only if there is time for it or if there were already too much skips
+                    if (System.nanoTime() < nextFrameNanos || skippedFrames >= MAX_FRAMES_SKIP) {
+                        paintImmediately(0, 0, getWidth(), getHeight());
+                        skippedFrames = 0;
+                    } else {
+                        skippedFrames++;
+                    }
                 }
+
+                //sleep the rest of iteration time
+                long sleepNanos = nextFrameNanos - System.nanoTime();
+                if (sleepNanos > 1000) {
+                    try {
+                        Thread.sleep(sleepNanos / 1000000, (int) (sleepNanos % 1000000));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                nextFrameNanos += NANO_SEC_PER_FRAME;
+
+                long iterationEndTime = System.nanoTime();
+                System.out.printf("Simulation loop iteration: %s ms; Skipped: %s\n",
+                        (iterationEndTime-iterationStartTime) / 1000000.0, skippedFrames);
             }
         }).start();
     }
@@ -92,17 +127,17 @@ public class SimulationPanel extends TransformableCanvas {
                 paintImageMap(graphics2D, cachedImage);
             }
         }
-        if (modelState != null) {
+        if (simulationModel != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
             IVehicleVisitor vehicleDrawVisitor = new VehicleDrawVisitor(graphics2D);
-            modelState.visitVehicles(vehicleDrawVisitor);
+            simulationModel.visitVehicles(vehicleDrawVisitor);
         }
         parentFrame.setStatus(String.format("Scale: %s; Scale power: %s; Translate X: %s; Translate Y: %s; (W, H)=%s,%s",
                 transformState.getScaleX(), transformState.getScalePower(),
                 transformState.getTranslateX(), transformState.getTranslateY(),
                 getWidth(), getHeight()));
         long endTime = System.nanoTime();
-        System.out.printf("Time: %s ms\n", (endTime - startTime) / 1000000.0);
+        System.out.printf("Rendering time: %s ms\n", (endTime - startTime) / 1000000.0);
     }
 
     private Image createImageMap() {
@@ -110,7 +145,7 @@ public class SimulationPanel extends TransformableCanvas {
         long height = Math.round(mapBounds.getHeight() * scale * 1.2);
         long width = Math.round(mapBounds.getWidth() * scale * 1.2);
         System.out.printf("Width: %s; Height: %s; W*H: %s.\n", width, height, width * height);
-        if (height * width > 50000000) {
+        if (height * width > 10000000) {
             return null;
         }
         Image image = createImage((int) width, (int) height);

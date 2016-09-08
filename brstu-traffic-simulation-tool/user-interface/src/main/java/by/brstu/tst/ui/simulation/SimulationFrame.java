@@ -1,6 +1,6 @@
 package by.brstu.tst.ui.simulation;
 
-import by.brstu.tst.core.ModelState;
+import by.brstu.tst.core.SimulationModel;
 import by.brstu.tst.core.config.Configuration;
 import by.brstu.tst.core.config.ConfigurationReader;
 import by.brstu.tst.core.map.Map;
@@ -120,7 +120,7 @@ public class SimulationFrame extends JFrame {
         vehicles.add(new Vehicle(map.getNode("from-west").getBasePoint(),
                 new Vector(map.getNode("from-west").getBasePoint(),
                         map.getNode("to-east").getBasePoint()).setLength(10)));
-        ModelState modelState = new ModelState(map, vehicles);
+        SimulationModel modelState = new SimulationModel(map, vehicles, 0.1f);
 
         simulationPanel.showMap(map, modelState);
         startSimulationMenuItem.setEnabled(true);

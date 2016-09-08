@@ -1,4 +1,4 @@
-package by.brstu.tst.ui.simulation;
+package by.brstu.tst.core.simulation;
 
 import by.brstu.tst.core.vehicle.IVehicleVisitor;
 import by.brstu.tst.core.vehicle.Vehicle;
