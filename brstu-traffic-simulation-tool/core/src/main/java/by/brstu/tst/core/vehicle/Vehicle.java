@@ -1,43 +1,25 @@
 package by.brstu.tst.core.vehicle;
 
-import by.brstu.tst.core.map.primitives.MapPoint;
-import by.brstu.tst.core.map.primitives.Vector;
-
 /**
  * Created by a.klimovich on 03.09.2016.
+ *
+ * Objects of this class represent singe vehicle
+ * and store information about its technical characteristics.
  */
 public class Vehicle {
-    private MapPoint position;
-    private Vector velocity;
+    private String identifier;
+    private VehicleTechnicalParameters technicalParameters;
 
-    public Vehicle(MapPoint position) {
-        this(position, new Vector(0, 0));
+    public Vehicle(String identifier, VehicleTechnicalParameters technicalParameters) {
+        this.identifier = identifier;
+        this.technicalParameters = technicalParameters;
     }
 
-    public Vehicle(MapPoint position, Vector velocity) {
-        this.position = position;
-        this.velocity = velocity;
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public MapPoint getPosition() {
-        return position;
-    }
-
-    public MapPoint updatePosition(float timeDelta) {
-        position = velocity.clone().multiply(timeDelta).addToPoint(position);
-        return position;
-    }
-
-    public Vector updateVelocity(Vector velocityDelta) {
-        return velocity.add(velocityDelta);
-    }
-
-    public void accept(IVehicleVisitor visitor) {
-        visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[Vehicle: (%s, %s); %s mps]", position.getX(), position.getY(), velocity.getLength());
+    public VehicleTechnicalParameters getTechnicalParameters() {
+        return technicalParameters;
     }
 }

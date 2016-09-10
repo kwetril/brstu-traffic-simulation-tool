@@ -1,6 +1,5 @@
 package by.brstu.tst.core.simulation;
 
-import by.brstu.tst.core.vehicle.IVehicleVisitor;
 import by.brstu.tst.core.vehicle.Vehicle;
 
 /**
@@ -14,7 +13,7 @@ public class UpdateVehicleStateVisitor implements IVehicleVisitor {
     }
 
     @Override
-    public void visit(Vehicle vehicle) {
+    public void visit(MovingVehicle vehicle) {
         vehicle.updatePosition(timeDelta);
         //System.out.println(vehicle.toString());
     }

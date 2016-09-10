@@ -4,7 +4,7 @@ import by.brstu.tst.core.SimulationModel;
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
 import by.brstu.tst.core.map.primitives.MapRectangle;
-import by.brstu.tst.core.vehicle.IVehicleVisitor;
+import by.brstu.tst.core.simulation.IVehicleVisitor;
 import by.brstu.tst.ui.utils.FindMapBoundsVisitor;
 import by.brstu.tst.ui.utils.RoadElementDrawVisitor;
 import by.brstu.tst.ui.utils.TransformableCanvas;

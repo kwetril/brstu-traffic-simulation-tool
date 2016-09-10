@@ -1,5 +1,11 @@
 package by.brstu.tst.core.config;
 
+import by.brstu.tst.core.vehicle.Vehicle;
+import by.brstu.tst.core.vehicle.VehicleType;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by a.klimovich on 28.08.2016.
  */
@@ -25,4 +31,5 @@ public class Configuration {
     public float[] laneSeparationMarkupDashPattern() {
         return new float[] {1f, 2f};
     }
+
 }

@@ -7,7 +7,14 @@ import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.MapBuilder;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
+import by.brstu.tst.core.simulation.distribution.ExponentialDistribution;
+import by.brstu.tst.core.simulation.distribution.IRandomDistribution;
+import by.brstu.tst.core.simulation.flows.ActivationPeriod;
+import by.brstu.tst.core.simulation.flows.IVehicleFlow;
+import by.brstu.tst.core.simulation.flows.Route;
+import by.brstu.tst.core.simulation.flows.StaticVehicleFlow;
 import by.brstu.tst.core.vehicle.Vehicle;
+import by.brstu.tst.core.vehicle.VehicleType;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -116,11 +123,16 @@ public class SimulationFrame extends JFrame {
 
         Map map = mapBuilder.build("map-1");
 
-        ArrayList<Vehicle> vehicles = new ArrayList<>();
-        vehicles.add(new Vehicle(map.getNode("from-west").getBasePoint(),
-                new Vector(map.getNode("from-west").getBasePoint(),
-                        map.getNode("to-east").getBasePoint()).setLength(10)));
-        SimulationModel modelState = new SimulationModel(map, vehicles, 0.1f);
+        SimulationModel modelState = new SimulationModel(map, 0.1f);
+
+        ActivationPeriod activationPeriod = new ActivationPeriod();
+        Route route = new Route(map, new String[] {
+            "from-west", "rd-1", "intersection", "rd-5", "to-east"
+        });
+        IRandomDistribution flowDistribution = new ExponentialDistribution(0.05f, 123);
+        IVehicleFlow vehicleFlow = new StaticVehicleFlow(VehicleType.CAR, route,
+                flowDistribution, activationPeriod);
+        modelState.addVehicleFlow(vehicleFlow);
 
         simulationPanel.showMap(map, modelState);
         startSimulationMenuItem.setEnabled(true);

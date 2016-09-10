@@ -1,6 +1,7 @@
 package by.brstu.tst.ui.simulation;
 
-import by.brstu.tst.core.vehicle.IVehicleVisitor;
+import by.brstu.tst.core.simulation.IVehicleVisitor;
+import by.brstu.tst.core.simulation.MovingVehicle;
 import by.brstu.tst.core.vehicle.Vehicle;
 
 import java.awt.*;
@@ -17,7 +18,7 @@ public class VehicleDrawVisitor implements IVehicleVisitor {
     }
 
     @Override
-    public void visit(Vehicle vehicle) {
+    public void visit(MovingVehicle vehicle) {
         graphics.setColor(Color.RED);
         Shape vehicleImage = new Ellipse2D.Float(vehicle.getPosition().getX(), vehicle.getPosition().getY(),
                 3, 4);

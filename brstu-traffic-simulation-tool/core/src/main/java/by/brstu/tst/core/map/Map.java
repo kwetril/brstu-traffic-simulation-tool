@@ -38,6 +38,9 @@ public class Map {
         return nodeElements.get(name);
     }
 
+    public EdgeRoadElement getEdge(String name) {
+        return edgeElements.get(name);
+    }
 
     public void visitEdge(String name, BaseRoadElementVisitor visitor) {
         edgeElements.get(name).accept(visitor);

@@ -1,6 +1,7 @@
 package by.brstu.tst.core.map.utils;
 
 import by.brstu.tst.core.map.primitives.MapPoint;
+import by.brstu.tst.core.map.primitives.Vector;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.GeodeticCalculator;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -24,10 +25,22 @@ public class MapUtils {
     /**
      * Returns distance between two points in meters.
      */
-    double calculateDistance(MapPoint startPoint, MapPoint destinationPoint) {
+    public double calculateDistance(MapPoint startPoint, MapPoint destinationPoint) {
         distanceCalculator.setStartingGeographicPoint(startPoint.getX(), startPoint.getY());
         distanceCalculator.setDestinationGeographicPoint(destinationPoint.getX(), destinationPoint.getY());
         return distanceCalculator.getOrthodromicDistance();
+    }
+
+    public static MapPoint GetLeftPoint(MapPoint basePoint, Vector baseDirection, float distance) {
+        Vector leftVector = baseDirection.clone().turnLeft();
+        leftVector = leftVector.setLength(distance);
+        return leftVector.addToPoint(basePoint);
+    }
+
+    public static MapPoint GetRightPoint(MapPoint basePoint, Vector baseDirection, float distance) {
+        Vector rightVector = baseDirection.clone().turnRight();
+        rightVector = rightVector.setLength(distance);
+        return rightVector.addToPoint(basePoint);
     }
 
 }
