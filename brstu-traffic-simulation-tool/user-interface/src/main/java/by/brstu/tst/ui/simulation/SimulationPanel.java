@@ -28,6 +28,7 @@ public class SimulationPanel extends TransformableCanvas {
     private MapImageCache mapImageCache;
     private volatile boolean simulationStarted;
 
+
     public SimulationPanel(SimulationFrame parentFrame) {
         super(-3, 5, 0, 2.0);
         this.parentFrame = parentFrame;
@@ -52,17 +53,16 @@ public class SimulationPanel extends TransformableCanvas {
     }
 
     public void startSimulation() {
-        final int FRAMES_PER_SECOND = 20;
+        final int FRAMES_PER_SECOND = 10;
         final long NANO_SEC_PER_FRAME = 1000000000 / FRAMES_PER_SECOND;
-        final int MAX_FRAMES_SKIP = 5;
         final float simulationPlayVelocity = 2.0f;
         final float simulationTimeStepSec = 0.1f;
 
         simulationStarted = true;
         new Thread(() -> {
             long nextFrameNanos = System.nanoTime() + NANO_SEC_PER_FRAME;
+            long updateModelTime = 0;
             float numSteps = 0;
-            int skippedFrames = 0;
             //calculate how many simulation steps are in one iteration
             float stepsPerIteration = NANO_SEC_PER_FRAME / (1000000000.0f * simulationTimeStepSec) * simulationPlayVelocity;
             while (simulationStarted) {
@@ -72,16 +72,11 @@ public class SimulationPanel extends TransformableCanvas {
                 numSteps += stepsPerIteration;
                 int intNumSteps = Math.round(numSteps);
                 if (intNumSteps > 0) {
+                    long updateModelStartTime = System.nanoTime();
                     simulationModel.performSimulationSteps(intNumSteps);
+                    updateModelTime = System.nanoTime() - updateModelStartTime;
                     numSteps -= intNumSteps;
-
-                    //repaint only if there is time for it or if there were already too much skips
-                    if (System.nanoTime() < nextFrameNanos || skippedFrames >= MAX_FRAMES_SKIP) {
-                        paintImmediately(0, 0, getWidth(), getHeight());
-                        skippedFrames = 0;
-                    } else {
-                        skippedFrames++;
-                    }
+                    repaint();
                 }
 
                 //sleep the rest of iteration time
@@ -96,8 +91,9 @@ public class SimulationPanel extends TransformableCanvas {
                 nextFrameNanos += NANO_SEC_PER_FRAME;
 
                 long iterationEndTime = System.nanoTime();
-                System.out.printf("Simulation loop iteration: %s ms; Skipped: %s\n",
-                        (iterationEndTime-iterationStartTime) / 1000000.0, skippedFrames);
+                System.out.printf("Simulation loop iteration: %s ms; Model update time: %s ms\n",
+                        (iterationEndTime-iterationStartTime) / 1000000.0,
+                        updateModelTime / 1000000.0);
             }
         }).start();
     }
