@@ -26,13 +26,6 @@ public class MapImageCache {
 
     public void putImage(int scaleIndex, Image image) {
         cache.put(scaleIndex, image);
-        try {
-            ImageIO.write((RenderedImage) image, "JPEG", new File(String.format("map-img-%s.png", scaleIndex)));
-            System.out.println("OK");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void reset() {
