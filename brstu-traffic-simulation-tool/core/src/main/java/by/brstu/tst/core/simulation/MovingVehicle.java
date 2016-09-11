@@ -1,29 +1,46 @@
 package by.brstu.tst.core.simulation;
 
-import by.brstu.tst.core.map.elements.RoadLane;
+import by.brstu.tst.core.map.elements.*;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
-import by.brstu.tst.core.map.utils.MapUtils;
 import by.brstu.tst.core.simulation.flows.Route;
 import by.brstu.tst.core.vehicle.Vehicle;
+import com.vividsolutions.jts.geomgraph.Edge;
 
 /**
  * Created by a.klimovich on 10.09.2016.
  */
 public class MovingVehicle {
     private Vehicle vehicle;
-    private RoadLane currentLane;
     MapPoint position;
-    Vector direction;
+    MapPoint nextPoint;
     Vector velocity;
+    double speed;
     Route route;
+    int lane;
 
-    public MovingVehicle(Vehicle vehicle, Route route) {
+    boolean isOnEdge;
+    NodeRoadElement curNode;
+    EdgeRoadElement curEdge;
+    NodeRoadElement nextNode;
+    EdgeRoadElement nextEdge;
+
+    public MovingVehicle(Vehicle vehicle, Route route, double initialSpeed, int initialLane) {
         this.vehicle = vehicle;
         this.route = route;
-        position = route.getSource().getBasePoint();
-        MapPoint destination = route.getDestination().getBasePoint();
-        velocity = new Vector(position, destination).setLength(10);
+        NodeRoadElement source = route.getSource();
+        EdgeRoadElement edge = route.getNextEdge(source);
+        DirectedRoad currentRoad = edge.getDirectedRoadByStartNode(source);
+        RoadLane currentLane = currentRoad.getLane(initialLane);
+        position = currentLane.getStartPoint();
+        nextPoint = currentLane.getEndPoint();
+        isOnEdge = true;
+        curNode = null;
+        curEdge = edge;
+        nextEdge = null;
+        nextNode = route.getNextNode(edge);
+        speed = initialSpeed;
+        lane = initialLane;
     }
 
     public void accept(IVehicleVisitor visitor) {
@@ -31,9 +48,47 @@ public class MovingVehicle {
     }
 
     public MapPoint updatePosition(float timeDelta) {
-        MapPoint destination = route.getDestination().getBasePoint();
-        velocity = new Vector(position, destination).setLength(10);
-        position = velocity.clone().multiply(timeDelta).addToPoint(position);
+        while (timeDelta > 0) {
+            double distance = position.calculateDistance(nextPoint);
+            if (distance < timeDelta * speed) {
+                position = nextPoint;
+
+                if (isOnEdge) {
+                    isOnEdge = false;
+                    curEdge = null;
+                    curNode = nextNode;
+                    nextEdge = route.getNextEdge(curNode);
+                    nextNode = null;
+                    if (nextEdge == null) {
+                        break;
+                    }
+
+                    DirectedRoad road = nextEdge.getDirectedRoadByStartNode(curNode);
+                    lane = Math.min(lane, road.getNumLanes() - 1);
+                    RoadLane roadLane = road.getLane(lane);
+                    nextPoint = roadLane.getStartPoint();
+                }
+                else {
+                    DirectedRoad road = nextEdge.getDirectedRoadByStartNode(curNode);
+
+                    isOnEdge = true;
+                    curEdge = nextEdge;
+                    curNode = null;
+                    nextEdge = null;
+                    nextNode = route.getNextNode(curEdge);
+
+                    lane = Math.min(lane, road.getNumLanes() - 1);
+                    RoadLane roadLane = road.getLane(lane);
+                    nextPoint = roadLane.getEndPoint();
+                }
+
+                timeDelta -= distance / speed;
+            } else {
+                velocity = new Vector(position, nextPoint).setLength(speed);
+                position = velocity.clone().multiply(timeDelta).addToPoint(position);
+                timeDelta = 0;
+            }
+        }
         return position;
     }
 
@@ -42,11 +97,7 @@ public class MovingVehicle {
     }
 
     public boolean reachedDestination() {
-        MapPoint destination = route.getDestination().getBasePoint();
-        if (new Vector(position, destination).getLength() < 1) {
-            return true;
-        }
-        return false;
+        return (!isOnEdge && route.getNextEdge(curNode) == null);
     }
 
     public Vehicle getVehicleInfo() {

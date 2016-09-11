@@ -20,7 +20,7 @@ public class RoadLane {
     }
 
     private void calculatePointsPosition() {
-        float numLanesFromCenter = parentRoad.getNumLanes() / 2.0f - number + 0.5f;
+        float numLanesFromCenter = (number - parentRoad.getNumLanes()) + parentRoad.getNumLanes() / 2.0f + 0.5f;
         float distanceFromCenter = numLanesFromCenter * parentRoad.getLaneWidth();
         Vector roadVector = new Vector(parentRoad.getStartPoint(), parentRoad.getEndPoint());
         startPoint = MapUtils.GetLeftPoint(parentRoad.getStartPoint(), roadVector, distanceFromCenter);

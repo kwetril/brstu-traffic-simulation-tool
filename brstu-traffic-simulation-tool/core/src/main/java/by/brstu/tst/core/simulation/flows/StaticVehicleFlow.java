@@ -7,6 +7,7 @@ import by.brstu.tst.core.vehicle.VehicleFactory;
 import by.brstu.tst.core.vehicle.VehicleType;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by a.klimovich on 10.09.2016.
@@ -17,6 +18,8 @@ public class StaticVehicleFlow implements IVehicleFlow {
     private IRandomDistribution flowDistribution;
     private ActivationPeriod activationPeriod;
     private float nextVehicleGenerationTime;
+    int lanes;
+    Random laneGenerator;
 
     public StaticVehicleFlow(VehicleType vehicleType,
                        Route route, IRandomDistribution flowDistribution,
@@ -34,6 +37,8 @@ public class StaticVehicleFlow implements IVehicleFlow {
         this.activationPeriod = activationPeriod;
         this.nextVehicleGenerationTime = activationPeriod.getActivationTime()
                 + flowDistribution.generateNextValue();
+        lanes = route.getSource().getNumCoonnectedLanes(route.getNextEdge(route.getSource()));
+        laneGenerator = new Random();
     }
 
     @Override
@@ -43,7 +48,7 @@ public class StaticVehicleFlow implements IVehicleFlow {
         }
         while (nextVehicleGenerationTime <= time) {
             Vehicle vehicle = VehicleFactory.createVehicle(vehicleType);
-            vehicles.add(new MovingVehicle(vehicle, route));
+            vehicles.add(new MovingVehicle(vehicle, route, 20, laneGenerator.nextInt(lanes)));
             nextVehicleGenerationTime += flowDistribution.generateNextValue();
             System.out.printf("Time: %s; next time: %s\n", time, nextVehicleGenerationTime);
         }

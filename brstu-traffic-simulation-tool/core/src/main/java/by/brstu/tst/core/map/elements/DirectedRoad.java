@@ -52,6 +52,14 @@ public class DirectedRoad extends EdgeRoadElement {
 
 
     @Override
+    public DirectedRoad getDirectedRoadByStartNode(NodeRoadElement startNode) {
+        if (startNode.getName().equals(this.firstNodeElement.getName())) {
+            return this;
+        }
+        return null;
+    }
+
+    @Override
     public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);
     }
@@ -62,5 +70,9 @@ public class DirectedRoad extends EdgeRoadElement {
 
     public float getLaneWidth() {
         return laneWidth;
+    }
+
+    public RoadLane getLane(int laneNumber) {
+        return new RoadLane(this, laneNumber);
     }
 }

@@ -12,6 +12,8 @@ public abstract class EdgeRoadElement extends BaseRoadElement {
         this.secondNodeElement = secondNodeElement;
     }
 
+    public abstract DirectedRoad getDirectedRoadByStartNode(NodeRoadElement startNode);
+
     @Override
     public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);

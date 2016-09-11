@@ -32,6 +32,10 @@ public abstract class NodeRoadElement extends BaseRoadElement {
         return basePoint;
     }
 
+    public int getNumCoonnectedLanes(EdgeRoadElement edge) {
+        return edge.getDirectedRoadByStartNode(this).getNumLanes();
+    }
+
     @Override
     public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);

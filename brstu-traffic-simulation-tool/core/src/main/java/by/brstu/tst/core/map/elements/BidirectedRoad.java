@@ -8,4 +8,12 @@ public class BidirectedRoad extends EdgeRoadElement {
     public BidirectedRoad(NodeRoadElement firstNodeElement, NodeRoadElement secondNodeElement) {
         super(firstNodeElement, secondNodeElement);
     }
+
+    @Override
+    public DirectedRoad getDirectedRoadByStartNode(NodeRoadElement startNode) {
+        /**
+         * TODO not implemented yet
+         */
+        return null;
+    }
 }

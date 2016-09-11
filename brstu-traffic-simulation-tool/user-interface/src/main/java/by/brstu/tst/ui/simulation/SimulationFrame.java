@@ -129,7 +129,7 @@ public class SimulationFrame extends JFrame {
         Route route = new Route(map, new String[] {
             "from-west", "rd-1", "intersection", "rd-5", "to-east"
         });
-        IRandomDistribution flowDistribution = new ExponentialDistribution(0.05f, 123);
+        IRandomDistribution flowDistribution = new ExponentialDistribution(0.1f, 123);
         IVehicleFlow vehicleFlow = new StaticVehicleFlow(VehicleType.CAR, route,
                 flowDistribution, activationPeriod);
         modelState.addVehicleFlow(vehicleFlow);
