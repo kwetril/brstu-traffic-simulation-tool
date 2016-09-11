@@ -8,10 +8,10 @@ import by.brstu.tst.core.map.primitives.MapRectangle;
  * Created by a.klimovich on 26.08.2016.
  */
 public class FindMapBoundsVisitor extends BaseRoadElementVisitor {
-    float minLon;
-    float maxLon;
-    float minLat;
-    float maxLat;
+    double minLon;
+    double maxLon;
+    double minLat;
+    double maxLat;
     boolean firstVisitFlag;
 
     public FindMapBoundsVisitor() {

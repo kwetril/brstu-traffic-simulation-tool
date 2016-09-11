@@ -49,9 +49,17 @@ public class MovingVehicle {
         return false;
     }
 
+    public Vehicle getVehicleInfo() {
+        return vehicle;
+    }
+
+    public Vector getVelocity() {
+        return velocity;
+    }
+
     @Override
     public String toString() {
-        return String.format("[Vehicle %s: (%s, %s); %s mps]", vehicle.getIdentifier(),
+        return String.format("[Vehicle %s: (%.2f, %.2f); %s mps]", vehicle.getIdentifier(),
                 position.getX(), position.getY(), velocity.getLength());
     }
 }

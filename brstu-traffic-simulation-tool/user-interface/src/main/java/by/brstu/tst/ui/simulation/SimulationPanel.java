@@ -53,7 +53,7 @@ public class SimulationPanel extends TransformableCanvas {
     }
 
     public void startSimulation() {
-        final int FRAMES_PER_SECOND = 10;
+        final int FRAMES_PER_SECOND = 20;
         final long NANO_SEC_PER_FRAME = 1000000000 / FRAMES_PER_SECOND;
         final float simulationPlayVelocity = 2.0f;
         final float simulationTimeStepSec = 0.1f;
@@ -141,7 +141,7 @@ public class SimulationPanel extends TransformableCanvas {
         long height = Math.round(mapBounds.getHeight() * scale * 1.2);
         long width = Math.round(mapBounds.getWidth() * scale * 1.2);
         System.out.printf("Width: %s; Height: %s; W*H: %s.\n", width, height, width * height);
-        if (height * width > 10000000) {
+        if (height * width > 50000000) {
             return null;
         }
         Image image = createImage((int) width, (int) height);
@@ -182,13 +182,13 @@ public class SimulationPanel extends TransformableCanvas {
             ex.printStackTrace();
         }
         TexturePaint grassTexture = new TexturePaint(grassTileImage,
-                new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
-                        mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
+                new Rectangle2D.Float((float) (mapBounds.getMinX() - 0.1f * mapBounds.getWidth()),
+                        (float) (mapBounds.getMinY() - 0.1f * mapBounds.getHeight()), 100, 100));
         Paint oldPaint = graphics2D.getPaint();
         graphics2D.setPaint(grassTexture);
-        graphics2D.fill(new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
-                mapBounds.getMinY() - 0.1f * mapBounds.getHeight(),
-                1.2f * mapBounds.getWidth(), 1.2f * mapBounds.getHeight()));
+        graphics2D.fill(new Rectangle2D.Float((float) (mapBounds.getMinX() - 0.1f * mapBounds.getWidth()),
+                (float) (mapBounds.getMinY() - 0.1f * mapBounds.getHeight()),
+                (float) (1.2f * mapBounds.getWidth()), (float) (1.2f * mapBounds.getHeight())));
         graphics2D.setPaint(oldPaint);
 
         graphics2D.setColor(Color.BLACK);

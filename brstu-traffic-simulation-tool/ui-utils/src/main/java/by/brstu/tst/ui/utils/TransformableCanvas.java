@@ -68,7 +68,7 @@ public class TransformableCanvas extends JPanel {
         g2d.transform(transformState.getTransform());
     }
 
-    protected void showBounds(float x0, float y0, float x1, float y1) {
+    protected void showBounds(double x0, double y0, double x1, double y1) {
         double lenX = x1 - x0;
         double lenY = y1 - y0;
         double preferedScaleX = getWidth() / lenX;

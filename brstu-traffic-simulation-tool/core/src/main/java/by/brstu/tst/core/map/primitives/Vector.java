@@ -4,57 +4,57 @@ package by.brstu.tst.core.map.primitives;
  * Created by a.klimovich on 28.08.2016.
  */
 public class Vector implements Cloneable {
-    private float x;
-    private float y;
+    private double x;
+    private double y;
 
     public Vector(MapPoint startPoint, MapPoint endPoint) {
         x = endPoint.getX() - startPoint.getX();
         y = endPoint.getY() - startPoint.getY();
     }
 
-    public Vector(float x, float y) {
+    public Vector(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
     public Vector normalize() {
-        float length = getLength();
+        double length = getLength();
         x /= length;
         y /= length;
         return this;
     }
 
     public Vector turnLeft() {
-        float newX = -y;
+        double newX = -y;
         y = x;
         x = newX;
         return this;
     }
 
     public Vector turnRight() {
-        float newX = y;
+        double newX = y;
         y = -x;
         x = newX;
         return this;
     }
 
-    public Vector setLength(float length) {
-        float oldLength = getLength();
-        float coefficient = length / oldLength;
+    public Vector setLength(double length) {
+        double oldLength = getLength();
+        double coefficient = length / oldLength;
         x *= coefficient;
         y *= coefficient;
         return this;
     }
 
-    public float getLength() {
-        return (float) Math.sqrt(x * x + y * y);
+    public double getLength() {
+        return Math.sqrt(x * x + y * y);
     }
 
-    public float scalarMultiply(Vector vector) {
+    public double scalarMultiply(Vector vector) {
         return x * vector.x + y * vector.y;
     }
 
-    public Vector multiply(float value) {
+    public Vector multiply(double value) {
         x *= value;
         y *= value;
         return this;
@@ -66,14 +66,19 @@ public class Vector implements Cloneable {
         return this;
     }
 
-    public float angleClockwise(Vector anotherVector) {
-        float crossProduct = scalarMultiply(anotherVector);
-        float angle = (float) Math.acos(crossProduct / getLength() / anotherVector.getLength());
-        float vectorProduct = x * anotherVector.y - anotherVector.x * y;
+    public double angleClockwise(Vector anotherVector) {
+        double crossProduct = scalarMultiply(anotherVector);
+        double angle = Math.acos(crossProduct / getLength() / anotherVector.getLength());
+        double vectorProduct = x * anotherVector.y - anotherVector.x * y;
         if (vectorProduct > 0) {
-            angle = (float) (2 * Math.PI - angle);
+            angle = 2 * Math.PI - angle;
         }
         return angle;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("x: %s; y: %s", x, y);
     }
 
     @Override

@@ -59,14 +59,14 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
         }
         graphics.setColor(nodeElementColor);
         graphics.setStroke(roadEdgeStroke);
-        graphics.draw(new Ellipse2D.Float(point.getX() - 4, point.getY() - 4, 8, 8));
+        graphics.draw(ShapeUtils.circleFromPoint(point, 4));
     }
 
     @Override
     public void visit(DirectedRoad roadElement) {
         MapPoint from = roadElement.getStartPoint();
         MapPoint to = roadElement.getEndPoint();
-        Line2D line = new Line2D.Float(from.getX(), from.getY(), to.getX(), to.getY());
+        Line2D line = ShapeUtils.lineFromPoints(from, to);
         int numLanes = roadElement.getNumLanes();
         float laneWidth = roadElement.getLaneWidth();
         BasicStroke roadStroke = new BasicStroke(numLanes * laneWidth,
@@ -81,15 +81,13 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
         roadVector = roadVector.turnLeft().setLength(laneWidth * numLanes / 2.0f);
         MapPoint edgeFrom = roadVector.addToPoint(from);
         MapPoint edgeTo = roadVector.addToPoint(to);
-        Line2D markupLine = new Line2D.Float(edgeFrom.getX(), edgeFrom.getY(),
-                edgeTo.getX(), edgeTo.getY());
+        Line2D markupLine = ShapeUtils.lineFromPoints(edgeFrom, edgeTo);
         graphics.draw(markupLine);
 
         roadVector = roadVector.multiply(-1);
         edgeFrom = roadVector.addToPoint(from);
         edgeTo = roadVector.addToPoint(to);
-        markupLine = new Line2D.Float(edgeFrom.getX(), edgeFrom.getY(),
-                edgeTo.getX(), edgeTo.getY());
+        markupLine = ShapeUtils.lineFromPoints(edgeFrom, edgeTo);
         graphics.draw(markupLine);
 
         graphics.setStroke(roadLaneMarkupStroke);
@@ -107,15 +105,13 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
             roadVector = roadVector.multiply(-1).setLength((lane + deltaLane) * laneWidth);
             edgeFrom = roadVector.addToPoint(from);
             edgeTo = roadVector.addToPoint(to);
-            markupLine = new Line2D.Float(edgeFrom.getX(), edgeFrom.getY(),
-                    edgeTo.getX(), edgeTo.getY());
+            markupLine = ShapeUtils.lineFromPoints(edgeFrom, edgeTo);
             graphics.draw(markupLine);
 
             roadVector = roadVector.multiply(-1).setLength((lane + deltaLane) * laneWidth);
             edgeFrom = roadVector.addToPoint(from);
             edgeTo = roadVector.addToPoint(to);
-            markupLine = new Line2D.Float(edgeFrom.getX(), edgeFrom.getY(),
-                    edgeTo.getX(), edgeTo.getY());
+            markupLine = ShapeUtils.lineFromPoints(edgeFrom, edgeTo);
             graphics.draw(markupLine);
         }
     }
@@ -125,8 +121,8 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
         points.sort((pt1, pt2) -> {
             Vector firstVector = new Vector(basePoint, pt1);
             Vector secondVector = new Vector(basePoint, pt2);
-            float firstAngle = baseVector.angleClockwise(firstVector);
-            float secondAngle = baseVector.angleClockwise(secondVector);
+            double firstAngle = baseVector.angleClockwise(firstVector);
+            double secondAngle = baseVector.angleClockwise(secondVector);
             if (firstAngle < secondAngle) {
                 return -1;
             } else if (firstAngle > secondAngle) {

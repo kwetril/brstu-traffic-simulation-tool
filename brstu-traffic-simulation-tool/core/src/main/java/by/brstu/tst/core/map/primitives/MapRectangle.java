@@ -4,40 +4,40 @@ package by.brstu.tst.core.map.primitives;
  * Created by a.klimovich on 26.08.2016.
  */
 public class MapRectangle {
-    private float minX;
-    private float maxX;
-    private float minY;
-    private float maxY;
+    private double minX;
+    private double maxX;
+    private double minY;
+    private double maxY;
 
-    public MapRectangle(float minLon, float minLat,
-                        float maxLon, float maxLat) {
+    public MapRectangle(double minLon, double minLat,
+                        double maxLon, double maxLat) {
         this.minX = minLon;
         this.minY = minLat;
         this.maxX = maxLon;
         this.maxY = maxLat;
     }
 
-    public float getMinX() {
+    public double getMinX() {
         return minX;
     }
 
-    public float getMaxX() {
+    public double getMaxX() {
         return maxX;
     }
 
-    public float getMinY() {
+    public double getMinY() {
         return minY;
     }
 
-    public float getMaxY() {
+    public double getMaxY() {
         return maxY;
     }
 
-    public float getWidth() {
+    public double getWidth() {
         return maxX - minX;
     }
 
-    public float getHeight() {
+    public double getHeight() {
         return maxY - minY;
     }
 }
