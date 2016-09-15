@@ -5,7 +5,6 @@ import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.simulation.flows.Route;
 import by.brstu.tst.core.vehicle.Vehicle;
-import com.vividsolutions.jts.geomgraph.Edge;
 
 /**
  * Created by a.klimovich on 10.09.2016.

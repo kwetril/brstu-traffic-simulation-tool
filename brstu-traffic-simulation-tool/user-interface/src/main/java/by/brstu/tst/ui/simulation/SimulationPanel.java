@@ -12,6 +12,7 @@ import by.brstu.tst.ui.utils.TransformableCanvas;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -64,9 +65,9 @@ public class SimulationPanel extends TransformableCanvas {
     }
 
     public void startSimulation() {
-        final int FRAMES_PER_SECOND = 25;
+        final int FRAMES_PER_SECOND = 20;
         final long NANO_SEC_PER_FRAME = 1000000000 / FRAMES_PER_SECOND;
-        final float simulationPlayVelocity = 2.0f;
+        final float simulationPlayVelocity = 1.0f;
         final float simulationTimeStepSec = 0.1f;
 
         simulationStarted = true;
@@ -88,6 +89,7 @@ public class SimulationPanel extends TransformableCanvas {
                     updateModelTime = System.nanoTime() - updateModelStartTime;
                     numSteps -= intNumSteps;
                     repaint();
+                    Toolkit.getDefaultToolkit().sync();
                 }
 
                 //sleep the rest of iteration time
@@ -116,6 +118,7 @@ public class SimulationPanel extends TransformableCanvas {
     @Override
     protected void paintComponent(Graphics graphics) {
         long startTime = System.nanoTime();
+
         super.paintComponent(graphics);
         if (map != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
@@ -153,7 +156,7 @@ public class SimulationPanel extends TransformableCanvas {
         long height = Math.round(mapBounds.getHeight() * scale * 1.2);
         long width = Math.round(mapBounds.getWidth() * scale * 1.2);
         //System.out.printf("Width: %s; Height: %s; W*H: %s.\n", width, height, width * height);
-        if (height * width > 50000000) {
+        if (height * width > 10000000) {
             return null;
         }
         Image image = createImage((int) width, (int) height);
@@ -196,6 +199,5 @@ public class SimulationPanel extends TransformableCanvas {
         graphics2D.setColor(Color.BLACK);
         BaseRoadElementVisitor mapDrawingVisitor = new RoadElementDrawVisitor(graphics2D);
         map.visitElements(mapDrawingVisitor);
-        long endMap = System.nanoTime();
     }
 }
