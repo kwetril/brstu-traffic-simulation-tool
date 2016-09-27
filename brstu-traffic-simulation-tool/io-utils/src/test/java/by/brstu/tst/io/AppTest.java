@@ -1,4 +1,4 @@
-package by.brstu.tst.core.osmparsing;
+package by.brstu.tst.io;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

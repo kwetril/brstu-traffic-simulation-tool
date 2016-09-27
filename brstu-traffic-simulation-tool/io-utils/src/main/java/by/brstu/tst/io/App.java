@@ -1,5 +1,10 @@
-package by.brstu.tst.core.osmparsing;
+package by.brstu.tst.io;
 
+import by.brstu.tst.core.map.Map;
+import by.brstu.tst.io.osm.MapRenderer;
+import by.brstu.tst.io.osm.OsmMapObjects;
+import by.brstu.tst.io.osm.OsmXmlParser;
+import by.brstu.tst.io.xml.MapReader;
 import de.topobyte.osm4j.core.access.OsmIterator;
 import de.topobyte.osm4j.xml.dynsax.OsmXmlIterator;
 
@@ -8,14 +13,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
+public class App {
+    public static void main(String[] args) {
+        readXmlMap(args);
+    }
+
+    private static void readXmlMap(String[] args) {
+        MapReader mapReader = new MapReader();
+        Map map = mapReader.readMap("io-utils\\data\\map.xml");
+    }
+
+    private static void readOsmMap(String[] args) {
         if (args.length < 1) {
             System.out.println("Path to osm file should be provided!");
             return;
@@ -27,16 +35,13 @@ public class App
             OsmMapObjects mapObjects = parser.parse(iterator);
             MapRenderer renderer = new MapRenderer();
             renderer.render(mapObjects);
-        }
-        catch (FileNotFoundException exception) {
+        } catch (FileNotFoundException exception) {
             System.out.println("File by given path was not found!");
             return;
-        }
-        catch (IOException exception) {
+        } catch (IOException exception) {
             System.out.println("Error during file processing!");
             return;
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             System.out.println("Error during map rendering!");
             System.out.println(exception.getMessage());
             exception.printStackTrace();

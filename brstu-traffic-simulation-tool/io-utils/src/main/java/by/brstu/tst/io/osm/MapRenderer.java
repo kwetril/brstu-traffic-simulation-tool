@@ -1,4 +1,4 @@
-package by.brstu.tst.core.osmparsing;
+package by.brstu.tst.io.osm;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.topobyte.osm4j.core.model.iface.EntityType;
@@ -39,7 +39,7 @@ public class MapRenderer {
 
     private Layer createNodeLayer(Collection<OsmNode> nodes) {
         FeatureTypeFactory featureTypeFactory = new FeatureTypeFactory();
-        by.brstu.tst.core.osmparsing.StyleFactory styleFactory = new by.brstu.tst.core.osmparsing.StyleFactory();
+        by.brstu.tst.io.osm.StyleFactory styleFactory = new by.brstu.tst.io.osm.StyleFactory();
         SimpleFeatureType nodeFeatureType = featureTypeFactory.getType(EntityType.Node);
         OsmNodeToFeatureTransformer nodeTransformer = new OsmNodeToFeatureTransformer(nodeFeatureType);
         ArrayList<SimpleFeature> listNodes = new ArrayList<>();
@@ -53,7 +53,7 @@ public class MapRenderer {
 
     private Layer createWayLayer(OsmMapObjects mapObjects) {
         FeatureTypeFactory featureTypeFactory = new FeatureTypeFactory();
-        by.brstu.tst.core.osmparsing.StyleFactory styleFactory = new by.brstu.tst.core.osmparsing.StyleFactory();
+        by.brstu.tst.io.osm.StyleFactory styleFactory = new by.brstu.tst.io.osm.StyleFactory();
         SimpleFeatureType wayFeatureType = featureTypeFactory.getType(EntityType.Way);
         OsmWayToFeatureTransformer wayTransformaer = new OsmWayToFeatureTransformer(wayFeatureType, mapObjects.nodes);
 

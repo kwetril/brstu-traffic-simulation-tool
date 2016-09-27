@@ -1,4 +1,4 @@
-package by.brstu.tst.core.osmparsing;
+package by.brstu.tst.io.osm;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;

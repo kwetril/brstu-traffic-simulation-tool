@@ -1,4 +1,4 @@
-package by.brstu.tst.core.osmparsing;
+package by.brstu.tst.io.osm;
 
 import de.topobyte.osm4j.core.model.iface.EntityType;
 import org.geotools.data.DataUtilities;

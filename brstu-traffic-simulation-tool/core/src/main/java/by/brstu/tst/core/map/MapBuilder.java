@@ -14,13 +14,10 @@ import java.util.List;
 public class MapBuilder {
     private HashMap<String, NodeRoadElement> nodeElements;
     private HashMap<String, EdgeRoadElement> edgeElements;
-    private Configuration config;
 
-
-    public MapBuilder(Configuration config) {
+    public MapBuilder() {
         nodeElements = new HashMap<>();
         edgeElements = new HashMap<>();
-        this.config = config;
     }
 
     public MapBuilder addSourceElement(String name, MapPoint basePoint) {
@@ -51,7 +48,7 @@ public class MapBuilder {
 
     public MapBuilder addRoad(String name, String fromName, MapPoint fromPoint,
                               String toName, MapPoint toPoint, List<MapPoint> innerPoints,
-                              int numLanes) {
+                              int numLanes, float laneWidth) {
         if (!checkNameUniquness(name)) {
             throw new RuntimeException("Name of the road element should be unique");
         }
@@ -74,14 +71,14 @@ public class MapBuilder {
         }
         DirectedRoad road = new DirectedRoad(name, fromNode, fromPoint,
                 toNode, toPoint,
-                innerPoints, numLanes, config.roadWidth());
+                innerPoints, numLanes, laneWidth);
         edgeElements.put(name, road);
         return this;
     }
 
     public MapBuilder addRoad(String name, String fromName, MapPoint fromPoint,
-                              String toName, MapPoint toPoint, int numLanes) {
-        return addRoad(name, fromName, fromPoint, toName, toPoint, new ArrayList<>(), numLanes);
+                              String toName, MapPoint toPoint, int numLanes, float laneWidth) {
+        return addRoad(name, fromName, fromPoint, toName, toPoint, new ArrayList<>(), numLanes, laneWidth);
     }
 
     public Map build(String name) {

@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <name>brstu-traffic-simulation-tool</name>
   <modules>
-    <module>osm-parsing</module>
+    <module>io-utils</module>
     <module>user-interface</module>
     <module>core</module>
     <module>map-editor</module>
