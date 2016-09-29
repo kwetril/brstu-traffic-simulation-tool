@@ -9,25 +9,19 @@ import java.util.List;
  * Created by kwetril on 8/17/16.
  */
 public class DirectedRoad extends EdgeRoadElement {
-    private MapPoint startPoint;
-    private MapPoint endPoint;
     private List<BezierCurve> roadSegments;
     private int numLanes;
     private float laneWidth;
 
-    public DirectedRoad(String name, NodeRoadElement fromNode, MapPoint startPoint,
-                        NodeRoadElement toNode, MapPoint endPoint,
+    public DirectedRoad(String name, NodeRoadElement fromNode, NodeRoadElement toNode,
                         int numLanes, float laneWidth) {
-        this(name, fromNode, startPoint, toNode, endPoint, new ArrayList<>(), numLanes, laneWidth);
+        this(name, fromNode, toNode, new ArrayList<>(), numLanes, laneWidth);
     }
 
-    public DirectedRoad(String name, NodeRoadElement fromNode, MapPoint startPoint,
-                        NodeRoadElement toNode, MapPoint endPoint,
+    public DirectedRoad(String name, NodeRoadElement fromNode, NodeRoadElement toNode,
                         List<BezierCurve> roadSegments, int numLanes, float laneWidth) {
         super(fromNode, toNode);
         this.name = name;
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
         fromNode.getOutputElements().add(this);
         toNode.getInputElements().add(this);
         this.roadSegments = roadSegments;
@@ -44,11 +38,11 @@ public class DirectedRoad extends EdgeRoadElement {
     }
 
     public MapPoint getStartPoint() {
-        return startPoint;
+        return roadSegments.get(0).getPoints()[0];
     }
 
     public MapPoint getEndPoint() {
-        return endPoint;
+        return roadSegments.get(roadSegments.size() - 1).getPoints()[3];
     }
 
     public List<BezierCurve> getSegments() {

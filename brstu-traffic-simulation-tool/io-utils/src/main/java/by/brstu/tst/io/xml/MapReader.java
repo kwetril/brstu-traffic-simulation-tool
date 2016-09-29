@@ -79,22 +79,6 @@ public class MapReader {
         String toNode = XmlUtils.getAttr(attributes, "toNode");
         int numLanes = XmlUtils.getIntAttr(attributes, "lanes");
         float laneWidth = XmlUtils.getFloatAttr(attributes, "laneWidth");
-        MapPoint fromConnectionPoint = null;
-        MapPoint toConnectionPoint = null;
-
-        List<Node> connectionPoints = XmlUtils.filterNodesByTag(edgeXml.getChildNodes(), "connectionPoint");
-        for (Node connectionPoint : connectionPoints) {
-            NamedNodeMap connectionPointAttrs = connectionPoint.getAttributes();
-            String relatedNode = XmlUtils.getAttr(connectionPointAttrs, "node");
-            double x, y;
-            x = XmlUtils.getDoubleAttr(connectionPointAttrs, "x");
-            y = XmlUtils.getDoubleAttr(connectionPointAttrs, "y");
-            if (relatedNode.equals(fromNode)) {
-                fromConnectionPoint = new MapPoint(x, y);
-            } else if (relatedNode.equals(toNode)) {
-                toConnectionPoint = new MapPoint(x, y);
-            }
-        }
 
         List<Node> segmentsXml = XmlUtils.filterNodesByTag(
                 XmlUtils.filterNodesByTag(edgeXml.getChildNodes(), "segments").get(0).getChildNodes(), "curve");
@@ -120,8 +104,7 @@ public class MapReader {
 
         switch (type) {
             case "directed":
-                mapBuilder.addRoad(name, fromNode, fromConnectionPoint,
-                        toNode, toConnectionPoint, segments, numLanes, laneWidth);
+                mapBuilder.addRoad(name, fromNode, toNode, segments, numLanes, laneWidth);
                 break;
             default:
                 System.out.printf("Edge type not supported: %s\n", type);

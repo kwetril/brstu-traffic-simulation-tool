@@ -31,7 +31,6 @@
     </nodes>
     <edges>
         <edge type="directed" name="rd-1" lanes="3" laneWidth="3.5" fromNode="from-west" toNode="intersection">
-            <connectionPoint node="intersection" x="2638544.11" y="6815972.22" />
             <segments>
                 <curve>
                     <point x="2637887.23" y="6815777.55" />
@@ -42,7 +41,6 @@
             </segments>
         </edge>
         <edge type="directed" name="rd-2" lanes="3" laneWidth="3.5" fromNode="from-east" toNode="intersection">
-            <connectionPoint node="intersection" x="2638613.38" y="6816011.63" />
             <segments>
                 <curve>
                     <point x="2639339.53" y="6816255.28" />
@@ -53,7 +51,6 @@
             </segments>
         </edge>
         <edge type="directed" name="rd-3" lanes="3" laneWidth="3.5" fromNode="from-north" toNode="intersection">
-            <connectionPoint node="intersection" x="2638551.28" y="6816005.66" />
             <segments>
                 <curve>
                     <point x="2638374.52" y="6816670.9" />
@@ -64,7 +61,6 @@
             </segments>
         </edge>
         <edge type="directed" name="rd-4" lanes="3" laneWidth="3.5" fromNode="from-south" toNode="intersection">
-            <connectionPoint node="intersection" x="2638605.02" y="6815978.19" />
             <segments>
                 <curve>
                     <point x="2638787.75" y="6815369.08" />
@@ -75,7 +71,6 @@
             </segments>
         </edge>
         <edge type="directed" name="rd-5" lanes="3" laneWidth="3.5" fromNode="intersection" toNode="to-east">
-            <connectionPoint node="intersection" x="2638618.16" y="6815992.52" />
             <segments>
                 <curve>
                     <point x="2638618.16" y="6815992.52" />
@@ -86,7 +81,6 @@
             </segments>
         </edge>
         <edge type="directed" name="rd-6" lanes="3" laneWidth="3.5" fromNode="intersection" toNode="to-west">
-            <connectionPoint node="intersection" x="2638534.56" y="6815992.52" />
             <segments>
                 <curve>
                     <point x="2638534.56" y="6815992.52" />
@@ -97,7 +91,6 @@
             </segments>
         </edge>
         <edge type="directed" name="rd-7" lanes="3" laneWidth="3.5" fromNode="intersection" toNode="to-south">
-            <connectionPoint node="intersection" x="2638563.22" y="6815963.86" />
             <segments>
                 <curve>
                     <point x="2638563.22" y="6815963.86" />
@@ -108,7 +101,6 @@
             </segments>
         </edge>
         <edge type="directed" name="rd-8" lanes="3" laneWidth="3.5" fromNode="intersection" toNode="to-north">
-            <connectionPoint node="intersection" x="2638589.5" y="6816018.8" />
             <segments>
                 <curve>
                     <point x="2638589.5" y="6816018.8" />

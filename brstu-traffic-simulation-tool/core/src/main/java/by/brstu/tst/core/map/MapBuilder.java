@@ -47,9 +47,8 @@ public class MapBuilder {
         nodeElements.put(name, element);
     }
 
-    public MapBuilder addRoad(String name, String fromName, MapPoint fromPoint,
-                              String toName, MapPoint toPoint, List<BezierCurve> roadSegments,
-                              int numLanes, float laneWidth) {
+    public MapBuilder addRoad(String name, String fromName, String toName,
+                              List<BezierCurve> roadSegments, int numLanes, float laneWidth) {
         if (!checkNameUniquness(name)) {
             throw new RuntimeException("Name of the road element should be unique");
         }
@@ -64,22 +63,13 @@ public class MapBuilder {
         }
         NodeRoadElement fromNode = nodeElements.get(fromName);
         NodeRoadElement toNode = nodeElements.get(toName);
-        if (fromPoint == null) {
-            fromPoint = fromNode.getBasePoint();
-        }
-        if (toPoint == null) {
-            toPoint = toNode.getBasePoint();
-        }
-        DirectedRoad road = new DirectedRoad(name, fromNode, fromPoint,
-                toNode, toPoint,
-                roadSegments, numLanes, laneWidth);
+        DirectedRoad road = new DirectedRoad(name, fromNode, toNode, roadSegments, numLanes, laneWidth);
         edgeElements.put(name, road);
         return this;
     }
 
-    public MapBuilder addRoad(String name, String fromName, MapPoint fromPoint,
-                              String toName, MapPoint toPoint, int numLanes, float laneWidth) {
-        return addRoad(name, fromName, fromPoint, toName, toPoint, new ArrayList<>(), numLanes, laneWidth);
+    public MapBuilder addRoad(String name, String fromName, String toName, int numLanes, float laneWidth) {
+        return addRoad(name, fromName, toName, new ArrayList<>(), numLanes, laneWidth);
     }
 
     public Map build(String name) {
