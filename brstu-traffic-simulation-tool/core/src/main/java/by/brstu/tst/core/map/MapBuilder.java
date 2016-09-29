@@ -2,6 +2,7 @@ package by.brstu.tst.core.map;
 
 import by.brstu.tst.core.config.Configuration;
 import by.brstu.tst.core.map.elements.*;
+import by.brstu.tst.core.map.primitives.BezierCurve;
 import by.brstu.tst.core.map.primitives.MapPoint;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class MapBuilder {
     }
 
     public MapBuilder addRoad(String name, String fromName, MapPoint fromPoint,
-                              String toName, MapPoint toPoint, List<MapPoint> innerPoints,
+                              String toName, MapPoint toPoint, List<BezierCurve> roadSegments,
                               int numLanes, float laneWidth) {
         if (!checkNameUniquness(name)) {
             throw new RuntimeException("Name of the road element should be unique");
@@ -71,7 +72,7 @@ public class MapBuilder {
         }
         DirectedRoad road = new DirectedRoad(name, fromNode, fromPoint,
                 toNode, toPoint,
-                innerPoints, numLanes, laneWidth);
+                roadSegments, numLanes, laneWidth);
         edgeElements.put(name, road);
         return this;
     }

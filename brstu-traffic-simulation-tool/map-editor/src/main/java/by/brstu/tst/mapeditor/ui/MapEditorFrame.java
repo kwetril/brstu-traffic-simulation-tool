@@ -63,7 +63,7 @@ public class MapEditorFrame extends JFrame {
 
     private void openMap() {
         MapReader mapReader = new MapReader();
-        Map map = mapReader.readMap("io-utils\\data\\map.xml");
+        Map map = mapReader.readMap("io-utils\\data\\map1.xml");
         editorPanel.showMap(map);
     }
 }

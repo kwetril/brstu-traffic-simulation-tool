@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map name="map-2">
+    <nodes>
+        <node type="source" name="src">
+            <basePoint x="0" y="0" />
+        </node>
+        <node type="destination" name="dst" >
+            <basePoint x="600" y="0" />
+        </node>
+    </nodes>
+    <edges>
+        <edge type="directed" name="road" lanes="3" laneWidth="3.5" fromNode="src" toNode="dst">
+            <segments>
+                <curve>
+                    <point x="0" y="0" />
+                    <point x="100" y="100" />
+                    <point x="200" y="100" />
+                    <point x="300" y="200" />
+                </curve>
+                <curve>
+                    <point x="300" y="200" />
+                    <point x="400" y="300" />
+                    <point x="500" y="100" />
+                    <point x="600" y="0" />
+                </curve>
+            </segments>
+        </edge>
+    </edges>
+</map>

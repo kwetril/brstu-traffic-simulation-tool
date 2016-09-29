@@ -32,27 +32,91 @@
     <edges>
         <edge type="directed" name="rd-1" lanes="3" laneWidth="3.5" fromNode="from-west" toNode="intersection">
             <connectionPoint node="intersection" x="2638544.11" y="6815972.22" />
+            <segments>
+                <curve>
+                    <point x="2637887.23" y="6815777.55" />
+                    <point x="2637952.918" y="6815797.017" />
+                    <point x="2638478.422" y="6815952.753" />
+                    <point x="2638544.11" y="6815972.22" />
+                </curve>
+            </segments>
         </edge>
         <edge type="directed" name="rd-2" lanes="3" laneWidth="3.5" fromNode="from-east" toNode="intersection">
             <connectionPoint node="intersection" x="2638613.38" y="6816011.63" />
+            <segments>
+                <curve>
+                    <point x="2639339.53" y="6816255.28" />
+                    <point x="2639266.915" y="6816230.915" />
+                    <point x="2638685.995" y="6816035.995" />
+                    <point x="2638613.38" y="6816011.63" />
+                </curve>
+            </segments>
         </edge>
         <edge type="directed" name="rd-3" lanes="3" laneWidth="3.5" fromNode="from-north" toNode="intersection">
             <connectionPoint node="intersection" x="2638551.28" y="6816005.66" />
+            <segments>
+                <curve>
+                    <point x="2638374.52" y="6816670.9" />
+                    <point x="2638392.196" y="6816604.376" />
+                    <point x="2638533.604" y="6816072.184" />
+                    <point x="2638551.28" y="6816005.66" />
+                </curve>
+            </segments>
         </edge>
         <edge type="directed" name="rd-4" lanes="3" laneWidth="3.5" fromNode="from-south" toNode="intersection">
             <connectionPoint node="intersection" x="2638605.02" y="6815978.19" />
+            <segments>
+                <curve>
+                    <point x="2638787.75" y="6815369.08" />
+                    <point x="2638769.477" y="6815429.991" />
+                    <point x="2638623.293" y="6815917.279" />
+                    <point x="2638605.02" y="6815978.19" />
+                </curve>
+            </segments>
         </edge>
         <edge type="directed" name="rd-5" lanes="3" laneWidth="3.5" fromNode="intersection" toNode="to-east">
             <connectionPoint node="intersection" x="2638618.16" y="6815992.52" />
+            <segments>
+                <curve>
+                    <point x="2638618.16" y="6815992.52" />
+                    <point x="2638690.775" y="6816016.407" />
+                    <point x="2639271.695" y="6816207.503" />
+                    <point x="2639344.31" y="6816231.39" />
+                </curve>
+            </segments>
         </edge>
         <edge type="directed" name="rd-6" lanes="3" laneWidth="3.5" fromNode="intersection" toNode="to-west">
             <connectionPoint node="intersection" x="2638534.56" y="6815992.52" />
+            <segments>
+                <curve>
+                    <point x="2638534.56" y="6815992.52" />
+                    <point x="2638469.588" y="6815973.172" />
+                    <point x="2637949.812" y="6815818.388" />
+                    <point x="2637884.84" y="6815799.04" />
+                </curve>
+            </segments>
         </edge>
         <edge type="directed" name="rd-7" lanes="3" laneWidth="3.5" fromNode="intersection" toNode="to-south">
             <connectionPoint node="intersection" x="2638563.22" y="6815963.86" />
+            <segments>
+                <curve>
+                    <point x="2638563.22" y="6815963.86" />
+                    <point x="2638580.657" y="6815903.188" />
+                    <point x="2638720.153" y="6815417.812" />
+                    <point x="2638737.59" y="6815357.14" />
+                </curve>
+            </segments>
         </edge>
         <edge type="directed" name="rd-8" lanes="3" laneWidth="3.5" fromNode="intersection" toNode="to-north">
             <connectionPoint node="intersection" x="2638589.5" y="6816018.8" />
+            <segments>
+                <curve>
+                    <point x="2638589.5" y="6816018.8" />
+                    <point x="2638572.301" y="6816084.249" />
+                    <point x="2638434.709" y="6816607.841" />
+                    <point x="2638417.51" y="6816673.29" />
+                </curve>
+            </segments>
         </edge>
     </edges>
 </map>

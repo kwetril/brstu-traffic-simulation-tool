@@ -1,5 +1,6 @@
 package by.brstu.tst.core.map.elements;
 
+import by.brstu.tst.core.map.primitives.BezierCurve;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class DirectedRoad extends EdgeRoadElement {
     private MapPoint startPoint;
     private MapPoint endPoint;
-    private List<MapPoint> innerPoints;
+    private List<BezierCurve> roadSegments;
     private int numLanes;
     private float laneWidth;
 
@@ -22,14 +23,14 @@ public class DirectedRoad extends EdgeRoadElement {
 
     public DirectedRoad(String name, NodeRoadElement fromNode, MapPoint startPoint,
                         NodeRoadElement toNode, MapPoint endPoint,
-                        List<MapPoint> innerPoints, int numLanes, float laneWidth) {
+                        List<BezierCurve> roadSegments, int numLanes, float laneWidth) {
         super(fromNode, toNode);
         this.name = name;
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         fromNode.getOutputElements().add(this);
         toNode.getInputElements().add(this);
-        this.innerPoints = innerPoints;
+        this.roadSegments = roadSegments;
         this.numLanes = numLanes;
         this.laneWidth = laneWidth;
     }
@@ -50,6 +51,9 @@ public class DirectedRoad extends EdgeRoadElement {
         return endPoint;
     }
 
+    public List<BezierCurve> getSegments() {
+        return roadSegments;
+    }
 
     @Override
     public DirectedRoad getDirectedRoadByStartNode(NodeRoadElement startNode) {

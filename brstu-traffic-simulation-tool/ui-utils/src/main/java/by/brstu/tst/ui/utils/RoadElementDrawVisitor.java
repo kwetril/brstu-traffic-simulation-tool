@@ -1,8 +1,11 @@
 package by.brstu.tst.ui.utils;
 
 import by.brstu.tst.core.map.elements.*;
+import by.brstu.tst.core.map.primitives.BezierCurve;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
+import by.brstu.tst.core.map.utils.MapUtils;
+import org.opengis.geometry.coordinate.Bezier;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -63,56 +66,60 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
     }
 
     @Override
-    public void visit(DirectedRoad roadElement) {
-        MapPoint from = roadElement.getStartPoint();
-        MapPoint to = roadElement.getEndPoint();
-        Line2D line = ShapeUtils.lineFromPoints(from, to);
-        int numLanes = roadElement.getNumLanes();
-        float laneWidth = roadElement.getLaneWidth();
-        BasicStroke roadStroke = new BasicStroke(numLanes * laneWidth,
-                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        graphics.setStroke(roadStroke);
-        graphics.setColor(roadColor);
-        graphics.draw(line);
+    public void visit(DirectedRoad road) {
+        for (BezierCurve curve : road.getSegments()) {
+            for (MapPoint pt : curve.getPoints()) {
+                graphics.setColor(nodeElementColor);
+                graphics.setStroke(roadEdgeStroke);
+                graphics.draw(ShapeUtils.circleFromPoint(pt, 2));
+            }
 
-        graphics.setColor(roadMarkupColor);
-        graphics.setStroke(roadEdgeStroke);
-        Vector roadVector = new Vector(from, to);
-        roadVector = roadVector.turnLeft().setLength(laneWidth * numLanes / 2.0f);
-        MapPoint edgeFrom = roadVector.addToPoint(from);
-        MapPoint edgeTo = roadVector.addToPoint(to);
-        Line2D markupLine = ShapeUtils.lineFromPoints(edgeFrom, edgeTo);
-        graphics.draw(markupLine);
+            int numLanes = road.getNumLanes();
+            float laneWidth = road.getLaneWidth();
+            BasicStroke roadStroke = new BasicStroke(numLanes * laneWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            graphics.setStroke(roadStroke);
+            graphics.setColor(roadColor);
 
-        roadVector = roadVector.multiply(-1);
-        edgeFrom = roadVector.addToPoint(from);
-        edgeTo = roadVector.addToPoint(to);
-        markupLine = ShapeUtils.lineFromPoints(edgeFrom, edgeTo);
-        graphics.draw(markupLine);
+            Path2D.Float path = new Path2D.Float();
+            ShapeUtils.updatePathWithBezierCurve(path, curve);
+            graphics.draw(path);
 
-        graphics.setStroke(roadLaneMarkupStroke);
-        int startLane;
-        float deltaLane;
-        if (numLanes % 2 == 0) {
-            graphics.draw(line);
-            startLane = 1;
-            deltaLane = 0.0f;
-        } else {
-            startLane = 0;
-            deltaLane = 0.5f;
-        }
-        for (int lane = startLane; lane < numLanes / 2; lane++) {
-            roadVector = roadVector.multiply(-1).setLength((lane + deltaLane) * laneWidth);
-            edgeFrom = roadVector.addToPoint(from);
-            edgeTo = roadVector.addToPoint(to);
-            markupLine = ShapeUtils.lineFromPoints(edgeFrom, edgeTo);
-            graphics.draw(markupLine);
+            graphics.setColor(roadMarkupColor);
+            graphics.setStroke(roadEdgeStroke);
+            path = new Path2D.Float();
+            BezierCurve tmp = MapUtils.moveCurveLeft(curve, laneWidth * numLanes / 2.0f);
+            ShapeUtils.updatePathWithBezierCurve(path, tmp);
+            graphics.draw(path);
 
-            roadVector = roadVector.multiply(-1).setLength((lane + deltaLane) * laneWidth);
-            edgeFrom = roadVector.addToPoint(from);
-            edgeTo = roadVector.addToPoint(to);
-            markupLine = ShapeUtils.lineFromPoints(edgeFrom, edgeTo);
-            graphics.draw(markupLine);
+            path = new Path2D.Float();
+            tmp = MapUtils.moveCurveRight(curve, laneWidth * numLanes / 2.0f);
+            ShapeUtils.updatePathWithBezierCurve(path, tmp);
+            graphics.draw(path);
+
+            graphics.setStroke(roadLaneMarkupStroke);
+            int startLane;
+            float deltaLane;
+            if (numLanes % 2 == 0) {
+                path = new Path2D.Float();
+                ShapeUtils.updatePathWithBezierCurve(path, curve);
+                startLane = 1;
+                deltaLane = 0.0f;
+            } else {
+                startLane = 0;
+                deltaLane = 0.5f;
+            }
+            for (int lane = startLane; lane < numLanes / 2; lane++) {
+                path = new Path2D.Float();
+                tmp = MapUtils.moveCurveLeft(curve, (lane + deltaLane) * laneWidth);
+                ShapeUtils.updatePathWithBezierCurve(path, tmp);
+                graphics.draw(path);
+
+                path = new Path2D.Float();
+                tmp = MapUtils.moveCurveRight(curve, (lane + deltaLane) * laneWidth);
+                ShapeUtils.updatePathWithBezierCurve(path, tmp);
+                graphics.draw(path);
+            }
         }
     }
 

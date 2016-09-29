@@ -51,13 +51,13 @@ public class MapEditorPanel extends TransformableCanvas {
                 ex.printStackTrace();
             }
             TexturePaint grassTexture = new TexturePaint(grassTileImage,
-                    new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
-                            mapBounds.getMinY() - 0.1f * mapBounds.getHeight(), 100, 100));
+                    new Rectangle2D.Float((float)(mapBounds.getMinX() - 0.1f * mapBounds.getWidth()),
+                            (float)(mapBounds.getMinY() - 0.1f * mapBounds.getHeight()), 100, 100));
             Paint oldPaint = graphics2D.getPaint();
             graphics2D.setPaint(grassTexture);
-            graphics2D.fill(new Rectangle2D.Float(mapBounds.getMinX() - 0.1f * mapBounds.getWidth(),
-                    mapBounds.getMinY() - 0.1f * mapBounds.getHeight(),
-                    1.2f * mapBounds.getWidth(), 1.2f * mapBounds.getHeight()));
+            graphics2D.fill(new Rectangle2D.Float((float)(mapBounds.getMinX() - 0.1f * mapBounds.getWidth()),
+                    (float)(mapBounds.getMinY() - 0.1f * mapBounds.getHeight()),
+                    1.2f * (float) mapBounds.getWidth(), 1.2f * (float) mapBounds.getHeight()));
             graphics2D.setPaint(oldPaint);
 
             graphics2D.setColor(Color.BLACK);
