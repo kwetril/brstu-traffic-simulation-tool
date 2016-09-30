@@ -26,7 +26,7 @@ public class MovingVehicle {
     }
 
     public void updatePosition(float timeDelta) {
-        routeFollower.updatePosition(speed, timeDelta);
+        routeFollower.updatePosition(speed * timeDelta);
     }
 
     public MapPoint getPosition() {

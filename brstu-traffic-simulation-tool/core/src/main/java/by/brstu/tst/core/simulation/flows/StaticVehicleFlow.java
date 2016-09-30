@@ -38,7 +38,7 @@ public class StaticVehicleFlow implements IVehicleFlow {
         this.activationPeriod = activationPeriod;
         this.nextVehicleGenerationTime = activationPeriod.getActivationTime()
                 + flowDistribution.generateNextValue();
-        lanes = route.getSource().getNumCoonnectedLanes(route.getNextEdge(route.getSource()));
+        lanes = route.getSource().getNumCoonnectedLanes(route.getNextRoad(route.getSource()));
         laneGenerator = new Random();
     }
 

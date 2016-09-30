@@ -9,9 +9,9 @@ public class MapPoint {
     private double x;
     private double y;
 
-    public MapPoint(double lon, double lat) {
-        this.x = lon;
-        this.y = lat;
+    public MapPoint(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 
     public double getX() {
@@ -22,9 +22,14 @@ public class MapPoint {
         return y;
     }
 
-    public double calculateDistance(MapPoint point) {
-        double dlon = x - point.x;
-        double dlat = y - point.y;
-        return Math.sqrt(dlon * dlon + dlat * dlat);
+    public double distanceTo(MapPoint point) {
+        double dx = x - point.x;
+        double dy = y - point.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%.2f; %.2f)", x, y);
     }
 }

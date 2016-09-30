@@ -1,15 +1,15 @@
 package by.brstu.tst.ui.utils;
 
-import by.brstu.tst.core.map.elements.*;
+import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
+import by.brstu.tst.core.map.elements.DirectedRoad;
+import by.brstu.tst.core.map.elements.NodeRoadElement;
+import by.brstu.tst.core.map.elements.RoadSegment;
 import by.brstu.tst.core.map.primitives.BezierCurve;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.map.utils.MapUtils;
-import org.opengis.geometry.coordinate.Bezier;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.List;
