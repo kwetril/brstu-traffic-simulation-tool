@@ -1,26 +1,19 @@
 package by.brstu.tst.ui.simulation;
 
 import by.brstu.tst.core.SimulationModel;
-import by.brstu.tst.core.config.Configuration;
-import by.brstu.tst.core.config.ConfigurationReader;
 import by.brstu.tst.core.map.Map;
-import by.brstu.tst.core.map.MapBuilder;
-import by.brstu.tst.core.map.primitives.MapPoint;
-import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.simulation.distribution.ExponentialDistribution;
 import by.brstu.tst.core.simulation.distribution.IRandomDistribution;
 import by.brstu.tst.core.simulation.flows.ActivationPeriod;
 import by.brstu.tst.core.simulation.flows.IVehicleFlow;
-import by.brstu.tst.core.simulation.flows.Route;
+import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.simulation.flows.StaticVehicleFlow;
-import by.brstu.tst.core.vehicle.Vehicle;
 import by.brstu.tst.core.vehicle.VehicleType;
 import by.brstu.tst.io.xml.MapReader;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Created by kwetril on 7/5/16.

@@ -68,10 +68,6 @@ public class MapBuilder {
         return this;
     }
 
-    public MapBuilder addRoad(String name, String fromName, String toName, int numLanes, float laneWidth) {
-        return addRoad(name, fromName, toName, new ArrayList<>(), numLanes, laneWidth);
-    }
-
     public Map build(String name) {
         return new Map(name, nodeElements, edgeElements);
     }

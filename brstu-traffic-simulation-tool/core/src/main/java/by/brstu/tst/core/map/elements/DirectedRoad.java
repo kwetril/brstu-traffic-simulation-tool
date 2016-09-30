@@ -18,12 +18,12 @@ public class DirectedRoad extends EdgeRoadElement {
         super(name, fromNode, toNode);
         fromNode.getOutputElements().add(this);
         toNode.getInputElements().add(this);
+        this.numLanes = numLanes;
+        this.laneWidth = laneWidth;
         segments = new RoadSegment[roadCenterCurvePath.size()];
         for (int i = 0; i < roadCenterCurvePath.size(); i++) {
             segments[i] = new RoadSegment(this, i, roadCenterCurvePath.get(i), numLanes);
         }
-        this.numLanes = numLanes;
-        this.laneWidth = laneWidth;
     }
 
     public NodeRoadElement getStartNode() {

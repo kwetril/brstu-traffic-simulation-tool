@@ -1,4 +1,4 @@
-package by.brstu.tst.core.simulation.flows;
+package by.brstu.tst.core.simulation.routing;
 
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.BaseRoadElement;

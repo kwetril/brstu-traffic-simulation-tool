@@ -2,6 +2,7 @@ package by.brstu.tst.core.simulation.flows;
 
 import by.brstu.tst.core.simulation.MovingVehicle;
 import by.brstu.tst.core.simulation.distribution.IRandomDistribution;
+import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.vehicle.Vehicle;
 import by.brstu.tst.core.vehicle.VehicleFactory;
 import by.brstu.tst.core.vehicle.VehicleType;
