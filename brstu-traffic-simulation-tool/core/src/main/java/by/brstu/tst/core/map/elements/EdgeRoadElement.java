@@ -7,7 +7,8 @@ public abstract class EdgeRoadElement extends BaseRoadElement {
     NodeRoadElement firstNodeElement;
     NodeRoadElement secondNodeElement;
 
-    public EdgeRoadElement(NodeRoadElement firstNodeElement, NodeRoadElement secondNodeElement) {
+    public EdgeRoadElement(String name, NodeRoadElement firstNodeElement, NodeRoadElement secondNodeElement) {
+        super(name);
         this.firstNodeElement = firstNodeElement;
         this.secondNodeElement = secondNodeElement;
     }

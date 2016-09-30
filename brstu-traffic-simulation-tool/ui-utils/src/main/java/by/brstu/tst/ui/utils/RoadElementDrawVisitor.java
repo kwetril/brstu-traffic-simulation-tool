@@ -67,7 +67,8 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
 
     @Override
     public void visit(DirectedRoad road) {
-        for (BezierCurve curve : road.getSegments()) {
+        for (RoadSegment segment : road.getSegments()) {
+            BezierCurve curve = segment.getCenterCurve();
             for (MapPoint pt : curve.getPoints()) {
                 graphics.setColor(nodeElementColor);
                 graphics.setStroke(roadEdgeStroke);

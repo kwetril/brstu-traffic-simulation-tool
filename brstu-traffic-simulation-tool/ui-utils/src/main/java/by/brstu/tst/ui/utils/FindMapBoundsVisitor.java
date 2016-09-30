@@ -37,7 +37,8 @@ public class FindMapBoundsVisitor extends BaseRoadElementVisitor {
 
     @Override
     public void visit(DirectedRoad road) {
-        for (BezierCurve curve : road.getSegments()) {
+        for (RoadSegment segment : road.getSegments()) {
+            BezierCurve curve = segment.getCenterCurve();
             for (MapPoint point : curve.getPoints()) {
                 if (firstVisitFlag) {
                     minLon = maxLon = point.getX();
@@ -55,7 +56,6 @@ public class FindMapBoundsVisitor extends BaseRoadElementVisitor {
     }
 
     public MapRectangle getMapBounds() {
-        System.out.printf("%s %s %s %s\n", minLon, minLat, maxLon, maxLat);
         return new MapRectangle(minLon, minLat, maxLon, maxLat);
     }
 }

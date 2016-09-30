@@ -6,6 +6,10 @@ package by.brstu.tst.core.map.elements;
 public abstract class BaseRoadElement {
     protected String name;
 
+    public BaseRoadElement(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

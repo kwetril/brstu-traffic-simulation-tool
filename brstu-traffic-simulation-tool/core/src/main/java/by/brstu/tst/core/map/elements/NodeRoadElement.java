@@ -14,7 +14,7 @@ public abstract class NodeRoadElement extends BaseRoadElement {
     private List<EdgeRoadElement> outputElements;
 
     public NodeRoadElement(String name, MapPoint basePoint) {
-        this.name = name;
+        super(name);
         this.basePoint = basePoint;
         inputElements = new ArrayList<>();
         outputElements = new ArrayList<>();

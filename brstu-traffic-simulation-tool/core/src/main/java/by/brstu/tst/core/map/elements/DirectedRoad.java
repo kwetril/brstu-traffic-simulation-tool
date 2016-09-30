@@ -9,22 +9,19 @@ import java.util.List;
  * Created by kwetril on 8/17/16.
  */
 public class DirectedRoad extends EdgeRoadElement {
-    private List<BezierCurve> roadSegments;
+    private RoadSegment[] segments;
     private int numLanes;
     private float laneWidth;
 
     public DirectedRoad(String name, NodeRoadElement fromNode, NodeRoadElement toNode,
-                        int numLanes, float laneWidth) {
-        this(name, fromNode, toNode, new ArrayList<>(), numLanes, laneWidth);
-    }
-
-    public DirectedRoad(String name, NodeRoadElement fromNode, NodeRoadElement toNode,
-                        List<BezierCurve> roadSegments, int numLanes, float laneWidth) {
-        super(fromNode, toNode);
-        this.name = name;
+                        List<BezierCurve> roadCenterCurvePath, int numLanes, float laneWidth) {
+        super(name, fromNode, toNode);
         fromNode.getOutputElements().add(this);
         toNode.getInputElements().add(this);
-        this.roadSegments = roadSegments;
+        segments = new RoadSegment[roadCenterCurvePath.size()];
+        for (int i = 0; i < roadCenterCurvePath.size(); i++) {
+            segments[i] = new RoadSegment(this, i, roadCenterCurvePath.get(i), numLanes);
+        }
         this.numLanes = numLanes;
         this.laneWidth = laneWidth;
     }
@@ -38,15 +35,15 @@ public class DirectedRoad extends EdgeRoadElement {
     }
 
     public MapPoint getStartPoint() {
-        return roadSegments.get(0).getPoints()[0];
+        return segments[0].getCenterCurve().getPoints()[0];
     }
 
     public MapPoint getEndPoint() {
-        return roadSegments.get(roadSegments.size() - 1).getPoints()[3];
+        return segments[segments.length - 1].getCenterCurve().getPoints()[3];
     }
 
-    public List<BezierCurve> getSegments() {
-        return roadSegments;
+    public RoadSegment[] getSegments() {
+        return segments;
     }
 
     @Override
@@ -68,9 +65,5 @@ public class DirectedRoad extends EdgeRoadElement {
 
     public float getLaneWidth() {
         return laneWidth;
-    }
-
-    public RoadLane getLane(int laneNumber) {
-        return new RoadLane(this, laneNumber);
     }
 }

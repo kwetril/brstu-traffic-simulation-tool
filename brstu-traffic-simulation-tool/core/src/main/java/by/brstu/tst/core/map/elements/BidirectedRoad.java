@@ -5,8 +5,8 @@ package by.brstu.tst.core.map.elements;
  */
 public class BidirectedRoad extends EdgeRoadElement {
 
-    public BidirectedRoad(NodeRoadElement firstNodeElement, NodeRoadElement secondNodeElement) {
-        super(firstNodeElement, secondNodeElement);
+    public BidirectedRoad(String name, NodeRoadElement firstNodeElement, NodeRoadElement secondNodeElement) {
+        super(name, firstNodeElement, secondNodeElement);
     }
 
     @Override

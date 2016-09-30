@@ -1,6 +1,7 @@
 package by.brstu.tst.core.simulation;
 
 import by.brstu.tst.core.map.elements.*;
+import by.brstu.tst.core.map.primitives.BezierCurve;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.simulation.flows.Route;
@@ -30,9 +31,9 @@ public class MovingVehicle {
         NodeRoadElement source = route.getSource();
         EdgeRoadElement edge = route.getNextEdge(source);
         DirectedRoad currentRoad = edge.getDirectedRoadByStartNode(source);
-        RoadLane currentLane = currentRoad.getLane(initialLane);
-        position = currentLane.getStartPoint();
-        nextPoint = currentLane.getEndPoint();
+        BezierCurve currentLane = currentRoad.getSegments()[0].getLane(initialLane).getCurve();
+        position = currentLane.getPoints()[0];
+        nextPoint = currentLane.getPoints()[3];
         isOnEdge = true;
         curNode = null;
         curEdge = edge;
@@ -64,8 +65,7 @@ public class MovingVehicle {
 
                     DirectedRoad road = nextEdge.getDirectedRoadByStartNode(curNode);
                     lane = Math.min(lane, road.getNumLanes() - 1);
-                    RoadLane roadLane = road.getLane(lane);
-                    nextPoint = roadLane.getStartPoint();
+                    nextPoint = road.getSegments()[0].getLane(lane).getCurve().getPoints()[0];
                 }
                 else {
                     DirectedRoad road = nextEdge.getDirectedRoadByStartNode(curNode);
@@ -77,8 +77,7 @@ public class MovingVehicle {
                     nextNode = route.getNextNode(curEdge);
 
                     lane = Math.min(lane, road.getNumLanes() - 1);
-                    RoadLane roadLane = road.getLane(lane);
-                    nextPoint = roadLane.getEndPoint();
+                    nextPoint = road.getSegments()[0].getLane(lane).getCurve().getPoints()[3];
                 }
 
                 timeDelta -= distance / speed;
