@@ -10,10 +10,12 @@ import java.util.List;
  * Created by a.klimovich on 02.10.2016.
  */
 public class CycledIntersectionController implements IntersectionController {
+    private Intersection intersection;
     private List<CycleSection> cycleSections;
     private float period;
 
     public CycledIntersectionController(Intersection intersection, List<CycleSection> cycleSections) {
+        this.intersection = intersection;
         this.cycleSections = cycleSections;
         period = 0;
         for (CycleSection section : cycleSections) {
@@ -34,5 +36,10 @@ public class CycledIntersectionController implements IntersectionController {
             }
         }
         return cycleSections.get(0).getState();
+    }
+
+    @Override
+    public Intersection getIntersection() {
+        return intersection;
     }
 }

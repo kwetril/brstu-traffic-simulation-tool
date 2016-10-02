@@ -1,13 +1,10 @@
 package by.brstu.tst.core.simulation;
 
 import by.brstu.tst.core.map.primitives.MapPoint;
-import by.brstu.tst.core.map.primitives.Vector;
-import by.brstu.tst.core.simulation.messaging.ControlMessage;
+import by.brstu.tst.core.simulation.driving.VehicleDriver;
 import by.brstu.tst.core.simulation.routing.Route;
-import by.brstu.tst.core.simulation.routing.RouteFollower;
+import by.brstu.tst.core.simulation.routing.RouteState;
 import by.brstu.tst.core.vehicle.Vehicle;
-
-import java.util.List;
 
 /**
  * Created by a.klimovich on 10.09.2016.
@@ -15,49 +12,44 @@ import java.util.List;
 public class MovingVehicle {
     private Vehicle vehicle;
     double speed;
-    RouteFollower routeFollower;
+    RouteState routeState;
+    VehicleDriver driver;
 
     public MovingVehicle(Vehicle vehicle, Route route, double initialSpeed, int initialLane) {
         this.vehicle = vehicle;
-        routeFollower = new RouteFollower(route, initialLane);
+        routeState = new RouteState(route, initialLane);
         speed = initialSpeed;
+        driver = new VehicleDriver(this);
     }
 
     public void accept(IVehicleVisitor visitor) {
         visitor.visit(this);
     }
 
-    private void receiveControlMessages(List<ControlMessage> messages) {
-
-    }
-
-    private void sendMessages() {
-
+    public RouteState getRouteState() {
+        return routeState;
     }
 
     public void updatePosition(float timeDelta) {
-        routeFollower.updatePosition(speed * timeDelta);
-    }
-
-    public MapPoint getPosition() {
-        return routeFollower.getPosition();
-    }
-
-    public boolean reachedDestination() {
-        return routeFollower.reachedDestination();
+        routeState.updatePosition(speed * timeDelta);
     }
 
     public Vehicle getVehicleInfo() {
         return vehicle;
     }
 
-    public Vector getDirection() {
-        return routeFollower.getDirection();
-    }
-
     @Override
     public String toString() {
+        MapPoint position = routeState.getPosition();
         return String.format("[Vehicle %s: (%.2f, %.2f); %s mps]", vehicle.getIdentifier(),
-                getPosition().getX(), getPosition().getY(), speed);
+                position.getX(), position.getY(), speed);
+    }
+
+    public void updateState(SimulationState state) {
+        driver.updateVehicleState(state);
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 }

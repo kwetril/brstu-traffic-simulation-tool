@@ -1,10 +1,7 @@
 package by.brstu.tst.core;
 
 import by.brstu.tst.core.map.Map;
-import by.brstu.tst.core.simulation.IVehicleVisitor;
-import by.brstu.tst.core.simulation.MovingVehicle;
-import by.brstu.tst.core.simulation.SimulationConfig;
-import by.brstu.tst.core.simulation.UpdateVehicleStateVisitor;
+import by.brstu.tst.core.simulation.*;
 import by.brstu.tst.core.simulation.flows.IVehicleFlow;
 
 import java.util.ArrayList;
@@ -16,15 +13,15 @@ import java.util.List;
  */
 public class SimulationModel {
     private Map map;
-    private float simulationTime;
     private SimulationConfig simulationConfig;
     private List<MovingVehicle> vehicles;
+    private SimulationState state;
 
     public SimulationModel(Map map, SimulationConfig simulationConfig) {
         this.map = map;
         this.simulationConfig = simulationConfig;
-        this.simulationTime = 0;
-        this.vehicles = new ArrayList<>();
+        vehicles = new ArrayList<>();
+        state = new SimulationState(map, vehicles, simulationConfig.getIntersectionControllers());
     }
 
     public synchronized void performSimulationSteps(int numSteps) {
@@ -37,13 +34,14 @@ public class SimulationModel {
         //generate new vehicles
         addGeneratedVehicles();
         //update vehicles positions and states
-        UpdateVehicleStateVisitor vehicleStateUpdater = new UpdateVehicleStateVisitor(simulationConfig.getTimeStep());
+        UpdateVehicleStateVisitor vehicleStateUpdater = new UpdateVehicleStateVisitor(state,
+                simulationConfig.getTimeStep());
         visitVehicles(vehicleStateUpdater);
         //remove vehicles which came to destination
         removeVehiclesReachedDestination();
 
         //update model time
-        simulationTime += simulationConfig.getTimeStep();
+        state.updateSimulationTime(simulationConfig.getTimeStep());
     }
 
     public synchronized void visitVehicles(IVehicleVisitor visitor) {
@@ -54,7 +52,7 @@ public class SimulationModel {
 
     private void addGeneratedVehicles() {
         for (IVehicleFlow flow : simulationConfig.getVehicleFlows()) {
-            flow.appendNewVehicles(simulationTime, vehicles);
+            flow.appendNewVehicles(state.getSimulationTime(), vehicles);
         }
     }
 
@@ -62,7 +60,7 @@ public class SimulationModel {
         Iterator<MovingVehicle> vehicleIterator = vehicles.iterator();
         while (vehicleIterator.hasNext()) {
             MovingVehicle vehicle = vehicleIterator.next();
-            if (vehicle.reachedDestination()) {
+            if (vehicle.getRouteState().reachedDestination()) {
                 vehicleIterator.remove();
             }
         }

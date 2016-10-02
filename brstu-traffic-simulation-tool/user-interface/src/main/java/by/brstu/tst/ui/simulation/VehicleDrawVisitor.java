@@ -1,5 +1,6 @@
 package by.brstu.tst.ui.simulation;
 
+import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.simulation.IVehicleVisitor;
 import by.brstu.tst.core.simulation.MovingVehicle;
@@ -33,10 +34,11 @@ public class VehicleDrawVisitor implements IVehicleVisitor {
         VehicleTechnicalParameters techParams = vehicle.getVehicleInfo().getTechnicalParameters();
         float width = techParams.getWidth();
         float length = techParams.getLength();
-        double rotation = baseVector.angleClockwise(vehicle.getDirection());
+        double rotation = baseVector.angleClockwise(vehicle.getRouteState().getDirection());
         Rectangle2D.Double vehicleRect = new Rectangle2D.Double(-width/2, -length/2, width, length);
         AffineTransform transform = new AffineTransform();
-        transform.translate(vehicle.getPosition().getX(), vehicle.getPosition().getY());
+        MapPoint position = vehicle.getRouteState().getPosition();
+        transform.translate(position.getX(), position.getY());
         transform.rotate(Math.PI * 2 - rotation);
         return new Path2D.Double(vehicleRect, transform);
     }

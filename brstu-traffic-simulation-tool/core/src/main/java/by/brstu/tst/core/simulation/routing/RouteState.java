@@ -1,9 +1,6 @@
 package by.brstu.tst.core.simulation.routing;
 
-import by.brstu.tst.core.map.elements.DirectedRoad;
-import by.brstu.tst.core.map.elements.Intersection;
-import by.brstu.tst.core.map.elements.NodeRoadElement;
-import by.brstu.tst.core.map.elements.RoadSegment;
+import by.brstu.tst.core.map.elements.*;
 import by.brstu.tst.core.map.primitives.BezierCurve;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
@@ -11,7 +8,7 @@ import by.brstu.tst.core.map.primitives.Vector;
 /**
  * Created by a.klimovich on 30.09.2016.
  */
-public class RouteFollower {
+public class RouteState {
     private Route route;
     int lane;
     BezierCurve currentCurve;
@@ -30,7 +27,7 @@ public class RouteFollower {
     boolean reachDestination = false;
 
 
-    public RouteFollower(Route route, int initialLane) {
+    public RouteState(Route route, int initialLane) {
         this.route = route;
         curveParameterDelta = 0.01;
         NodeRoadElement source = route.getSource();
@@ -129,5 +126,45 @@ public class RouteFollower {
 
     public boolean reachedDestination() {
         return reachDestination;
+    }
+
+    public boolean isBeforeIntersection() {
+        return isOnRoad && nextNode instanceof Intersection;
+    }
+
+    public Intersection getNextIntersection() {
+        BaseRoadElement position;
+        if (isOnRoad) {
+            position = curRoad;
+        }
+        else {
+            position = nextRoad;
+        }
+        boolean posOnRoad = true;
+        while (position != null) {
+            if (posOnRoad) {
+                position = route.getNextNode((DirectedRoad) position);
+            }
+            else {
+                if (position instanceof Intersection) {
+                    return (Intersection) position;
+                }
+                position = route.getNextRoad((NodeRoadElement) position);
+            }
+            posOnRoad = !posOnRoad;
+        }
+        return null;
+    }
+
+    public int getCurrentLane() {
+        return lane;
+    }
+
+    public DirectedRoad getCurrentRoad() {
+        return curRoad;
+    }
+
+    public DirectedRoad getNextRoad() {
+        return route.getNextRoad(nextNode);
     }
 }
