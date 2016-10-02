@@ -1,10 +1,11 @@
 package by.brstu.tst.core;
 
 import by.brstu.tst.core.map.Map;
+import by.brstu.tst.core.simulation.IVehicleVisitor;
 import by.brstu.tst.core.simulation.MovingVehicle;
+import by.brstu.tst.core.simulation.SimulationConfig;
 import by.brstu.tst.core.simulation.UpdateVehicleStateVisitor;
 import by.brstu.tst.core.simulation.flows.IVehicleFlow;
-import by.brstu.tst.core.simulation.IVehicleVisitor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,19 +16,15 @@ import java.util.List;
  */
 public class SimulationModel {
     private Map map;
-    private float timeStep;
     private float simulationTime;
-    private IVehicleVisitor updateVehiclesVisitor;
+    private SimulationConfig simulationConfig;
     private List<MovingVehicle> vehicles;
-    private List<IVehicleFlow> vehicleFlows;
 
-    public SimulationModel(Map map, float initTimeStep) {
+    public SimulationModel(Map map, SimulationConfig simulationConfig) {
         this.map = map;
-        this.timeStep = initTimeStep;
+        this.simulationConfig = simulationConfig;
         this.simulationTime = 0;
-        this.updateVehiclesVisitor = new UpdateVehicleStateVisitor(initTimeStep);
         this.vehicles = new ArrayList<>();
-        this.vehicleFlows = new ArrayList<>();
     }
 
     public synchronized void performSimulationSteps(int numSteps) {
@@ -40,12 +37,13 @@ public class SimulationModel {
         //generate new vehicles
         addGeneratedVehicles();
         //update vehicles positions and states
-        visitVehicles(updateVehiclesVisitor);
+        UpdateVehicleStateVisitor vehicleStateUpdater = new UpdateVehicleStateVisitor(simulationConfig.getTimeStep());
+        visitVehicles(vehicleStateUpdater);
         //remove vehicles which came to destination
         removeVehiclesReachedDestination();
 
         //update model time
-        simulationTime += timeStep;
+        simulationTime += simulationConfig.getTimeStep();
     }
 
     public synchronized void visitVehicles(IVehicleVisitor visitor) {
@@ -54,12 +52,8 @@ public class SimulationModel {
         }
     }
 
-    public void addVehicleFlow(IVehicleFlow vehicleFlow) {
-        vehicleFlows.add(vehicleFlow);
-    }
-
     private void addGeneratedVehicles() {
-        for (IVehicleFlow flow : vehicleFlows) {
+        for (IVehicleFlow flow : simulationConfig.getVehicleFlows()) {
             flow.appendNewVehicles(simulationTime, vehicles);
         }
     }

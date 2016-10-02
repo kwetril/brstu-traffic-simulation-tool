@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulation timeStep="0.1">
+    <flows>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="123" />
+            <route>
+                <routeElement name="from-west" />
+                <routeElement name="rd-1" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-5" />
+                <routeElement name="to-east" />
+            </route>
+        </flow>
+    </flows>
+    <controllers>
+        <controller type="cycled" intersection="intersection">
+            <cycle>
+                <section duration="10">
+                    <connectors>
+                        <connector from="rd-1" fromLane="0" to="rd-5" toLane="0" />
+                        <connector from="rd-1" fromLane="1" to="rd-5" toLane="1" />
+                        <connector from="rd-1" fromLane="2" to="rd-5" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="10">
+                    <connectors>
+                    </connectors>
+                </section>
+            </cycle>
+        </controller>
+    </controllers>
+</simulation>

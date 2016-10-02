@@ -2,16 +2,18 @@ package by.brstu.tst.core.simulation;
 
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
+import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.simulation.routing.RouteFollower;
 import by.brstu.tst.core.vehicle.Vehicle;
+
+import java.util.List;
 
 /**
  * Created by a.klimovich on 10.09.2016.
  */
 public class MovingVehicle {
     private Vehicle vehicle;
-    Vector velocity;
     double speed;
     RouteFollower routeFollower;
 
@@ -23,6 +25,14 @@ public class MovingVehicle {
 
     public void accept(IVehicleVisitor visitor) {
         visitor.visit(this);
+    }
+
+    private void receiveControlMessages(List<ControlMessage> messages) {
+
+    }
+
+    private void sendMessages() {
+
     }
 
     public void updatePosition(float timeDelta) {
@@ -48,6 +58,6 @@ public class MovingVehicle {
     @Override
     public String toString() {
         return String.format("[Vehicle %s: (%.2f, %.2f); %s mps]", vehicle.getIdentifier(),
-                getPosition().getX(), getPosition().getY(), velocity.getLength());
+                getPosition().getX(), getPosition().getY(), speed);
     }
 }

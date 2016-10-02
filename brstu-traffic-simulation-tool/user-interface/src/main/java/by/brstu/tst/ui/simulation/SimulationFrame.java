@@ -2,6 +2,7 @@ package by.brstu.tst.ui.simulation;
 
 import by.brstu.tst.core.SimulationModel;
 import by.brstu.tst.core.map.Map;
+import by.brstu.tst.core.simulation.SimulationConfig;
 import by.brstu.tst.core.simulation.distribution.ExponentialDistribution;
 import by.brstu.tst.core.simulation.distribution.IRandomDistribution;
 import by.brstu.tst.core.simulation.flows.ActivationPeriod;
@@ -10,6 +11,7 @@ import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.simulation.flows.StaticVehicleFlow;
 import by.brstu.tst.core.vehicle.VehicleType;
 import by.brstu.tst.io.xml.MapReader;
+import by.brstu.tst.io.xml.SimulationConfigReader;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -83,21 +85,20 @@ public class SimulationFrame extends JFrame {
     }
 
     private void openMap() {
-        MapReader mapReader = new MapReader();
-        Map map = mapReader.readMap("io-utils\\data\\map.xml");
+        try {
+            MapReader mapReader = new MapReader();
+            Map map = mapReader.readMap("io-utils\\data\\map.xml");
 
-        SimulationModel modelState = new SimulationModel(map, 0.1f);
+            SimulationConfigReader simulationConfigReader = new SimulationConfigReader(map);
+            SimulationConfig simulationConfig = simulationConfigReader.readSimulationConfig(
+                    "io-utils\\data\\simulation.xml");
+            SimulationModel modelState = new SimulationModel(map, simulationConfig);
 
-        ActivationPeriod activationPeriod = new ActivationPeriod();
-        Route route = new Route(map, new String[] {
-            "from-west", "rd-1", "intersection", "rd-5", "to-east"
-        });
-        IRandomDistribution flowDistribution = new ExponentialDistribution(0.1f, 123);
-        IVehicleFlow vehicleFlow = new StaticVehicleFlow(VehicleType.CAR, route,
-                flowDistribution, activationPeriod);
-        modelState.addVehicleFlow(vehicleFlow);
-
-        simulationPanel.showMap(map, modelState);
-        startSimulationMenuItem.setEnabled(true);
+            simulationPanel.showMap(map, modelState);
+            startSimulationMenuItem.setEnabled(true);
+        }
+        catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }
