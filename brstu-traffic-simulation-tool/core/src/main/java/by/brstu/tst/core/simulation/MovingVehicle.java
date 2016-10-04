@@ -52,4 +52,8 @@ public class MovingVehicle {
     public void setSpeed(double speed) {
         this.speed = speed;
     }
+
+    public double getSpeed() {
+        return speed;
+    }
 }

@@ -132,6 +132,10 @@ public class RouteState {
         return isOnRoad && nextNode instanceof Intersection;
     }
 
+    public boolean isOnRoad() {
+        return isOnRoad;
+    }
+
     public Intersection getNextIntersection() {
         BaseRoadElement position;
         if (isOnRoad) {

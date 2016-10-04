@@ -3,7 +3,7 @@
     <flows>
         <flow type="static" vehicleType="car">
             <activation from="0" to="1000000" />
-            <distribution type="exponential" lambda="0.1" seed="123" />
+            <distribution type="exponential" lambda="0.8" seed="42" />
             <route>
                 <routeElement name="from-west" />
                 <routeElement name="rd-1" />
