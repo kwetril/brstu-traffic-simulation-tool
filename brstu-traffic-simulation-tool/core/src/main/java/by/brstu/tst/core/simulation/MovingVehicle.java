@@ -4,6 +4,7 @@ import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.simulation.driving.VehicleDriver;
 import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.simulation.routing.RouteState;
+import by.brstu.tst.core.simulation.routing.info.RouteStateInfo;
 import by.brstu.tst.core.vehicle.Vehicle;
 
 /**
@@ -26,8 +27,8 @@ public class MovingVehicle {
         visitor.visit(this);
     }
 
-    public RouteState getRouteState() {
-        return routeState;
+    public RouteStateInfo getRouteStateInfo() {
+        return routeState.getStateInfo();
     }
 
     public void updatePosition(float timeDelta) {
@@ -40,7 +41,7 @@ public class MovingVehicle {
 
     @Override
     public String toString() {
-        MapPoint position = routeState.getPosition();
+        MapPoint position = routeState.getStateInfo().getPosition();
         return String.format("[Vehicle %s: (%.2f, %.2f); %s mps]", vehicle.getIdentifier(),
                 position.getX(), position.getY(), speed);
     }

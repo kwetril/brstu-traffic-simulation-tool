@@ -60,7 +60,7 @@ public class SimulationModel {
         Iterator<MovingVehicle> vehicleIterator = vehicles.iterator();
         while (vehicleIterator.hasNext()) {
             MovingVehicle vehicle = vehicleIterator.next();
-            if (vehicle.getRouteState().reachedDestination()) {
+            if (vehicle.getRouteStateInfo().reachedDestination()) {
                 vehicleIterator.remove();
             }
         }

@@ -12,7 +12,6 @@ import java.util.List;
 public class SimulationState {
     private Map map;
     private List<MovingVehicle> vehicles;
-
     private List<IntersectionController> controllers;
     private float simulationTime;
 

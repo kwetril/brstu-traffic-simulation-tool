@@ -34,10 +34,10 @@ public class VehicleDrawVisitor implements IVehicleVisitor {
         VehicleTechnicalParameters techParams = vehicle.getVehicleInfo().getTechnicalParameters();
         float width = techParams.getWidth();
         float length = techParams.getLength();
-        double rotation = baseVector.angleClockwise(vehicle.getRouteState().getDirection());
+        double rotation = baseVector.angleClockwise(vehicle.getRouteStateInfo().getDirection());
         Rectangle2D.Double vehicleRect = new Rectangle2D.Double(-width/2, -length/2, width, length);
         AffineTransform transform = new AffineTransform();
-        MapPoint position = vehicle.getRouteState().getPosition();
+        MapPoint position = vehicle.getRouteStateInfo().getPosition();
         transform.translate(position.getX(), position.getY());
         transform.rotate(Math.PI * 2 - rotation);
         return new Path2D.Double(vehicleRect, transform);

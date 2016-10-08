@@ -8,7 +8,7 @@ import by.brstu.tst.core.simulation.MovingVehicle;
 import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
-import by.brstu.tst.core.simulation.routing.RouteState;
+import by.brstu.tst.core.simulation.routing.info.RouteStateInfo;
 
 /**
  * Created by a.klimovich on 02.10.2016.
@@ -35,21 +35,19 @@ public class VehicleDriver {
     }
 
     private boolean checkCarsInfront(SimulationState state) {
-        RouteState routeState = vehicle.getRouteState();
-        String curRoadName = null;
-        if (routeState.isOnRoad()) {
-            curRoadName = routeState.getCurrentRoad().getName();
-        }
-        int curLane = routeState.getCurrentLane();
-        Vector direction = routeState.getDirection();
-        MapPoint position = routeState.getPosition();
+        RouteStateInfo stateInfo = vehicle.getRouteStateInfo();
+        Vector direction = stateInfo.getDirection();
+        MapPoint position = stateInfo.getPosition();
         for (MovingVehicle otherVehicle : state.getVehicles()) {
             if (otherVehicle.getVehicleInfo().getIdentifier().equals(vehicle.getVehicleInfo().getIdentifier())) {
                 continue;
             }
-            RouteState otherRouteState = otherVehicle.getRouteState();
-            Vector otherDirection = otherRouteState.getDirection();
-            MapPoint otherPosition = otherRouteState.getPosition();
+            RouteStateInfo otherStateInfo = otherVehicle.getRouteStateInfo();
+            if (otherStateInfo.reachedDestination()) {
+                continue;
+            }
+            Vector otherDirection = otherStateInfo.getDirection();
+            MapPoint otherPosition = otherStateInfo.getPosition();
 
             Vector fromToVector = new Vector(position, otherPosition);
             double distance = fromToVector.getLength();
@@ -62,9 +60,9 @@ public class VehicleDriver {
             double convergenceSpeed = relationalSpeed.scalarMultiply(fromToVector.setLength(1.0));
 
             if (convergenceSpeed > 0 && distance < convergenceSpeed * 1.0f + 8.0) {
-                if (routeState.isOnRoad() && otherRouteState.isOnRoad()
-                        && otherRouteState.getCurrentRoad().getName().equals(curRoadName)
-                        && curLane == otherRouteState.getCurrentLane()) {
+                if (stateInfo.isOnRoad() && otherStateInfo.isOnRoad()
+                        && otherStateInfo.getCurrentRoad().getName().equals(stateInfo.getCurrentRoad().getName())
+                        && stateInfo.getLane() == otherStateInfo.getLane()) {
                     vehicle.setSpeed(0);
                     return true;
                 }
@@ -75,23 +73,23 @@ public class VehicleDriver {
     }
 
     private boolean checkIntersectionClosed(SimulationState state) {
-        RouteState routeState = vehicle.getRouteState();
-        if (!routeState.isBeforeIntersection()) {
+        RouteStateInfo routeStateInfo = vehicle.getRouteStateInfo();
+        if (!routeStateInfo.isBeforeIntersection()) {
             vehicle.setSpeed(20);
             return false;
         }
-        double approxDist = routeState.getCurrentRoad().getEndPoint().distanceTo(routeState.getPosition());
+        double approxDist = routeStateInfo.getCurrentRoad().getEndPoint().distanceTo(routeStateInfo.getPosition());
         if (approxDist > 10) {
             vehicle.setSpeed(20);
             return false;
         }
 
-        Intersection intersection = routeState.getNextIntersection();
+        Intersection intersection = routeStateInfo.getNextIntersection();
         IntersectionController controller = state.getController(intersection);
         IntersectionState intersectionState = controller.getStateByTime(state.getSimulationTime());
-        DirectedRoad currentRoad = routeState.getCurrentRoad();
-        int currentLane = routeState.getCurrentLane();
-        DirectedRoad nextRoad = routeState.getNextRoad();
+        DirectedRoad currentRoad = routeStateInfo.getCurrentRoad();
+        int currentLane = routeStateInfo.getLane();
+        DirectedRoad nextRoad = routeStateInfo.getNextRoad();
         int nextLane = Math.min(currentLane, nextRoad.getNumLanes());
         if (intersectionState.isOpened(currentRoad, currentLane, nextRoad, nextLane)) {
             vehicle.setSpeed(20);
@@ -101,4 +99,11 @@ public class VehicleDriver {
         vehicle.setSpeed(0);
         return true;
     }
+}
+
+interface VehicleState {
+    boolean canMove();
+    double getPreferedAcceleration();
+
+
 }
