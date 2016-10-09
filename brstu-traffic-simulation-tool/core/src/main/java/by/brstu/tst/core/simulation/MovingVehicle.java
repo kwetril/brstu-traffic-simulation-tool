@@ -5,6 +5,7 @@ import by.brstu.tst.core.simulation.driving.VehicleDriver;
 import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.simulation.routing.RouteState;
 import by.brstu.tst.core.simulation.routing.info.RouteStateInfo;
+import by.brstu.tst.core.simulation.routing.state.ChangeLaneType;
 import by.brstu.tst.core.vehicle.Vehicle;
 
 /**
@@ -48,6 +49,10 @@ public class MovingVehicle {
 
     public void updateState(SimulationState state) {
         driver.updateVehicleState(state);
+    }
+
+    public void changeLane(ChangeLaneType changeLaneType) {
+        routeState.changeLane(changeLaneType, 50);
     }
 
     public void setSpeed(double speed) {

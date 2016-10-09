@@ -29,11 +29,12 @@ public class RouteState {
         if (changeLaneType == ChangeLaneType.LEFT) {
             nextLane = Math.max(0, nextLane - 1);
         } else {
-            nextLane = Math.min(stateInfo.getNumLanes(), nextLane + 1);
+            nextLane = Math.min(stateInfo.getNumLanes() - 1, nextLane + 1);
         }
         if (nextLane == stateInfo.getLane()) {
             return;
         }
+        nextRoadLane = nextLane;
         innerState = new ChangingLaneState(stateInfo.getRoute(), stateInfo.getCurrentRoad(),
                 stateInfo.getLane(), stateInfo.getCurrentSegment(), stateInfo.getCurveParameter(),
                 changeLaneType, changingLaneDistance);

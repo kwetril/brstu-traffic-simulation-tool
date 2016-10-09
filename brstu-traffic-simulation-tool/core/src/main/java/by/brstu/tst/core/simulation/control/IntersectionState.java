@@ -2,6 +2,7 @@ package by.brstu.tst.core.simulation.control;
 
 import by.brstu.tst.core.map.elements.DirectedRoad;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
+import by.brstu.tst.core.simulation.routing.state.DirectedRoadState;
 
 import java.util.HashSet;
 
@@ -21,5 +22,9 @@ public class IntersectionState {
 
     public boolean isOpened(DirectedRoad from, int laneFrom, DirectedRoad to, int laneTo) {
         return isOpened(new RoadConnectorDescription(from.getName(), laneFrom, to.getName(), laneTo));
+    }
+
+    public HashSet<RoadConnectorDescription> getOpenedConnections() {
+        return openedConnections;
     }
 }

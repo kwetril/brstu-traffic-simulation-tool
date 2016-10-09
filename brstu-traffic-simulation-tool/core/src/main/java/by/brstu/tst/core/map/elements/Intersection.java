@@ -22,17 +22,25 @@ public class Intersection extends NodeRoadElement {
         RoadSegment fromSegment = fromSegments[fromSegments.length - 1];
         MapPoint[] fromPoints = fromSegment.getLane(laneFrom).getCurve().getPoints();
 
-        MapPoint[] connectorPoints = new MapPoint[4];
-        connectorPoints[0] = fromPoints[3];
-        connectorPoints[1] = new Vector(fromPoints[2], fromPoints[3]).setLength(1).addToPoint(fromPoints[3]);
-
         RoadSegment[] toSegments = to.getSegments();
         RoadSegment toSegment = toSegments[0];
         MapPoint[] toPoints = toSegment.getLane(laneTo).getCurve().getPoints();
 
-        connectorPoints[3] = toPoints[0];
-        connectorPoints[2] = new Vector(toPoints[1], toPoints[0]).setLength(1).addToPoint(toPoints[0]);
-        return new BezierCurve(connectorPoints[0], connectorPoints[1],
-                connectorPoints[2], connectorPoints[3]);
+        MapPoint startPoint = fromPoints[3];
+        Vector startDirection = new Vector(fromPoints[2], fromPoints[3]).setLength(1);
+
+        MapPoint endPoint = toPoints[0];
+        Vector endDirection = new Vector(toPoints[0], toPoints[1]).setLength(1);
+
+        Vector startToEnd = new Vector(startPoint, endPoint);
+
+        double startProjection = startToEnd.scalarMultiply(startDirection) * 0.5;
+        MapPoint secondPoint = startDirection.setLength(startProjection).addToPoint(startPoint);
+
+        double endProjection = startToEnd.scalarMultiply(endDirection) * 0.5;
+        MapPoint thirdPoint = endDirection.setLength(endProjection).multiply(-1).addToPoint(endPoint);
+
+
+        return new BezierCurve(startPoint, secondPoint, thirdPoint, endPoint);
     }
 }

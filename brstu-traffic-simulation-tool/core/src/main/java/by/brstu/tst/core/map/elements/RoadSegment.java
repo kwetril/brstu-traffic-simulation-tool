@@ -28,9 +28,9 @@ public class RoadSegment {
         float numLanesFromCenter = (laneNumber - numLanes) + numLanes / 2.0f + 0.5f;
         float distanceFromCenter = numLanesFromCenter * road.getLaneWidth();
         if (distanceFromCenter >= 0) {
-            return MapUtils.moveCurveLeft(centerCurve, distanceFromCenter);
+            return MapUtils.moveCurveRight(centerCurve, distanceFromCenter);
         } else {
-            return MapUtils.moveCurveRight(centerCurve, -distanceFromCenter);
+            return MapUtils.moveCurveLeft(centerCurve, -distanceFromCenter);
         }
     }
 

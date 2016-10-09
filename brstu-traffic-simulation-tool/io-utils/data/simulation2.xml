@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulation timeStep="0.1">
+    <flows>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.6" seed="1" />
+            <route>
+                <routeElement name="from-west" />
+                <routeElement name="rd-1" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-5" />
+                <routeElement name="to-east" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="2" />
+            <route>
+                <routeElement name="from-west" />
+                <routeElement name="rd-1" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-7" />
+                <routeElement name="to-south" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="3" />
+            <route>
+                <routeElement name="from-west" />
+                <routeElement name="rd-1" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-8" />
+                <routeElement name="to-north" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.6" seed="4" />
+            <route>
+                <routeElement name="from-east" />
+                <routeElement name="rd-2" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-6" />
+                <routeElement name="to-west" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="5" />
+            <route>
+                <routeElement name="from-east" />
+                <routeElement name="rd-2" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-7" />
+                <routeElement name="to-south" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="6" />
+            <route>
+                <routeElement name="from-east" />
+                <routeElement name="rd-2" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-8" />
+                <routeElement name="to-north" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.6" seed="7" />
+            <route>
+                <routeElement name="from-north" />
+                <routeElement name="rd-3" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-7" />
+                <routeElement name="to-south" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="8" />
+            <route>
+                <routeElement name="from-north" />
+                <routeElement name="rd-3" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-5" />
+                <routeElement name="to-east" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="9" />
+            <route>
+                <routeElement name="from-north" />
+                <routeElement name="rd-3" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-6" />
+                <routeElement name="to-west" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.6" seed="10" />
+            <route>
+                <routeElement name="from-south" />
+                <routeElement name="rd-4" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-8" />
+                <routeElement name="to-north" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="11" />
+            <route>
+                <routeElement name="from-south" />
+                <routeElement name="rd-4" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-5" />
+                <routeElement name="to-east" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="12" />
+            <route>
+                <routeElement name="from-south" />
+                <routeElement name="rd-4" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-6" />
+                <routeElement name="to-west" />
+            </route>
+        </flow>
+    </flows>
+    <controllers>
+        <controller type="cycled" intersection="intersection">
+            <cycle>
+                <section duration="15">
+                    <connectors>
+                        <connector from="rd-1" fromLane="0" to="rd-8" toLane="0" />
+                        <connector from="rd-1" fromLane="0" to="rd-5" toLane="0" />
+                        <connector from="rd-1" fromLane="1" to="rd-5" toLane="1" />
+                        <connector from="rd-1" fromLane="2" to="rd-5" toLane="2" />
+                        <connector from="rd-1" fromLane="2" to="rd-7" toLane="2" />
+                        <connector from="rd-2" fromLane="2" to="rd-8" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="3">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="15">
+                    <connectors>
+                        <connector from="rd-2" fromLane="0" to="rd-7" toLane="0" />
+                        <connector from="rd-2" fromLane="0" to="rd-6" toLane="0" />
+                        <connector from="rd-2" fromLane="1" to="rd-6" toLane="1" />
+                        <connector from="rd-2" fromLane="2" to="rd-6" toLane="2" />
+                        <connector from="rd-2" fromLane="2" to="rd-8" toLane="2" />
+                        <connector from="rd-1" fromLane="2" to="rd-7" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="3">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="15">
+                    <connectors>
+                        <connector from="rd-3" fromLane="0" to="rd-5" toLane="0" />
+                        <connector from="rd-3" fromLane="0" to="rd-7" toLane="0" />
+                        <connector from="rd-3" fromLane="1" to="rd-7" toLane="1" />
+                        <connector from="rd-3" fromLane="2" to="rd-7" toLane="2" />
+                        <connector from="rd-3" fromLane="2" to="rd-6" toLane="2" />
+                        <connector from="rd-4" fromLane="2" to="rd-5" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="3">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="15">
+                    <connectors>
+                        <connector from="rd-4" fromLane="0" to="rd-6" toLane="0" />
+                        <connector from="rd-4" fromLane="0" to="rd-8" toLane="0" />
+                        <connector from="rd-4" fromLane="1" to="rd-8" toLane="1" />
+                        <connector from="rd-4" fromLane="2" to="rd-8" toLane="2" />
+                        <connector from="rd-4" fromLane="2" to="rd-5" toLane="2" />
+                        <connector from="rd-3" fromLane="2" to="rd-6" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="3">
+                    <connectors>
+                    </connectors>
+                </section>
+            </cycle>
+        </controller>
+    </controllers>
+</simulation>

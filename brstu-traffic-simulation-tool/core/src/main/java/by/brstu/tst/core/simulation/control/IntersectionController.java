@@ -1,5 +1,6 @@
 package by.brstu.tst.core.simulation.control;
 
+import by.brstu.tst.core.map.elements.DirectedRoad;
 import by.brstu.tst.core.map.elements.Intersection;
 
 /**
@@ -8,4 +9,5 @@ import by.brstu.tst.core.map.elements.Intersection;
 public interface IntersectionController {
     IntersectionState getStateByTime(float time);
     Intersection getIntersection();
+    boolean connectorExist(DirectedRoad fromRoad, int fromLane, DirectedRoad toRoad);
 }

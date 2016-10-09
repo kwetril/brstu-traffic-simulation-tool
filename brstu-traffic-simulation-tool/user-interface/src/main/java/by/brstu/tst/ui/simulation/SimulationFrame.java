@@ -91,7 +91,7 @@ public class SimulationFrame extends JFrame {
 
             SimulationConfigReader simulationConfigReader = new SimulationConfigReader(map);
             SimulationConfig simulationConfig = simulationConfigReader.readSimulationConfig(
-                    "io-utils\\data\\simulation1.xml");
+                    "io-utils\\data\\simulation2.xml");
             SimulationModel modelState = new SimulationModel(map, simulationConfig);
 
             simulationPanel.showMap(map, modelState);
