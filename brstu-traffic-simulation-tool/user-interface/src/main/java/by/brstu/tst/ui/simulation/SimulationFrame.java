@@ -12,6 +12,7 @@ import by.brstu.tst.core.simulation.flows.StaticVehicleFlow;
 import by.brstu.tst.core.vehicle.VehicleType;
 import by.brstu.tst.io.xml.MapReader;
 import by.brstu.tst.io.xml.SimulationConfigReader;
+import by.brstu.tst.ui.statistics.*;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -32,7 +33,7 @@ public class SimulationFrame extends JFrame {
         setMinimumSize(new Dimension(800, 600));
         simulationPanel = new SimulationPanel(this);
         add(simulationPanel, BorderLayout.CENTER);
-        pack();
+        //pack();
 
         add(createStatusPanel(), BorderLayout.SOUTH);
         JMenuBar menuBar = createMenu();
@@ -76,6 +77,39 @@ public class SimulationFrame extends JFrame {
         });
         simulationMenu.add(startSimulationMenuItem);
         menuBar.add(simulationMenu);
+
+        JMenu statisticsMenu = new JMenu("Statistics");
+        JMenuItem chartExample = new JMenuItem("Chart example");
+        chartExample.addActionListener(actionEvent -> {
+            JFrame chartFrame = new ChartExample();
+            chartFrame.setVisible(true);
+        });
+        statisticsMenu.add(chartExample);
+        JMenuItem timeSeriesExample = new JMenuItem("Time series example");
+        timeSeriesExample.addActionListener(actionEvent -> {
+            JFrame timeSeriesFrame = new TimeSeriesPlotExample();
+            timeSeriesFrame.setVisible(true);
+        });
+        statisticsMenu.add(timeSeriesExample);
+        JMenuItem histogramExample = new JMenuItem("Histogram example");
+        histogramExample.addActionListener(actionEvent -> {
+            JFrame histogramFrame = new HistogramExample();
+            histogramFrame.setVisible(true);
+        });
+        statisticsMenu.add(histogramExample);
+        JMenuItem xyPlotExample = new JMenuItem("XY plot example");
+        xyPlotExample.addActionListener(actionEvent -> {
+            JFrame xyPlotFrame = new PlotXYExample();
+            xyPlotFrame.setVisible(true);
+        });
+        statisticsMenu.add(xyPlotExample);
+        JMenuItem chartGridExample = new JMenuItem("Chart grid example");
+        chartGridExample.addActionListener(actionEvent -> {
+            JFrame chartGridFrame = new ChartGrid();
+            chartGridFrame.setVisible(true);
+        });
+        statisticsMenu.add(chartGridExample);
+        menuBar.add(statisticsMenu);
 
         return menuBar;
     }
