@@ -21,7 +21,7 @@ public class VehicleFactory {
 
     private static Map<VehicleType, VehicleTechnicalParameters> getVehicleTypeParams() {
         Map<VehicleType, VehicleTechnicalParameters> typeToParametersMap = new HashMap<>();
-        typeToParametersMap.put(VehicleType.CAR, new VehicleTechnicalParameters(2,4,1,1));
+        typeToParametersMap.put(VehicleType.CAR, new VehicleTechnicalParameters(2,4,2.0f,4.0f));
         return typeToParametersMap;
     }
 }

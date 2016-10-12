@@ -13,14 +13,17 @@ import by.brstu.tst.core.vehicle.Vehicle;
  */
 public class MovingVehicle {
     private Vehicle vehicle;
-    double speed;
-    RouteState routeState;
-    VehicleDriver driver;
+    private double speed;
+    private double acceletation;
+    private RouteState routeState;
+    private VehicleDriver driver;
+
 
     public MovingVehicle(Vehicle vehicle, Route route, double initialSpeed, int initialLane) {
         this.vehicle = vehicle;
         routeState = new RouteState(route, initialLane);
         speed = initialSpeed;
+        acceletation = 0;
         driver = new VehicleDriver(this);
     }
 
@@ -33,7 +36,10 @@ public class MovingVehicle {
     }
 
     public void updatePosition(float timeDelta) {
-        routeState.updatePosition(speed * timeDelta);
+        double deltaSpeed = acceletation * timeDelta;
+        double deltaDistance = speed * timeDelta + deltaSpeed * timeDelta / 2;
+        routeState.updatePosition(deltaDistance);
+        speed = Math.max(0, Math.min(20, speed + deltaSpeed));
     }
 
     public Vehicle getVehicleInfo() {
@@ -55,8 +61,8 @@ public class MovingVehicle {
         routeState.changeLane(changeLaneType, 50);
     }
 
-    public void setSpeed(double speed) {
-        this.speed = speed;
+    public void setAcceletation(double acceletation) {
+        this.acceletation = acceletation;
     }
 
     public double getSpeed() {
