@@ -5,6 +5,7 @@ import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
 import by.brstu.tst.core.map.primitives.MapRectangle;
 import by.brstu.tst.core.simulation.IVehicleVisitor;
+import by.brstu.tst.core.simulation.SimulationConfig;
 import by.brstu.tst.ui.utils.FindMapBoundsVisitor;
 import by.brstu.tst.ui.utils.RoadElementDrawVisitor;
 import by.brstu.tst.ui.utils.TransformableCanvas;
@@ -12,7 +13,6 @@ import by.brstu.tst.ui.utils.TransformableCanvas;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -51,7 +51,7 @@ public class SimulationPanel extends TransformableCanvas {
         return simulationStarted;
     }
 
-    public void showMap(Map map, SimulationModel simulationModel) {
+    public void showMap(Map map) {
         this.map = map;
         FindMapBoundsVisitor mapBoundsVisitor = new FindMapBoundsVisitor();
         map.visitElements(mapBoundsVisitor);
@@ -59,9 +59,12 @@ public class SimulationPanel extends TransformableCanvas {
         this.grassTexture = new TexturePaint(grassTileImage,
                 new Rectangle2D.Float((float) (mapBounds.getMinX() - 0.1f * mapBounds.getWidth()),
                         (float) (mapBounds.getMinY() - 0.1f * mapBounds.getHeight()), 100, 100));
-        this.simulationModel = simulationModel;
         showBounds(mapBounds.getMinX(), mapBounds.getMinY(),
                 mapBounds.getMaxX(), mapBounds.getMaxY());
+    }
+
+    public void setupSimulation(SimulationModel simulationModel) {
+        this.simulationModel = simulationModel;
     }
 
     public void startSimulation() {

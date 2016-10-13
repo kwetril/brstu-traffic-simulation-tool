@@ -3,6 +3,7 @@ package by.brstu.tst.core;
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.simulation.*;
 import by.brstu.tst.core.simulation.flows.IVehicleFlow;
+import by.brstu.tst.core.statistics.IStatsCollector;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ public class SimulationModel {
     private Map map;
     private SimulationConfig simulationConfig;
     private List<MovingVehicle> vehicles;
+    private List<IStatsCollector> statsCollectors;
     private SimulationState state;
 
     public SimulationModel(Map map, SimulationConfig simulationConfig) {
@@ -22,6 +24,7 @@ public class SimulationModel {
         this.simulationConfig = simulationConfig;
         vehicles = new ArrayList<>();
         state = new SimulationState(map, vehicles, simulationConfig.getIntersectionControllers());
+        statsCollectors = new ArrayList<>();
     }
 
     public synchronized void performSimulationSteps(int numSteps) {
@@ -39,6 +42,10 @@ public class SimulationModel {
         visitVehicles(vehicleStateUpdater);
         //remove vehicles which came to destination
         removeVehiclesReachedDestination();
+
+        for (IStatsCollector statsCollector : statsCollectors) {
+            statsCollector.updateStats(state);
+        }
 
         //update model time
         state.updateSimulationTime(simulationConfig.getTimeStep());
@@ -64,5 +71,9 @@ public class SimulationModel {
                 vehicleIterator.remove();
             }
         }
+    }
+
+    public void addStatsCollector(IStatsCollector statsCollector) {
+        statsCollectors.add(statsCollector);
     }
 }
