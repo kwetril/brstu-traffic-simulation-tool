@@ -4,7 +4,9 @@ import by.brstu.tst.core.SimulationModel;
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.simulation.SimulationConfig;
 import by.brstu.tst.core.statistics.SpeedStatsCollector;
+import by.brstu.tst.core.statistics.TimeInSystemStatsCollector;
 import by.brstu.tst.core.statistics.TotalVehiclesStatCollector;
+import by.brstu.tst.core.statistics.VehicleDynmicsStatCollector;
 import by.brstu.tst.io.xml.MapReader;
 import by.brstu.tst.io.xml.SimulationConfigReader;
 import by.brstu.tst.ui.statistics.*;
@@ -22,8 +24,10 @@ public class SimulationFrame extends JFrame {
     private JLabel statusLabel;
     private JMenuItem startSimulationMenuItem;
     private JMenuItem pauseSimulationMenuItem;
-    private SpeedStatsPanel speedStatsPanel;
-    private TotalVehiclesStatPanel totalVehiclesStatPanel;
+    private XYSeriesStatPanel speedStatsPanel;
+    private XYSeriesStatPanel totalVehiclesStatPanel;
+    private XYSeriesStatPanel vehicleDynamicsStatsPanel;
+    private XYSeriesStatPanel timeInSystemStatsPanel;
     private Map map;
 
     public SimulationFrame() {
@@ -79,6 +83,10 @@ public class SimulationFrame extends JFrame {
                 speedStatsPanel = null;
                 totalVehiclesStatPanel.setVisible(false);
                 totalVehiclesStatPanel = null;
+                vehicleDynamicsStatsPanel.setVisible(false);
+                vehicleDynamicsStatsPanel = null;
+                timeInSystemStatsPanel.setVisible(false);
+                timeInSystemStatsPanel = null;
             } else {
                 setupSimulation();
                 simulationPanel.startSimulation();
@@ -133,16 +141,20 @@ public class SimulationFrame extends JFrame {
         statisticsMenu.add(chartGridExample);
 
         JMenuItem speedStats = new JMenuItem("Speed stats");
-        speedStats.addActionListener(actionEvent -> {
-            speedStatsPanel.setVisible(true);
-        });
+        speedStats.addActionListener(actionEvent -> speedStatsPanel.setVisible(true));
         statisticsMenu.add(speedStats);
 
         JMenuItem totalVehiclesStat = new JMenuItem("Total vehicles stats");
-        totalVehiclesStat.addActionListener(actionEvent -> {
-            totalVehiclesStatPanel.setVisible(true);
-        });
+        totalVehiclesStat.addActionListener(actionEvent -> totalVehiclesStatPanel.setVisible(true));
         statisticsMenu.add(totalVehiclesStat);
+
+        JMenuItem vehicleDynamicsStat = new JMenuItem("Vehicle dynamics stats");
+        vehicleDynamicsStat.addActionListener(actionEvent -> vehicleDynamicsStatsPanel.setVisible(true));
+        statisticsMenu.add(vehicleDynamicsStat);
+
+        JMenuItem timeInSystemStats = new JMenuItem("Time in system");
+        timeInSystemStats.addActionListener(actionEvent -> timeInSystemStatsPanel.setVisible(true));
+        statisticsMenu.add(timeInSystemStats);
 
         menuBar.add(statisticsMenu);
 
@@ -163,12 +175,23 @@ public class SimulationFrame extends JFrame {
             simulationModel.addStatsCollector(speedStatsCollector);
             TotalVehiclesStatCollector totalVehiclesStatCollector = new TotalVehiclesStatCollector(1.0);
             simulationModel.addStatsCollector(totalVehiclesStatCollector);
-            speedStatsPanel = new SpeedStatsPanel("Speed of vehicles in system",
+            VehicleDynmicsStatCollector vehicleDynmicsStatCollector = new VehicleDynmicsStatCollector(5.0);
+            simulationModel.addStatsCollector(vehicleDynmicsStatCollector);
+            TimeInSystemStatsCollector timeInSystemStatsCollector = new TimeInSystemStatsCollector(1.0);
+            simulationModel.addStatsCollector(timeInSystemStatsCollector);
+            speedStatsPanel = new XYSeriesStatPanel("Speed of vehicles in system",
                     "Simulation time", "Speed, m/s",
                     new String[] {"min", "25%", "50%", "75%", "max"}, speedStatsCollector);
-            totalVehiclesStatPanel = new TotalVehiclesStatPanel("Total number of vehicles",
+            totalVehiclesStatPanel = new XYSeriesStatPanel("Total number of vehicles",
                     "Simulation time", "Number of vehicles", new String[] {"total"},
                     totalVehiclesStatCollector);
+            vehicleDynamicsStatsPanel = new XYSeriesStatPanel("Dynamics of vehicles in model",
+                    "Simulation time", "Number of vehicles", new String[] {"added", "deleted"},
+                    vehicleDynmicsStatCollector);
+            timeInSystemStatsPanel = new XYSeriesStatPanel("Time in system",
+                    "Simulation time", "Time in system",
+                    new String[] {"min", "25%", "50%", "75%", "max"},
+                    timeInSystemStatsCollector);
             simulationPanel.setupSimulation(simulationModel);
 
         } catch (Exception exception) {

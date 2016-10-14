@@ -17,6 +17,7 @@ public class TotalVehiclesStatCollector implements IStatsCollector {
     public TotalVehiclesStatCollector(double updatePeriodInSeconds) {
         listeners = new ArrayList<>();
         updatePeriod = updatePeriodInSeconds;
+        nextUpdate = 0;
     }
 
     @Override
