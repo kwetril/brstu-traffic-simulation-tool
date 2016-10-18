@@ -1,4 +1,4 @@
-package by.brstu.tst.core.simulation.control.cycled;
+package by.brstu.tst.core.simulation.control.cyclic;
 
 import by.brstu.tst.core.simulation.control.IntersectionState;
 

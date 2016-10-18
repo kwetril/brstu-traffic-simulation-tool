@@ -13,19 +13,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="library" name="Maven: org.geotools:gt-referencing:14.2" level="project" />
-    <orderEntry type="library" name="Maven: com.googlecode.efficient-java-matrix-library:core:0.26" level="project" />
-    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.5.4" level="project" />
-    <orderEntry type="library" name="Maven: jgridshift:jgridshift:1.0" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.geographiclib:GeographicLib-Java:1.44" level="project" />
-    <orderEntry type="library" name="Maven: javax.media:jai_core:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-main:14.2" level="project" />
-    <orderEntry type="library" name="Maven: com.vividsolutions:jts:1.13" level="project" />
-    <orderEntry type="library" name="Maven: org.jdom:jdom:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-api:14.2" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-epsg-hsql:14.2" level="project" />
-    <orderEntry type="library" name="Maven: org.hsqldb:hsqldb:2.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-opengis:14.2" level="project" />
-    <orderEntry type="library" name="Maven: net.java.dev.jsr-275:jsr-275:1.0-beta-2" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:20.0-rc1" level="project" />
     <orderEntry type="module" module-name="ui-utils" />
     <orderEntry type="module" module-name="io-utils" />
     <orderEntry type="library" name="Maven: de.topobyte:osm4j-core:0.0.9" level="project" />
@@ -39,6 +31,7 @@
     <orderEntry type="library" name="Maven: net.jpountz.lz4:lz4:1.3.0" level="project" />
     <orderEntry type="library" name="Maven: de.topobyte:large-scale-file-io:0.0.1" level="project" />
     <orderEntry type="library" name="Maven: de.topobyte:adt-geo:0.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.vividsolutions:jts:1.13" level="project" />
     <orderEntry type="library" name="Maven: de.topobyte:commons-cli-helper:0.0.1" level="project" />
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.2" level="project" />
     <orderEntry type="library" name="Maven: de.topobyte:jts-utils:0.0.2" level="project" />
@@ -50,12 +43,12 @@
     <orderEntry type="library" name="Maven: org.tukaani:xz:1.5" level="project" />
     <orderEntry type="library" name="Maven: de.topobyte:osm4j-geometry:0.0.1" level="project" />
     <orderEntry type="library" name="Maven: de.topobyte:adt-multicollections:0.0.1" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />
     <orderEntry type="library" name="Maven: de.topobyte:osm4j-xml:0.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.3.2" level="project" />
     <orderEntry type="library" name="Maven: de.topobyte:dynsax:0.0.1" level="project" />
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.7" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-metadata:14.2" level="project" />
+    <orderEntry type="library" name="Maven: javax.media:jai_core:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-render:14.2" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-coverage:14.2" level="project" />
     <orderEntry type="library" name="Maven: javax.media:jai_imageio:1.1" level="project" />

@@ -1,18 +1,32 @@
 package by.brstu.tst.core.simulation.messaging;
 
-import java.util.HashMap;
-
 /**
  * Created by a.klimovich on 02.10.2016.
  */
 public class ControlMessage {
-    private IMessageProcessor sender;
-    private IMessageProcessor receiver;
     private ControlMessageType messageType;
-    private HashMap<String, String> messageData;
+    private String sender;
+    private String receiver;
 
-    public ControlMessage(ControlMessageType messageType) {
+    public ControlMessage(ControlMessageType messageType, String sender, String receiver) {
         this.messageType = messageType;
-        messageData = new HashMap<>();
+        this.sender = sender;
+        this.receiver = receiver;
+    }
+
+    public ControlMessageType getType() {
+        return messageType;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public boolean isBroadcast() {
+        return receiver == null;
     }
 }

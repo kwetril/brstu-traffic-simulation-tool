@@ -10,6 +10,7 @@ import by.brstu.tst.core.statistics.VehicleDynmicsStatCollector;
 import by.brstu.tst.io.xml.MapReader;
 import by.brstu.tst.io.xml.SimulationConfigReader;
 import by.brstu.tst.ui.statistics.*;
+import org.jfree.chart.ChartPanel;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -24,10 +25,7 @@ public class SimulationFrame extends JFrame {
     private JLabel statusLabel;
     private JMenuItem startSimulationMenuItem;
     private JMenuItem pauseSimulationMenuItem;
-    private XYSeriesStatPanel speedStatsPanel;
-    private XYSeriesStatPanel totalVehiclesStatPanel;
-    private XYSeriesStatPanel vehicleDynamicsStatsPanel;
-    private XYSeriesStatPanel timeInSystemStatsPanel;
+    private StatsGridFrame statsGridFrame;
     private Map map;
 
     public SimulationFrame() {
@@ -36,7 +34,6 @@ public class SimulationFrame extends JFrame {
         setMinimumSize(new Dimension(800, 600));
         simulationPanel = new SimulationPanel(this);
         add(simulationPanel, BorderLayout.CENTER);
-        //pack();
 
         add(createStatusPanel(), BorderLayout.SOUTH);
         JMenuBar menuBar = createMenu();
@@ -79,14 +76,8 @@ public class SimulationFrame extends JFrame {
                 simulationPanel.stopSimulation();
                 startSimulationMenuItem.setText("Start");
                 pauseSimulationMenuItem.setVisible(false);
-                speedStatsPanel.setVisible(false);
-                speedStatsPanel = null;
-                totalVehiclesStatPanel.setVisible(false);
-                totalVehiclesStatPanel = null;
-                vehicleDynamicsStatsPanel.setVisible(false);
-                vehicleDynamicsStatsPanel = null;
-                timeInSystemStatsPanel.setVisible(false);
-                timeInSystemStatsPanel = null;
+                statsGridFrame.setVisible(false);
+                statsGridFrame = null;
             } else {
                 setupSimulation();
                 simulationPanel.startSimulation();
@@ -105,56 +96,9 @@ public class SimulationFrame extends JFrame {
         });
 
         JMenu statisticsMenu = new JMenu("Statistics");
-        JMenuItem chartExample = new JMenuItem("Chart example");
-        chartExample.addActionListener(actionEvent -> {
-            JFrame chartFrame = new ChartExample();
-            chartFrame.setVisible(true);
-        });
-        statisticsMenu.add(chartExample);
-        JMenuItem timeSeriesExample = new JMenuItem("Time series example");
-
-        timeSeriesExample.addActionListener(actionEvent -> {
-            JFrame timeSeriesFrame = new TimeSeriesPlotExample();
-            timeSeriesFrame.setVisible(true);
-        });
-        statisticsMenu.add(timeSeriesExample);
-        JMenuItem histogramExample = new JMenuItem("Histogram example");
-
-        histogramExample.addActionListener(actionEvent -> {
-            JFrame histogramFrame = new HistogramExample();
-            histogramFrame.setVisible(true);
-        });
-        statisticsMenu.add(histogramExample);
-
-        JMenuItem xyPlotExample = new JMenuItem("XY plot example");
-        xyPlotExample.addActionListener(actionEvent -> {
-            JFrame xyPlotFrame = new PlotXYExample();
-            xyPlotFrame.setVisible(true);
-        });
-        statisticsMenu.add(xyPlotExample);
-
-        JMenuItem chartGridExample = new JMenuItem("Chart grid example");
-        chartGridExample.addActionListener(actionEvent -> {
-            JFrame chartGridFrame = new ChartGrid();
-            chartGridFrame.setVisible(true);
-        });
-        statisticsMenu.add(chartGridExample);
-
-        JMenuItem speedStats = new JMenuItem("Speed stats");
-        speedStats.addActionListener(actionEvent -> speedStatsPanel.setVisible(true));
-        statisticsMenu.add(speedStats);
-
-        JMenuItem totalVehiclesStat = new JMenuItem("Total vehicles stats");
-        totalVehiclesStat.addActionListener(actionEvent -> totalVehiclesStatPanel.setVisible(true));
-        statisticsMenu.add(totalVehiclesStat);
-
-        JMenuItem vehicleDynamicsStat = new JMenuItem("Vehicle dynamics stats");
-        vehicleDynamicsStat.addActionListener(actionEvent -> vehicleDynamicsStatsPanel.setVisible(true));
-        statisticsMenu.add(vehicleDynamicsStat);
-
-        JMenuItem timeInSystemStats = new JMenuItem("Time in system");
-        timeInSystemStats.addActionListener(actionEvent -> timeInSystemStatsPanel.setVisible(true));
-        statisticsMenu.add(timeInSystemStats);
+        JMenuItem statsGridMenuItem = new JMenuItem("Stats grid");
+        statsGridMenuItem.addActionListener(actionEvent -> statsGridFrame.setVisible(true));
+        statisticsMenu.add(statsGridMenuItem);
 
         menuBar.add(statisticsMenu);
 
@@ -170,7 +114,8 @@ public class SimulationFrame extends JFrame {
             SimulationConfigReader simulationConfigReader = new SimulationConfigReader(map);
             SimulationConfig simulationConfig = simulationConfigReader.readSimulationConfig(
                     "io-utils\\data\\simulation2.xml");
-            SimulationModel simulationModel = new SimulationModel(map, simulationConfig);
+            SimulationModel simulationModel = new SimulationModel(map, simulationConfig.getVehicleFlows(),
+                    simulationConfig.getIntersectionControllers(), simulationConfig.getTimeStep());
             SpeedStatsCollector speedStatsCollector = new SpeedStatsCollector(1.0);
             simulationModel.addStatsCollector(speedStatsCollector);
             TotalVehiclesStatCollector totalVehiclesStatCollector = new TotalVehiclesStatCollector(1.0);
@@ -179,19 +124,22 @@ public class SimulationFrame extends JFrame {
             simulationModel.addStatsCollector(vehicleDynmicsStatCollector);
             TimeInSystemStatsCollector timeInSystemStatsCollector = new TimeInSystemStatsCollector(1.0);
             simulationModel.addStatsCollector(timeInSystemStatsCollector);
-            speedStatsPanel = new XYSeriesStatPanel("Speed of vehicles in system",
+            ChartPanel speedStatsPanel = ChartPanelHelper.createPanel("Speed of vehicles in system",
                     "Simulation time", "Speed, m/s",
                     new String[] {"min", "25%", "50%", "75%", "max"}, speedStatsCollector);
-            totalVehiclesStatPanel = new XYSeriesStatPanel("Total number of vehicles",
+            ChartPanel totalVehiclesStatPanel = ChartPanelHelper.createPanel("Total number of vehicles",
                     "Simulation time", "Number of vehicles", new String[] {"total"},
                     totalVehiclesStatCollector);
-            vehicleDynamicsStatsPanel = new XYSeriesStatPanel("Dynamics of vehicles in model",
+            ChartPanel vehicleDynamicsStatsPanel = ChartPanelHelper.createPanel("Dynamics of vehicles in model",
                     "Simulation time", "Number of vehicles", new String[] {"added", "deleted"},
                     vehicleDynmicsStatCollector);
-            timeInSystemStatsPanel = new XYSeriesStatPanel("Time in system",
+            ChartPanel timeInSystemStatsPanel = ChartPanelHelper.createPanel("Time in system",
                     "Simulation time", "Time in system",
                     new String[] {"min", "25%", "50%", "75%", "max"},
                     timeInSystemStatsCollector);
+            statsGridFrame = new StatsGridFrame("Stats grid", 2, 2, new ChartPanel[] {
+               speedStatsPanel, totalVehiclesStatPanel, vehicleDynamicsStatsPanel, timeInSystemStatsPanel
+            });
             simulationPanel.setupSimulation(simulationModel);
 
         } catch (Exception exception) {

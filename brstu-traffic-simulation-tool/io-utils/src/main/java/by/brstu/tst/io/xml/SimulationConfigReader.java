@@ -2,13 +2,12 @@ package by.brstu.tst.io.xml;
 
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.Intersection;
-import by.brstu.tst.core.map.utils.MapUtils;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.SimulationConfig;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
-import by.brstu.tst.core.simulation.control.cycled.CycleSection;
-import by.brstu.tst.core.simulation.control.cycled.CycledIntersectionController;
+import by.brstu.tst.core.simulation.control.cyclic.CycleSection;
+import by.brstu.tst.core.simulation.control.cyclic.CyclicIntersectionController;
 import by.brstu.tst.core.simulation.distribution.ExponentialDistribution;
 import by.brstu.tst.core.simulation.distribution.IRandomDistribution;
 import by.brstu.tst.core.simulation.flows.ActivationPeriod;
@@ -138,7 +137,7 @@ public class SimulationConfigReader {
                 Intersection intersection =(Intersection) map.getNode(intersectionName);
                 Node cycleXml = XmlUtils.filterNodesByTag(controllerXml.getChildNodes(), "cycle").get(0);
                 List<CycleSection> cycleSections = parseCycleSections(cycleXml);
-                return new CycledIntersectionController(intersection, cycleSections);
+                return new CyclicIntersectionController(intersection, cycleSections);
             default:
                 throw new ParseException(String.format("Intersection controller type %s not supported", type));
         }

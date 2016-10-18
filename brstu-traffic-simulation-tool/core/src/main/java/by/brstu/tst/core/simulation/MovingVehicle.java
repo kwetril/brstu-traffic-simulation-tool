@@ -1,7 +1,8 @@
 package by.brstu.tst.core.simulation;
 
 import by.brstu.tst.core.map.primitives.MapPoint;
-import by.brstu.tst.core.simulation.driving.VehicleDriver;
+import by.brstu.tst.core.simulation.driving.cyclic.VehicleDriver;
+import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.simulation.routing.RouteState;
 import by.brstu.tst.core.simulation.routing.info.RouteStateInfo;
@@ -53,8 +54,8 @@ public class MovingVehicle {
                 position.getX(), position.getY(), speed);
     }
 
-    public void updateState(SimulationState state) {
-        driver.updateVehicleState(state);
+    public VehicleDriver getDriver() {
+        return driver;
     }
 
     public void changeLane(ChangeLaneType changeLaneType) {

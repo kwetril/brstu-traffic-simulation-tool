@@ -12,13 +12,11 @@ import java.util.List;
 public class SimulationState {
     private Map map;
     private List<MovingVehicle> vehicles;
-    private List<IntersectionController> controllers;
     private float simulationTime;
 
-    public SimulationState(Map map, List<MovingVehicle> vehicles, List<IntersectionController> controllers) {
+    public SimulationState(Map map, List<MovingVehicle> vehicles) {
         this.map = map;
         this.vehicles = vehicles;
-        this.controllers = controllers;
         simulationTime = 0;
     }
 
@@ -32,14 +30,5 @@ public class SimulationState {
 
     public void updateSimulationTime(float timeDelta) {
         simulationTime += timeDelta;
-    }
-
-    public IntersectionController getController(Intersection intersection) {
-        for (IntersectionController controller : controllers) {
-            if (controller.getIntersection().getName().equals(intersection.getName())) {
-                return controller;
-            }
-        }
-        return null;
     }
 }
