@@ -5,6 +5,7 @@ import by.brstu.tst.core.simulation.*;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.flows.IVehicleFlow;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
+import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.statistics.IStatsCollector;
 import com.google.common.collect.Iterables;
 
@@ -25,7 +26,7 @@ public class SimulationModel {
     private List<MovingVehicle> vehicles;
     private List<IStatsCollector> statsCollectors;
     private SimulationState state;
-    private Iterable<ControlMessage> messages;
+    private MessagingQueue messagingQueue;
 
     public SimulationModel(Map map, List<IVehicleFlow> vehicleFlows,
                            List<IntersectionController> intersectionControllers,
@@ -37,7 +38,7 @@ public class SimulationModel {
         vehicles = new ArrayList<>();
         state = new SimulationState(map, vehicles);
         statsCollectors = new ArrayList<>();
-        messages = Collections.emptyList();
+        messagingQueue = new MessagingQueue();
     }
 
     public synchronized void performSimulationSteps(int numSteps) {
@@ -51,20 +52,15 @@ public class SimulationModel {
         addGeneratedVehicles();
         //update vehicles positions and states
         UpdateVehicleStateVisitor vehicleStateUpdater = new UpdateVehicleStateVisitor(state,
-                messages, timeStep);
+                messagingQueue, timeStep);
         visitVehicles(vehicleStateUpdater);
         //remove vehicles which came to destination
         removeVehiclesReachedDestination();
 
         //update state of controllers
-        Iterable<ControlMessage> controllerMessages = Collections.emptyList();
         for (IntersectionController controller : intersectionControllers) {
-            controllerMessages = Iterables.concat(controllerMessages, controller.updateInnerState(state, messages));
+            controller.updateInnerState(state, messagingQueue);
         }
-
-        //prepare messages for next step
-        messages = Iterables.concat(vehicleStateUpdater.getOutputMessages(), controllerMessages);
-        System.out.println("Num of messages: " + Iterables.size(messages));
 
         //collect statistics
         for (IStatsCollector statsCollector : statsCollectors) {
@@ -72,6 +68,7 @@ public class SimulationModel {
         }
 
         //update model time
+        messagingQueue.endSimulationStep();
         state.updateSimulationTime(timeStep);
     }
 

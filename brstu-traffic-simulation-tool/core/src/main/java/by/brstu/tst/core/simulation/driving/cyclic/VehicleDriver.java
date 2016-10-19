@@ -10,6 +10,7 @@ import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.driving.BaseVehicleDriver;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
+import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.cyclic.BroadcastIntersectionStateMessage;
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesRequestMessage;
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesResponseMessage;
@@ -44,16 +45,15 @@ public class VehicleDriver extends BaseVehicleDriver {
     }
 
     @Override
-    public Iterable<ControlMessage> updateInnerState(SimulationState simulationState,
-                                                     Iterable<ControlMessage> inputMessages) {
+    public void updateInnerState(SimulationState simulationState, MessagingQueue messagingQueue) {
         routeState = vehicle.getRouteStateInfo();
         if (!routeState.isBeforeIntersection()) {
             intersectionState = null;
             suitableLanes = null;
         }
-        processMessages(inputMessages);
+        processMessages(messagingQueue.getCurrentMessages());
         updateVehicleState(simulationState);
-        return sendMessages();
+        sendMessages(messagingQueue);
     }
 
     private void processMessages(Iterable<ControlMessage> messages) {
@@ -94,15 +94,14 @@ public class VehicleDriver extends BaseVehicleDriver {
         }
     }
 
-    public Iterable<ControlMessage> sendMessages() {
+    public void sendMessages(MessagingQueue messagingQueue) {
         if (routeState.isBeforeIntersection() && suitableLanes == null) {
-            return Arrays.asList(new GetSuitableLanesRequestMessage(
+            messagingQueue.addMessage(new GetSuitableLanesRequestMessage(
                     vehicle.getVehicleInfo().getIdentifier(),
                     routeState.getNextIntersection().getName(),
                     routeState.getCurrentRoad(),
                     routeState.getNextRoad()));
         }
-        return Collections.emptyList();
     }
 
 

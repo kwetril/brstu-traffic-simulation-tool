@@ -7,6 +7,7 @@ import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
+import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.cyclic.BroadcastIntersectionStateMessage;
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesRequestMessage;
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesResponseMessage;
@@ -62,11 +63,10 @@ public class CyclicIntersectionController implements IntersectionController {
     }
 
     @Override
-    public Iterable<ControlMessage> updateInnerState(SimulationState simulationState, Iterable<ControlMessage> inputMessages) {
-        Iterable<ControlMessage> messagesToProcess = Iterables.filter(inputMessages,
+    public void updateInnerState(SimulationState simulationState, MessagingQueue messagingQueue) {
+        Iterable<ControlMessage> messagesToProcess = Iterables.filter(messagingQueue.getCurrentMessages(),
                 message -> !message.isBroadcast() && message.getReceiver().equals(intersection.getName()));
-        List<ControlMessage> outpuMessages = new ArrayList<>();
-        outpuMessages.add(new BroadcastIntersectionStateMessage(intersection.getName(),
+        messagingQueue.addMessage(new BroadcastIntersectionStateMessage(intersection.getName(),
                 getStateByTime(simulationState.getSimulationTime())));
         for (ControlMessage message : messagesToProcess) {
             switch (message.getType()) {
@@ -78,13 +78,12 @@ public class CyclicIntersectionController implements IntersectionController {
                             suitableLanes.add(i);
                         }
                     }
-                    outpuMessages.add(new GetSuitableLanesResponseMessage(request.getReceiver(),
+                    messagingQueue.addMessage(new GetSuitableLanesResponseMessage(request.getReceiver(),
                             request.getSender(), suitableLanes));
                     break;
                 default:
                     throw new RuntimeException("Not supported message type");
             }
         }
-        return outpuMessages;
     }
 }
