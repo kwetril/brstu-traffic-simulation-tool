@@ -1,11 +1,9 @@
 package by.brstu.tst.core.map;
 
-import by.brstu.tst.core.config.Configuration;
 import by.brstu.tst.core.map.elements.*;
 import by.brstu.tst.core.map.primitives.BezierCurve;
 import by.brstu.tst.core.map.primitives.MapPoint;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

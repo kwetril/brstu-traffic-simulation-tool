@@ -28,14 +28,14 @@ import java.util.List;
 /**
  * Created by a.klimovich on 02.10.2016.
  */
-public class VehicleDriver extends BaseVehicleDriver {
+public class CyclicVehicleDriver extends BaseVehicleDriver {
     private double maxAcceleration;
     private double maxDeceleration;
     private RouteStateInfo routeState;
     private IntersectionState intersectionState;
     private List<Integer> suitableLanes;
 
-    public VehicleDriver(MovingVehicle vehicle) {
+    public CyclicVehicleDriver(MovingVehicle vehicle) {
         super(vehicle);
         VehicleTechnicalParameters techParams = vehicle.getVehicleInfo().getTechnicalParameters();
         maxAcceleration = techParams.getMaxAccelerationRate();
@@ -94,7 +94,7 @@ public class VehicleDriver extends BaseVehicleDriver {
         }
     }
 
-    public void sendMessages(MessagingQueue messagingQueue) {
+    private void sendMessages(MessagingQueue messagingQueue) {
         if (routeState.isBeforeIntersection() && suitableLanes == null) {
             messagingQueue.addMessage(new GetSuitableLanesRequestMessage(
                     vehicle.getVehicleInfo().getIdentifier(),

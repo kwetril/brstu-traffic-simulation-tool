@@ -2,6 +2,7 @@ package by.brstu.tst.core.simulation.flows;
 
 import by.brstu.tst.core.simulation.MovingVehicle;
 import by.brstu.tst.core.simulation.distribution.IRandomDistribution;
+import by.brstu.tst.core.simulation.driving.IDriverFactory;
 import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.vehicle.Vehicle;
 import by.brstu.tst.core.vehicle.VehicleFactory;
@@ -15,6 +16,7 @@ import java.util.Random;
  */
 public class StaticVehicleFlow implements IVehicleFlow {
     private VehicleType vehicleType;
+    private IDriverFactory driverFactory;
     private Route route;
     private IRandomDistribution flowDistribution;
     private ActivationPeriod activationPeriod;
@@ -22,17 +24,11 @@ public class StaticVehicleFlow implements IVehicleFlow {
     int lanes;
     Random laneGenerator;
 
-    public StaticVehicleFlow(VehicleType vehicleType,
-                       Route route, IRandomDistribution flowDistribution,
-                       float activationTime, float deactivationTime) {
-        this(vehicleType, route, flowDistribution,
-                new ActivationPeriod(activationTime, deactivationTime));
-    }
-
-    public StaticVehicleFlow(VehicleType vehicleType,
+    public StaticVehicleFlow(VehicleType vehicleType, IDriverFactory driverFactory,
                        Route route, IRandomDistribution flowDistribution,
                        ActivationPeriod activationPeriod) {
         this.vehicleType = vehicleType;
+        this.driverFactory = driverFactory;
         this.route = route;
         this.flowDistribution = flowDistribution;
         this.activationPeriod = activationPeriod;
@@ -49,7 +45,7 @@ public class StaticVehicleFlow implements IVehicleFlow {
         }
         while (nextVehicleGenerationTime <= time) {
             Vehicle vehicle = VehicleFactory.createVehicle(vehicleType);
-            vehicles.add(new MovingVehicle(vehicle, route, 20, laneGenerator.nextInt(lanes)));
+            vehicles.add(new MovingVehicle(vehicle, driverFactory, route, 20, laneGenerator.nextInt(lanes)));
             nextVehicleGenerationTime += flowDistribution.generateNextValue();
             System.out.printf("Time: %s; next time: %s\n", time, nextVehicleGenerationTime);
         }

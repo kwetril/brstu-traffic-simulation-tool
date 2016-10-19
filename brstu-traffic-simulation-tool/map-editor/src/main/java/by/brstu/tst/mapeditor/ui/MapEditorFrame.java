@@ -1,10 +1,6 @@
 package by.brstu.tst.mapeditor.ui;
 
-import by.brstu.tst.core.config.Configuration;
-import by.brstu.tst.core.config.ConfigurationReader;
 import by.brstu.tst.core.map.Map;
-import by.brstu.tst.core.map.MapBuilder;
-import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.io.xml.MapReader;
 
 import javax.swing.*;

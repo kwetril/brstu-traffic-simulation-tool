@@ -10,6 +10,8 @@ import by.brstu.tst.core.simulation.control.cyclic.CycleSection;
 import by.brstu.tst.core.simulation.control.cyclic.CyclicIntersectionController;
 import by.brstu.tst.core.simulation.distribution.ExponentialDistribution;
 import by.brstu.tst.core.simulation.distribution.IRandomDistribution;
+import by.brstu.tst.core.simulation.driving.IDriverFactory;
+import by.brstu.tst.core.simulation.driving.cyclic.CyclicDriverFactory;
 import by.brstu.tst.core.simulation.flows.ActivationPeriod;
 import by.brstu.tst.core.simulation.flows.IVehicleFlow;
 import by.brstu.tst.core.simulation.flows.StaticVehicleFlow;
@@ -35,6 +37,7 @@ import java.util.List;
  */
 public class SimulationConfigReader {
     private Map map;
+    private IDriverFactory driverFactory;
 
     public SimulationConfigReader(Map map) {
         this.map = map;
@@ -47,10 +50,18 @@ public class SimulationConfigReader {
             Document simulationConfigDom = docBuilder.parse(new File(path));
 
             SimulationConfig simulationConfig = new SimulationConfig();
-            float timeStep = XmlUtils.getFloatAttr(
-                    simulationConfigDom.getElementsByTagName("simulation").item(0).getAttributes(),
-                    "timeStep");
+            NamedNodeMap simulationAttributes = simulationConfigDom
+                    .getElementsByTagName("simulation").item(0).getAttributes();
+            float timeStep = XmlUtils.getFloatAttr(simulationAttributes, "timeStep");
             simulationConfig.setTimeStep(timeStep);
+            String simulationType = XmlUtils.getAttr(simulationAttributes, "type");
+            switch (simulationType) {
+                case "cyclic" :
+                    driverFactory = new CyclicDriverFactory();
+                    break;
+                default:
+                    throw new ParseException(String.format("Simulation type %s not supported", simulationType));
+            }
 
             NodeList vehicleFlowsXml = simulationConfigDom.getElementsByTagName("flow");
             for (int i = 0; i < vehicleFlowsXml.getLength(); i++) {
@@ -101,7 +112,7 @@ public class SimulationConfigReader {
                 for (int i = 0; i < routeElements.length; i++) {
                     routeElements[i] = XmlUtils.getAttr(routeElementsXml.get(i).getAttributes(), "name");
                 }
-                return new StaticVehicleFlow(vehicleType, new Route(map, routeElements),
+                return new StaticVehicleFlow(vehicleType, driverFactory, new Route(map, routeElements),
                         randomDistribution, activationPeriod);
             default:
                 throw new ParseException(String.format("Vehicle flow type %s not supported", type));

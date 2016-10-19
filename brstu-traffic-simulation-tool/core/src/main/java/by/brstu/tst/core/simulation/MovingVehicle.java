@@ -1,8 +1,9 @@
 package by.brstu.tst.core.simulation;
 
 import by.brstu.tst.core.map.primitives.MapPoint;
-import by.brstu.tst.core.simulation.driving.cyclic.VehicleDriver;
-import by.brstu.tst.core.simulation.messaging.ControlMessage;
+import by.brstu.tst.core.simulation.driving.BaseVehicleDriver;
+import by.brstu.tst.core.simulation.driving.IDriverFactory;
+import by.brstu.tst.core.simulation.driving.cyclic.CyclicVehicleDriver;
 import by.brstu.tst.core.simulation.routing.Route;
 import by.brstu.tst.core.simulation.routing.RouteState;
 import by.brstu.tst.core.simulation.routing.info.RouteStateInfo;
@@ -17,15 +18,16 @@ public class MovingVehicle {
     private double speed;
     private double acceletation;
     private RouteState routeState;
-    private VehicleDriver driver;
+    private BaseVehicleDriver driver;
 
 
-    public MovingVehicle(Vehicle vehicle, Route route, double initialSpeed, int initialLane) {
+    public MovingVehicle(Vehicle vehicle, IDriverFactory driverFactory, Route route,
+                         double initialSpeed, int initialLane) {
         this.vehicle = vehicle;
         routeState = new RouteState(route, initialLane);
         speed = initialSpeed;
         acceletation = 0;
-        driver = new VehicleDriver(this);
+        driver = driverFactory.createDriver(this);
     }
 
     public void accept(IVehicleVisitor visitor) {
@@ -54,7 +56,7 @@ public class MovingVehicle {
                 position.getX(), position.getY(), speed);
     }
 
-    public VehicleDriver getDriver() {
+    public BaseVehicleDriver getDriver() {
         return driver;
     }
 
