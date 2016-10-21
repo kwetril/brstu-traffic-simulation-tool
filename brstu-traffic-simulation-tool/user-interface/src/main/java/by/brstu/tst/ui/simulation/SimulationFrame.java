@@ -9,6 +9,7 @@ import by.brstu.tst.core.statistics.TotalVehiclesStatCollector;
 import by.brstu.tst.core.statistics.VehicleDynmicsStatCollector;
 import by.brstu.tst.io.xml.MapReader;
 import by.brstu.tst.io.xml.SimulationConfigReader;
+import by.brstu.tst.ui.simulation.status.VehicleInfoPanel;
 import by.brstu.tst.ui.statistics.*;
 import org.jfree.chart.ChartPanel;
 
@@ -26,6 +27,7 @@ public class SimulationFrame extends JFrame {
     private JMenuItem startSimulationMenuItem;
     private JMenuItem pauseSimulationMenuItem;
     private StatsGridFrame statsGridFrame;
+    private VehicleInfoPanel vehicleInfoPanel;
     private Map map;
 
     public SimulationFrame() {
@@ -36,6 +38,7 @@ public class SimulationFrame extends JFrame {
         add(simulationPanel, BorderLayout.CENTER);
 
         add(createStatusPanel(), BorderLayout.SOUTH);
+        add(createVehicleStatusPanel(), BorderLayout.EAST);
         JMenuBar menuBar = createMenu();
         setJMenuBar(menuBar);
 
@@ -50,6 +53,11 @@ public class SimulationFrame extends JFrame {
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusPanel.add(statusLabel);
         return statusPanel;
+    }
+
+    private JPanel createVehicleStatusPanel() {
+        vehicleInfoPanel = new VehicleInfoPanel();
+        return vehicleInfoPanel;
     }
 
     private JMenuBar createMenu() {
@@ -141,6 +149,7 @@ public class SimulationFrame extends JFrame {
                speedStatsPanel, totalVehiclesStatPanel, vehicleDynamicsStatsPanel, timeInSystemStatsPanel
             });
             simulationPanel.setupSimulation(simulationModel);
+            vehicleInfoPanel.setVehicleSelector(simulationPanel.getVehicleSelector());
 
         } catch (Exception exception) {
             exception.printStackTrace();

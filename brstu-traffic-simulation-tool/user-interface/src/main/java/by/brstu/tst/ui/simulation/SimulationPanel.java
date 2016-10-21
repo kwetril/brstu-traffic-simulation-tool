@@ -6,8 +6,10 @@ import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
 import by.brstu.tst.core.map.primitives.MapRectangle;
 import by.brstu.tst.core.simulation.IVehicleVisitor;
 import by.brstu.tst.core.simulation.SimulationConfig;
+import by.brstu.tst.ui.simulation.status.VehicleSelector;
 import by.brstu.tst.ui.utils.FindMapBoundsVisitor;
 import by.brstu.tst.ui.utils.RoadElementDrawVisitor;
+import by.brstu.tst.ui.utils.TransformState;
 import by.brstu.tst.ui.utils.TransformableCanvas;
 
 import javax.imageio.ImageIO;
@@ -23,13 +25,14 @@ import java.io.File;
  */
 public class SimulationPanel extends TransformableCanvas {
     private Map map;
-    TexturePaint grassTexture;
+    private TexturePaint grassTexture;
     private SimulationModel simulationModel;
     private SimulationFrame parentFrame;
     private MapRectangle mapBounds;
     private MapImageCache mapImageCache;
     private volatile boolean simulationStarted;
     private BufferedImage grassTileImage;
+    private VehicleSelector vehicleSelector;
 
 
     public SimulationPanel(SimulationFrame parentFrame) {
@@ -45,6 +48,10 @@ public class SimulationPanel extends TransformableCanvas {
         }
         addMouseScalingTool();
         addMouseMovingTool();
+    }
+
+    public TransformState getTransformState() {
+        return transformState;
     }
 
     public boolean isSimulationStarted() {
@@ -65,6 +72,11 @@ public class SimulationPanel extends TransformableCanvas {
 
     public void setupSimulation(SimulationModel simulationModel) {
         this.simulationModel = simulationModel;
+        vehicleSelector = new VehicleSelector(this, simulationModel);
+    }
+
+    public VehicleSelector getVehicleSelector() {
+        return vehicleSelector;
     }
 
     public void startSimulation() {
@@ -143,13 +155,16 @@ public class SimulationPanel extends TransformableCanvas {
         long endTime = System.nanoTime();
         if (simulationModel != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
-            IVehicleVisitor vehicleDrawVisitor = new VehicleDrawVisitor(graphics2D);
+            IVehicleVisitor vehicleDrawVisitor = new VehicleDrawVisitor(graphics2D, vehicleSelector);
             simulationModel.visitVehicles(vehicleDrawVisitor);
+
+            vehicleSelector.updateStatus();
         }
         parentFrame.setStatus(String.format("Scale: %s; Scale power: %s; Translate X: %s; Translate Y: %s; (W, H)=%s,%s",
                 transformState.getScaleX(), transformState.getScalePower(),
                 transformState.getTranslateX(), transformState.getTranslateY(),
                 getWidth(), getHeight()));
+
         System.out.printf("Rendering time: %s ms\n",
                 (endTime - startTime) / 1000000.0);
     }

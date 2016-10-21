@@ -71,4 +71,8 @@ public class MovingVehicle {
     public double getSpeed() {
         return speed;
     }
+
+    public double getAcceletation() {
+        return acceletation;
+    }
 }
