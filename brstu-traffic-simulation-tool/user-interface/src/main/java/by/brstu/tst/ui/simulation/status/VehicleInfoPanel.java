@@ -23,6 +23,7 @@ public class VehicleInfoPanel extends JPanel {
         add(speedLabel);
         accelerationLabel = new JLabel("Acceleration");
         add(accelerationLabel);
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }
 
     public void setVehicleSelector(VehicleSelector vehicleSelector) {
