@@ -13,4 +13,6 @@ public abstract class BaseVehicleDriver implements IMessagingAgent {
     public BaseVehicleDriver(MovingVehicle vehicle) {
         this.vehicle = vehicle;
     }
+
+    public abstract boolean seeCarsInFront();
 }

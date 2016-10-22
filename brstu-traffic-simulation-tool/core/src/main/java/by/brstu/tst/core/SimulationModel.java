@@ -54,17 +54,18 @@ public class SimulationModel {
         UpdateVehicleStateVisitor vehicleStateUpdater = new UpdateVehicleStateVisitor(state,
                 messagingQueue, timeStep);
         visitVehicles(vehicleStateUpdater);
+
+        //collect statistics
+        for (IStatsCollector statsCollector : statsCollectors) {
+            statsCollector.updateStats(state);
+        }
+
         //remove vehicles which came to destination
         removeVehiclesReachedDestination();
 
         //update state of controllers
         for (IntersectionController controller : intersectionControllers) {
             controller.updateInnerState(state, messagingQueue);
-        }
-
-        //collect statistics
-        for (IStatsCollector statsCollector : statsCollectors) {
-            statsCollector.updateStats(state);
         }
 
         //update model time

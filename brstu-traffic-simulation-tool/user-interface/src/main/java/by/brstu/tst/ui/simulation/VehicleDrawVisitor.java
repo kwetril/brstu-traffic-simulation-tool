@@ -4,8 +4,9 @@ import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.simulation.IVehicleVisitor;
 import by.brstu.tst.core.simulation.MovingVehicle;
+import by.brstu.tst.core.vehicle.Vehicle;
 import by.brstu.tst.core.vehicle.VehicleTechnicalParameters;
-import by.brstu.tst.ui.simulation.status.VehicleSelector;
+import by.brstu.tst.ui.simulation.selection.VehicleSelector;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -32,15 +33,21 @@ public class VehicleDrawVisitor implements IVehicleVisitor {
         graphics.setColor(Color.RED);
         Path2D.Double vehicleShape = vehicleToPath(vehicle);
         graphics.fill(vehicleShape);
+        drawSelectionMarker(vehicle);
+    }
+
+    private void drawSelectionMarker(MovingVehicle vehicle) {
+        Vehicle vehicleInfo = vehicle.getVehicleInfo();
         if (vehicleSelector.getSelectedVehicle() != null
                 && vehicleSelector.getSelectedVehicle().getVehicleInfo().getIdentifier().equals(
-                        vehicle.getVehicleInfo().getIdentifier())) {
+                vehicleInfo.getIdentifier())) {
+            double width = vehicleInfo.getTechnicalParameters().getWidth();
+            MapPoint position = vehicle.getRouteStateInfo().getPosition();
             graphics.setColor(Color.ORANGE);
-            graphics.fill(new Ellipse2D.Double(vehicle.getRouteStateInfo().getPosition().getX(),
-                    vehicle.getRouteStateInfo().getPosition().getY(),
-                    vehicle.getVehicleInfo().getTechnicalParameters().getWidth(),
-                    vehicle.getVehicleInfo().getTechnicalParameters().getWidth()));
+            graphics.fill(new Ellipse2D.Double(position.getX() - width / 2,
+                    position.getY() - width / 2, width, width));
         }
+
     }
 
     private Path2D.Double vehicleToPath(MovingVehicle vehicle) {

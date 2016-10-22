@@ -34,6 +34,7 @@ public class CyclicVehicleDriver extends BaseVehicleDriver {
     private RouteStateInfo routeState;
     private IntersectionState intersectionState;
     private List<Integer> suitableLanes;
+    private boolean carsInfront;
 
     public CyclicVehicleDriver(MovingVehicle vehicle) {
         super(vehicle);
@@ -54,6 +55,11 @@ public class CyclicVehicleDriver extends BaseVehicleDriver {
         processMessages(messagingQueue.getCurrentMessages());
         updateVehicleState(simulationState);
         sendMessages(messagingQueue);
+    }
+
+    @Override
+    public boolean seeCarsInFront() {
+        return carsInfront;
     }
 
     private void processMessages(Iterable<ControlMessage> messages) {
@@ -81,7 +87,7 @@ public class CyclicVehicleDriver extends BaseVehicleDriver {
     private void updateVehicleState(SimulationState simulationState) {
         vehicle.setAcceletation(getPrefferedAcceleration());
 
-        boolean carsInfront = checkCarsInfront(simulationState);
+        carsInfront = checkCarsInfront(simulationState);
         if (carsInfront) {
             return;
         }
@@ -171,7 +177,7 @@ public class CyclicVehicleDriver extends BaseVehicleDriver {
                     || (!routeState.isOnRoad() && otherStateInfo.isOnRoad()
                     && routeState.getNextRoad().getName().equals(otherStateInfo.getCurrentRoad().getName())
                     && routeState.getLaneAfterNode() == otherStateInfo.getLane())) {
-                if (convergenceSpeed > 0 && relationalSpeed.scalarMultiply(direction) > 0
+                if (convergenceSpeed > 0 && fromToVector.scalarMultiply(direction) > 0
                         && distance < getPrefferedDistance(convergenceSpeed)) {
                     vehicle.setAcceletation(-maxDeceleration);
                     return true;

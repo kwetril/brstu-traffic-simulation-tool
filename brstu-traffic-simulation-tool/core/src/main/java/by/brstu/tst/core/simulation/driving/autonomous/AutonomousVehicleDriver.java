@@ -14,6 +14,11 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
     }
 
     @Override
+    public boolean seeCarsInFront() {
+        return false;
+    }
+
+    @Override
     public void updateInnerState(SimulationState simulationState, MessagingQueue messagingQueue) {
 
     }

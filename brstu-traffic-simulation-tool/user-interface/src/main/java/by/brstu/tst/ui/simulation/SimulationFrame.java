@@ -9,7 +9,7 @@ import by.brstu.tst.core.statistics.TotalVehiclesStatCollector;
 import by.brstu.tst.core.statistics.VehicleDynmicsStatCollector;
 import by.brstu.tst.io.xml.MapReader;
 import by.brstu.tst.io.xml.SimulationConfigReader;
-import by.brstu.tst.ui.simulation.status.VehicleInfoPanel;
+import by.brstu.tst.ui.simulation.selection.SelectedVehicleInfoPanel;
 import by.brstu.tst.ui.statistics.*;
 import org.jfree.chart.ChartPanel;
 
@@ -27,7 +27,7 @@ public class SimulationFrame extends JFrame {
     private JMenuItem startSimulationMenuItem;
     private JMenuItem pauseSimulationMenuItem;
     private StatsGridFrame statsGridFrame;
-    private VehicleInfoPanel vehicleInfoPanel;
+    private SelectedVehicleInfoPanel vehicleInfoPanel;
     private Map map;
 
     public SimulationFrame() {
@@ -56,7 +56,7 @@ public class SimulationFrame extends JFrame {
     }
 
     private JPanel createVehicleStatusPanel() {
-        vehicleInfoPanel = new VehicleInfoPanel();
+        vehicleInfoPanel = new SelectedVehicleInfoPanel();
         return vehicleInfoPanel;
     }
 

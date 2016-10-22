@@ -1,4 +1,4 @@
-package by.brstu.tst.ui.simulation.status;
+package by.brstu.tst.ui.simulation.selection;
 
 import by.brstu.tst.core.SimulationModel;
 import by.brstu.tst.core.map.primitives.MapPoint;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class VehicleSelector {
     private MovingVehicle selectedVehicle;
-    private List<VehicleStateListener> listeners;
+    private List<SelectedVehicleStatusListener> listeners;
 
     public VehicleSelector(SimulationPanel panel, SimulationModel simulationModel) {
         listeners = new ArrayList<>();
@@ -40,7 +40,7 @@ public class VehicleSelector {
         });
     }
 
-    public void addListener(VehicleStateListener listener) {
+    public void addListener(SelectedVehicleStatusListener listener) {
         listeners.add(listener);
     }
 
@@ -50,7 +50,7 @@ public class VehicleSelector {
 
     public void updateStatus() {
         if (selectedVehicle != null) {
-            for (VehicleStateListener listener : listeners) {
+            for (SelectedVehicleStatusListener listener : listeners) {
                 listener.selectedVehicleStatusChanged(selectedVehicle);
             }
         }
