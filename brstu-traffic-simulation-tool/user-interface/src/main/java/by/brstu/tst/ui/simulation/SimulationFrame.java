@@ -128,7 +128,7 @@ public class SimulationFrame extends JFrame {
             simulationModel.addStatsCollector(speedStatsCollector);
             TotalVehiclesStatCollector totalVehiclesStatCollector = new TotalVehiclesStatCollector(1.0);
             simulationModel.addStatsCollector(totalVehiclesStatCollector);
-            VehicleDynmicsStatCollector vehicleDynmicsStatCollector = new VehicleDynmicsStatCollector(5.0);
+            VehicleDynmicsStatCollector vehicleDynmicsStatCollector = new VehicleDynmicsStatCollector(1.0);
             simulationModel.addStatsCollector(vehicleDynmicsStatCollector);
             TimeInSystemStatsCollector timeInSystemStatsCollector = new TimeInSystemStatsCollector(1.0);
             simulationModel.addStatsCollector(timeInSystemStatsCollector);
@@ -139,7 +139,7 @@ public class SimulationFrame extends JFrame {
                     "Simulation time", "Number of vehicles", new String[] {"total"},
                     totalVehiclesStatCollector);
             ChartPanel vehicleDynamicsStatsPanel = ChartPanelHelper.createPanel("Dynamics of vehicles in model",
-                    "Simulation time", "Number of vehicles", new String[] {"added", "deleted"},
+                    "Simulation time", "Number of vehicles", new String[] {"added", "deleted", "throughput", "input"},
                     vehicleDynmicsStatCollector);
             ChartPanel timeInSystemStatsPanel = ChartPanelHelper.createPanel("Time in system",
                     "Simulation time", "Time in system",

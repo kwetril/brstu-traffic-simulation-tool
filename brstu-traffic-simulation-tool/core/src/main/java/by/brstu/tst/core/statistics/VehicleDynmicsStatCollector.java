@@ -18,6 +18,8 @@ public class VehicleDynmicsStatCollector implements IStatsCollector {
     private double nextUpdate;
     private int addedVehicles;
     private int deletedVehicles;
+    private int totalReachedDestination;
+    private int totalInputVehicles;
 
     public VehicleDynmicsStatCollector(double updatePeriodInSeconds) {
         listeners = new ArrayList<>();
@@ -26,6 +28,8 @@ public class VehicleDynmicsStatCollector implements IStatsCollector {
         nextUpdate = 0;
         addedVehicles = 0;
         deletedVehicles = 0;
+        totalReachedDestination = 0;
+        totalInputVehicles = 0;
     }
 
     @Override
@@ -33,9 +37,13 @@ public class VehicleDynmicsStatCollector implements IStatsCollector {
         HashSet<String> nextExistingVehicles = new HashSet<>();
         int stepAddedVehicles = 0;
         for (MovingVehicle vehicle : state.getVehicles()) {
+            if (vehicle.getRouteStateInfo().reachedDestination()) {
+                totalReachedDestination++;
+            }
             nextExistingVehicles.add(vehicle.getVehicleInfo().getIdentifier());
             if (!existingVehicles.contains(vehicle.getVehicleInfo().getIdentifier())) {
                 stepAddedVehicles++;
+                totalInputVehicles++;
             }
         }
         int stepDeletedVehicles = existingVehicles.size() - nextExistingVehicles.size() + stepAddedVehicles;
@@ -48,6 +56,8 @@ public class VehicleDynmicsStatCollector implements IStatsCollector {
             for (INewPointListener listener : listeners) {
                 listener.addPoint(currentTime, addedVehicles, "added");
                 listener.addPoint(currentTime, deletedVehicles, "deleted");
+                listener.addPoint(currentTime, totalReachedDestination / currentTime, "throughput");
+                listener.addPoint(currentTime, totalInputVehicles / currentTime, "input");
             }
             addedVehicles = 0;
             deletedVehicles = 0;
