@@ -3,6 +3,7 @@ package by.brstu.tst.core.map.elements;
 import by.brstu.tst.core.map.primitives.BezierCurve;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
+import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 
 /**
  * Created by kwetril on 8/17/16.
@@ -15,6 +16,11 @@ public class Intersection extends NodeRoadElement {
     @Override
     public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public BezierCurve getConnector(RoadConnectorDescription connectorDescription) {
+        return getConnector(connectorDescription.getFrom(), connectorDescription.getFromLane(),
+                connectorDescription.getTo(), connectorDescription.getToLane());
     }
 
     public BezierCurve getConnector(DirectedRoad from, int laneFrom, DirectedRoad to, int laneTo) {

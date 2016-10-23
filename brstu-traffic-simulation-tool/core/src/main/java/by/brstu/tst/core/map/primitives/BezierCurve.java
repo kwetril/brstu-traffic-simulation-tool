@@ -45,4 +45,20 @@ public class BezierCurve {
         double y = 3 * ya * tpow2 + 2 * yb * t + yc;
         return new Vector(x, y).setLength(1.0);
     }
+
+    public double getDistance(BezierCurve curve) {
+        double distance = Double.MAX_VALUE;
+        int segments = 100;
+        for (int segment = 0; segment < segments; segment++) {
+            for (int anotherSegment = 0; anotherSegment < segments; anotherSegment++) {
+                MapPoint point = getPoint((double) segment / segments);
+                MapPoint anotherPoint = curve.getPoint((double) anotherSegment / segments);
+                double currentDistance = point.distanceTo(anotherPoint);
+                if (currentDistance < distance) {
+                    distance = currentDistance;
+                }
+            }
+        }
+        return distance;
+    }
 }

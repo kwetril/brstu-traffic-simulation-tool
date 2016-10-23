@@ -55,6 +55,14 @@ public class DirectedRoad extends EdgeRoadElement {
     }
 
     @Override
+    public DirectedRoad getDirectedRoadByEndNode(NodeRoadElement endNode) {
+        if (endNode.getName().equals(this.secondNodeElement.getName())) {
+            return this;
+        }
+        return null;
+    }
+
+    @Override
     public void accept(BaseRoadElementVisitor visitor) {
         visitor.visit(this);
     }

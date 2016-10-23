@@ -147,14 +147,14 @@ public class SimulationConfigReader {
                 String intersectionName = XmlUtils.getAttr(controllerAttributes, "intersection");
                 Intersection intersection =(Intersection) map.getNode(intersectionName);
                 Node cycleXml = XmlUtils.filterNodesByTag(controllerXml.getChildNodes(), "cycle").get(0);
-                List<CycleSection> cycleSections = parseCycleSections(cycleXml);
+                List<CycleSection> cycleSections = parseCycleSections(intersection, cycleXml);
                 return new CyclicIntersectionController(intersection, cycleSections);
             default:
                 throw new ParseException(String.format("Intersection controller type %s not supported", type));
         }
     }
 
-    private List<CycleSection> parseCycleSections(Node cycleXml) {
+    private List<CycleSection> parseCycleSections(Intersection intersection, Node cycleXml) {
         List<Node> cycleSectionsXml = XmlUtils.filterNodesByTag(cycleXml.getChildNodes(), "section");
         List<CycleSection> result = new ArrayList<>();
         for (Node cycleSectionXml : cycleSectionsXml) {
@@ -167,7 +167,8 @@ public class SimulationConfigReader {
                 int fromLane = XmlUtils.getIntAttr(connectorAttributes, "fromLane");
                 String to = XmlUtils.getAttr(connectorAttributes, "to");
                 int toLane = XmlUtils.getIntAttr(connectorAttributes, "toLane");
-                roadConnections.add(new RoadConnectorDescription(from, fromLane, to, toLane));
+                roadConnections.add(new RoadConnectorDescription(map.getEdge(from).getDirectedRoadByEndNode(intersection),
+                        fromLane, map.getEdge(to).getDirectedRoadByStartNode(intersection), toLane));
             }
             IntersectionState state = new IntersectionState(roadConnections);
             result.add(new CycleSection(state, duration));

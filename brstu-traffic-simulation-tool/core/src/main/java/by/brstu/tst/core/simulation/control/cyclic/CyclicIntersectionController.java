@@ -4,6 +4,7 @@ import by.brstu.tst.core.map.elements.DirectedRoad;
 import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.SimulationState;
+import by.brstu.tst.core.simulation.control.IControllerVisitor;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
@@ -23,6 +24,7 @@ public class CyclicIntersectionController implements IntersectionController {
     private List<CycleSection> cycleSections;
     private float period;
     private HashSet<RoadConnectorDescription> existingConnectors;
+    private CycleSection currentSection;
 
     public CyclicIntersectionController(Intersection intersection, List<CycleSection> cycleSections) {
         this.intersection = intersection;
@@ -33,21 +35,26 @@ public class CyclicIntersectionController implements IntersectionController {
             period += section.getDuration();
             existingConnectors.addAll(section.getState().getOpenedConnections());
         }
+        currentSection = getSectionByTime(0);
     }
 
-    @Override
-    public IntersectionState getStateByTime(float time) {
+    private CycleSection getSectionByTime(float time) {
         while (time > period) {
             time -= period;
         }
         for (CycleSection section : cycleSections) {
             if (section.getDuration() > time) {
-                return section.getState();
+                return section;
             } else {
                 time -= section.getDuration();
             }
         }
-        return cycleSections.get(0).getState();
+        return cycleSections.get(0);
+    }
+
+    @Override
+    public IntersectionState getState() {
+        return currentSection.getState();
     }
 
     @Override
@@ -58,16 +65,22 @@ public class CyclicIntersectionController implements IntersectionController {
     @Override
     public boolean connectorExist(DirectedRoad fromRoad, int fromLane, DirectedRoad toRoad) {
         int toLane = Math.min(toRoad.getNumLanes(), fromLane);
-        return existingConnectors.contains(new RoadConnectorDescription(fromRoad.getName(), fromLane,
-                toRoad.getName(), toLane));
+        return existingConnectors.contains(new RoadConnectorDescription(fromRoad, fromLane,
+                toRoad, toLane));
+    }
+
+    @Override
+    public void accept(IControllerVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
     public void updateInnerState(SimulationState simulationState, MessagingQueue messagingQueue) {
+        currentSection = getSectionByTime(simulationState.getSimulationTime());
         Iterable<ControlMessage> messagesToProcess = Iterables.filter(messagingQueue.getCurrentMessages(),
                 message -> !message.isBroadcast() && message.getReceiver().equals(intersection.getName()));
         messagingQueue.addMessage(new BroadcastIntersectionStateMessage(intersection.getName(),
-                getStateByTime(simulationState.getSimulationTime())));
+                currentSection.getState()));
         for (ControlMessage message : messagesToProcess) {
             switch (message.getType()) {
                 case CYCLIC_GET_SUITABLE_LANES_REQUEST:

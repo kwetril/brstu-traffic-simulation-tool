@@ -16,4 +16,12 @@ public class BidirectedRoad extends EdgeRoadElement {
          */
         return null;
     }
+
+    @Override
+    public DirectedRoad getDirectedRoadByEndNode(NodeRoadElement startNode) {
+        /**
+         * TODO not implemented yet
+         */
+        return null;
+    }
 }

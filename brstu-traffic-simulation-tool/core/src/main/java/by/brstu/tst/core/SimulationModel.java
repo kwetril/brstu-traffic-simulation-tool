@@ -2,6 +2,7 @@ package by.brstu.tst.core;
 
 import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.simulation.*;
+import by.brstu.tst.core.simulation.control.IControllerVisitor;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.flows.IVehicleFlow;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
@@ -76,6 +77,12 @@ public class SimulationModel {
     public synchronized void visitVehicles(IVehicleVisitor visitor) {
         for (MovingVehicle vehicle : vehicles) {
             vehicle.accept(visitor);
+        }
+    }
+
+    public synchronized void visitControllers(IControllerVisitor visitor) {
+        for (IntersectionController controller : intersectionControllers) {
+            controller.accept(visitor);
         }
     }
 

@@ -21,7 +21,7 @@ public class IntersectionState {
     }
 
     public boolean isOpened(DirectedRoad from, int laneFrom, DirectedRoad to, int laneTo) {
-        return isOpened(new RoadConnectorDescription(from.getName(), laneFrom, to.getName(), laneTo));
+        return isOpened(new RoadConnectorDescription(from, laneFrom, to, laneTo));
     }
 
     public HashSet<RoadConnectorDescription> getOpenedConnections() {

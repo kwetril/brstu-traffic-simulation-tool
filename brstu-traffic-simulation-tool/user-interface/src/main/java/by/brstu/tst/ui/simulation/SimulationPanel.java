@@ -5,6 +5,7 @@ import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.BaseRoadElementVisitor;
 import by.brstu.tst.core.map.primitives.MapRectangle;
 import by.brstu.tst.core.simulation.IVehicleVisitor;
+import by.brstu.tst.core.simulation.control.IControllerVisitor;
 import by.brstu.tst.ui.simulation.selection.VehicleSelector;
 import by.brstu.tst.ui.utils.FindMapBoundsVisitor;
 import by.brstu.tst.ui.utils.RoadElementDrawVisitor;
@@ -154,6 +155,8 @@ public class SimulationPanel extends TransformableCanvas {
         long endTime = System.nanoTime();
         if (simulationModel != null) {
             Graphics2D graphics2D = (Graphics2D) graphics;
+            IControllerVisitor controllerDrawVisitor = new ControllerDrawVisitor(graphics2D);
+            simulationModel.visitControllers(controllerDrawVisitor);
             IVehicleVisitor vehicleDrawVisitor = new VehicleDrawVisitor(graphics2D, vehicleSelector);
             simulationModel.visitVehicles(vehicleDrawVisitor);
 

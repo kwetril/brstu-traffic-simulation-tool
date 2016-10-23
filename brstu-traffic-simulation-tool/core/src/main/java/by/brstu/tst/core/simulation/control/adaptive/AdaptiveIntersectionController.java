@@ -3,6 +3,7 @@ package by.brstu.tst.core.simulation.control.adaptive;
 import by.brstu.tst.core.map.elements.DirectedRoad;
 import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.simulation.SimulationState;
+import by.brstu.tst.core.simulation.control.IControllerVisitor;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
@@ -17,7 +18,7 @@ public class AdaptiveIntersectionController implements IntersectionController {
     }
 
     @Override
-    public IntersectionState getStateByTime(float time) {
+    public IntersectionState getState() {
         return null;
     }
 
@@ -29,5 +30,10 @@ public class AdaptiveIntersectionController implements IntersectionController {
     @Override
     public boolean connectorExist(DirectedRoad fromRoad, int fromLane, DirectedRoad toRoad) {
         return false;
+    }
+
+    @Override
+    public void accept(IControllerVisitor visitor) {
+        visitor.visit(this);
     }
 }

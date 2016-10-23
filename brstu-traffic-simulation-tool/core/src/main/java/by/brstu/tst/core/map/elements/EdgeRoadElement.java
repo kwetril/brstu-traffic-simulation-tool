@@ -14,6 +14,7 @@ public abstract class EdgeRoadElement extends BaseRoadElement {
     }
 
     public abstract DirectedRoad getDirectedRoadByStartNode(NodeRoadElement startNode);
+    public abstract DirectedRoad getDirectedRoadByEndNode(NodeRoadElement startNode);
 
     @Override
     public void accept(BaseRoadElementVisitor visitor) {
