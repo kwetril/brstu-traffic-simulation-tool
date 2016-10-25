@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulation timeStep="0.1" type="autonomous">
+    <flows>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.2" seed="1" />
+            <route>
+                <routeElement name="from-west" />
+                <routeElement name="rd-1" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-5" />
+                <routeElement name="to-east" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="2" />
+            <route>
+                <routeElement name="from-west" />
+                <routeElement name="rd-1" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-7" />
+                <routeElement name="to-south" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="3" />
+            <route>
+                <routeElement name="from-west" />
+                <routeElement name="rd-1" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-8" />
+                <routeElement name="to-north" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.2" seed="4" />
+            <route>
+                <routeElement name="from-east" />
+                <routeElement name="rd-2" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-6" />
+                <routeElement name="to-west" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="5" />
+            <route>
+                <routeElement name="from-east" />
+                <routeElement name="rd-2" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-7" />
+                <routeElement name="to-south" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="6" />
+            <route>
+                <routeElement name="from-east" />
+                <routeElement name="rd-2" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-8" />
+                <routeElement name="to-north" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.2" seed="7" />
+            <route>
+                <routeElement name="from-north" />
+                <routeElement name="rd-3" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-7" />
+                <routeElement name="to-south" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.2" seed="8" />
+            <route>
+                <routeElement name="from-north" />
+                <routeElement name="rd-3" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-5" />
+                <routeElement name="to-east" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.2" seed="9" />
+            <route>
+                <routeElement name="from-north" />
+                <routeElement name="rd-3" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-6" />
+                <routeElement name="to-west" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.2" seed="10" />
+            <route>
+                <routeElement name="from-south" />
+                <routeElement name="rd-4" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-8" />
+                <routeElement name="to-north" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="11" />
+            <route>
+                <routeElement name="from-south" />
+                <routeElement name="rd-4" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-5" />
+                <routeElement name="to-east" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.1" seed="12" />
+            <route>
+                <routeElement name="from-south" />
+                <routeElement name="rd-4" />
+                <routeElement name="intersection" />
+                <routeElement name="rd-6" />
+                <routeElement name="to-west" />
+            </route>
+        </flow>
+    </flows>
+    <controllers>
+        <controller type="autonomous" intersection="intersection" recalculationPeriod="3"
+                    maxStatesToCalculate="3" operationRadius="200" />
+    </controllers>
+</simulation>

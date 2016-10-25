@@ -28,11 +28,6 @@ public class AdaptiveIntersectionController implements IntersectionController {
     }
 
     @Override
-    public boolean connectorExist(DirectedRoad fromRoad, int fromLane, DirectedRoad toRoad) {
-        return false;
-    }
-
-    @Override
     public void accept(IControllerVisitor visitor) {
         visitor.visit(this);
     }

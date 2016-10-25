@@ -9,7 +9,11 @@ import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IControllerVisitor;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
+import by.brstu.tst.core.simulation.control.autonomous.algorithm.StateRecalculationAlgorithm;
+import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
+import by.brstu.tst.core.simulation.messaging.autonomous.RequestVehicleDirections;
+import by.brstu.tst.core.simulation.messaging.autonomous.ResponseVehicleDirection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +28,20 @@ public class AutonomousIntersectionController implements IntersectionController 
     private Intersection intersection;
     private List<RoadConnectorDescription> allConnectors;
     private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
-    double laneWidth;
+    private double laneWidth;
+    private double nextRecalculationTime;
+    private double recalculationPeriod;
+    private StateRecalculationAlgorithm stateRecalculationAlgorithm;
 
-    public AutonomousIntersectionController(Intersection intersection) {
+    public AutonomousIntersectionController(Intersection intersection, double recalculationPeriod,
+                                            int numStatesToCalculate) {
         this.intersection = intersection;
         allConnectors = new ArrayList<>();
         laneWidth = Double.MAX_VALUE;
+        this.recalculationPeriod = recalculationPeriod;
+        nextRecalculationTime = 0;
+        stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection, numStatesToCalculate);
+        nonConflictConnectors = new HashMap<>();
         findNonConflictConnectors();
     }
 
@@ -63,28 +75,52 @@ public class AutonomousIntersectionController implements IntersectionController 
         }
     }
 
-    private List<RoadConnectorDescription> getBestCombiination(List<WeightedConnectorDescription> weightedConnections) {
-        return null;
-    }
-
     @Override
     public void updateInnerState(SimulationState simulationState, MessagingQueue messagingQueue) {
+        processMessages(messagingQueue);
 
+        if (stateRecalculationAlgorithm.isRecalculationStarted()) {
+            stateRecalculationAlgorithm.recalculateState();
+            stateRecalculationAlgorithm.generateControlMessages(simulationState, messagingQueue);
+        }
+
+        if (simulationState.getSimulationTime() + 1e-6 >= nextRecalculationTime) {
+            messagingQueue.addMessage(new RequestVehicleDirections(intersection.getName()));
+            stateRecalculationAlgorithm.startRecalculation();
+            nextRecalculationTime += recalculationPeriod;
+        }
+    }
+
+    private void processMessages(MessagingQueue messagingQueue) {
+        for (ControlMessage message : messagingQueue.getCurrentMessages()) {
+            if (!message.isBroadcast() && message.getReceiver().equals(intersection.getName())) {
+                switch (message.getType()) {
+                    case AUTONOMOUS_RESPONSE_DIRECTIONS:
+                        if (!stateRecalculationAlgorithm.isRecalculationStarted()) {
+                            continue;
+                        }
+                        ResponseVehicleDirection directionResponse = (ResponseVehicleDirection) message;
+                        stateRecalculationAlgorithm.addVehicleDescription(directionResponse.getSender(),
+                                directionResponse.getPosition().distanceTo(intersection.getBasePoint()),
+                                directionResponse.getConnectorDescription());
+                        break;
+                    case AUTONOMOUS_INTERSECTION_PASSED:
+                        stateRecalculationAlgorithm.vehiclePassed(message.getSender());
+                    default:
+                        throw new RuntimeException("Not supported message type");
+                }
+            }
+        }
     }
 
     @Override
     public IntersectionState getState() {
-        return null;
+        return stateRecalculationAlgorithm.getState();
     }
 
     @Override
     public Intersection getIntersection() {
-        return null;
-    }
-
-    @Override
-    public boolean connectorExist(DirectedRoad fromRoad, int fromLane, DirectedRoad toRoad) {
-        return false;
+        return intersection;
     }
 
     @Override

@@ -62,8 +62,7 @@ public class CyclicIntersectionController implements IntersectionController {
         return intersection;
     }
 
-    @Override
-    public boolean connectorExist(DirectedRoad fromRoad, int fromLane, DirectedRoad toRoad) {
+    private boolean connectorExist(DirectedRoad fromRoad, int fromLane, DirectedRoad toRoad) {
         int toLane = Math.min(toRoad.getNumLanes(), fromLane);
         return existingConnectors.contains(new RoadConnectorDescription(fromRoad, fromLane,
                 toRoad, toLane));

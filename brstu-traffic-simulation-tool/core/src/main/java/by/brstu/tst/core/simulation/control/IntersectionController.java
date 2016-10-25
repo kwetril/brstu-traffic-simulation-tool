@@ -10,6 +10,5 @@ import by.brstu.tst.core.simulation.messaging.IMessagingAgent;
 public interface IntersectionController extends IMessagingAgent {
     IntersectionState getState();
     Intersection getIntersection();
-    boolean connectorExist(DirectedRoad fromRoad, int fromLane, DirectedRoad toRoad);
     void accept(IControllerVisitor visitor);
 }

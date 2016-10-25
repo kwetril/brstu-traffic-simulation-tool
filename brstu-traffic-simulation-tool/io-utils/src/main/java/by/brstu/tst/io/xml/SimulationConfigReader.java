@@ -6,11 +6,13 @@ import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.SimulationConfig;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
+import by.brstu.tst.core.simulation.control.autonomous.AutonomousIntersectionController;
 import by.brstu.tst.core.simulation.control.cyclic.CycleSection;
 import by.brstu.tst.core.simulation.control.cyclic.CyclicIntersectionController;
 import by.brstu.tst.core.simulation.distribution.ExponentialDistribution;
 import by.brstu.tst.core.simulation.distribution.IRandomDistribution;
 import by.brstu.tst.core.simulation.driving.IDriverFactory;
+import by.brstu.tst.core.simulation.driving.autonomous.AutonomousDriverFactory;
 import by.brstu.tst.core.simulation.driving.cyclic.CyclicDriverFactory;
 import by.brstu.tst.core.simulation.flows.ActivationPeriod;
 import by.brstu.tst.core.simulation.flows.IVehicleFlow;
@@ -58,6 +60,9 @@ public class SimulationConfigReader {
             switch (simulationType) {
                 case "cyclic" :
                     driverFactory = new CyclicDriverFactory();
+                    break;
+                case "autonomous":
+                    driverFactory = new AutonomousDriverFactory();
                     break;
                 default:
                     throw new ParseException(String.format("Simulation type %s not supported", simulationType));
@@ -149,6 +154,13 @@ public class SimulationConfigReader {
                 Node cycleXml = XmlUtils.filterNodesByTag(controllerXml.getChildNodes(), "cycle").get(0);
                 List<CycleSection> cycleSections = parseCycleSections(intersection, cycleXml);
                 return new CyclicIntersectionController(intersection, cycleSections);
+            case "autonomous":
+                String intersectionName1 = XmlUtils.getAttr(controllerAttributes, "intersection");
+                Intersection intersection1 =(Intersection) map.getNode(intersectionName1);
+                float recalculationPeriod = XmlUtils.getFloatAttr(controllerAttributes, "recalculationPeriod");
+                int maxStatesToCalculate = XmlUtils.getIntAttr(controllerAttributes, "maxStatesToCalculate");
+                float operationRadius = XmlUtils.getFloatAttr(controllerAttributes, "operationRadius");
+                return new AutonomousIntersectionController(intersection1, recalculationPeriod, maxStatesToCalculate);
             default:
                 throw new ParseException(String.format("Intersection controller type %s not supported", type));
         }

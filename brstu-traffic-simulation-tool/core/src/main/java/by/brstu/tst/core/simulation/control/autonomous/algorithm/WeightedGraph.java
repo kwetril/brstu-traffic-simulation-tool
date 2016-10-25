@@ -1,8 +1,9 @@
-package by.brstu.tst.core.simulation.control.autonomous;
+package by.brstu.tst.core.simulation.control.autonomous.algorithm;
 
 import by.brstu.tst.core.map.elements.DirectedRoad;
 import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
+import by.brstu.tst.core.simulation.control.autonomous.WeightedConnectorDescription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
