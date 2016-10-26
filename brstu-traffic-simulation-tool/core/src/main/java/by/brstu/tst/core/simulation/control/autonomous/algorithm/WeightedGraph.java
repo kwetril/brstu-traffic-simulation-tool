@@ -1,14 +1,9 @@
 package by.brstu.tst.core.simulation.control.autonomous.algorithm;
 
-import by.brstu.tst.core.map.elements.DirectedRoad;
-import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.control.autonomous.WeightedConnectorDescription;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by a.klimovich on 22.10.2016.
@@ -27,8 +22,8 @@ public class WeightedGraph {
                          HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors) {
         connectorToId = new HashMap<>();
         idToConnector = new HashMap<>();
-        graph = new boolean[connectorToId.size()][connectorToId.size()];
-        weights = new double[connectorToId.size()];
+        graph = new boolean[connectors.size()][connectors.size()];
+        weights = new double[connectors.size()];
         int currentId = 0;
         for (WeightedConnectorDescription weightedConnector : connectors) {
             connectorToId.put(weightedConnector.getConnectorDescription(), currentId);
@@ -50,7 +45,13 @@ public class WeightedGraph {
     }
 
     public List<RoadConnectorDescription> getBestConnectors() {
+        if (connectorToId.size() == 0) {
+            return Collections.EMPTY_LIST;
+        } else if (connectorToId.size() == 1) {
+            return new ArrayList<>(connectorToId.get(0));
+        }
         //current implementation returns only pair of directions
+        boolean answerFound = false;
         int first = 0, second = 1;
         double bestWeight = 0;
         for (int i = 0; i < weights.length; i++) {
@@ -61,13 +62,16 @@ public class WeightedGraph {
                         bestWeight = currentWeight;
                         first = i;
                         second = j;
+                        answerFound = true;
                     }
                 }
             }
         }
         List<RoadConnectorDescription> result = new ArrayList<>();
-        result.add(idToConnector.get(first));
-        result.add(idToConnector.get(second));
+        if (answerFound) {
+            result.add(idToConnector.get(first));
+            result.add(idToConnector.get(second));
+        }
         return result;
     }
 }

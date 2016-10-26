@@ -4,44 +4,73 @@ import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IntersectionState;
+import by.brstu.tst.core.simulation.control.autonomous.WeightedConnectorDescription;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionCommand;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by a.klimovich on 23.10.2016.
  */
 public class StateRecalculationAlgorithm {
     private Intersection intersection;
-    private List<VehicleDescription> vehicles;
+    private HashMap<String, ArrayList<VehicleDescription>> vehiclesByDirections;
     private int numStatesToCalculate;
     private boolean recalculationStarted;
     private List<HashSet<String>> vehiclesPerState;
+    private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
+    private IntersectionState intersectionState;
 
-    public StateRecalculationAlgorithm(Intersection intersection, int numStatesToCalculate) {
-        vehicles = new ArrayList<>();
+    public StateRecalculationAlgorithm(Intersection intersection, int numStatesToCalculate,
+                                       HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors) {
         this.intersection = intersection;
         this.numStatesToCalculate = numStatesToCalculate;
         this.recalculationStarted = false;
+        this.nonConflictConnectors = nonConflictConnectors;
+        intersectionState = new IntersectionState(new HashSet<>());
+        vehiclesByDirections = new HashMap<>();
     }
 
     public void addVehicleDescription(String id, double distance, RoadConnectorDescription connectorDescription) {
-        vehicles.add(new VehicleDescription(id, distance, connectorDescription));
+        String key = String.format("%s %s", connectorDescription.getFrom(), connectorDescription.getFromLane());
+        if (!vehiclesByDirections.containsKey(key)) {
+            vehiclesByDirections.put(key, new ArrayList<>());
+        }
+        vehiclesByDirections.get(key).add(new VehicleDescription(id, distance, connectorDescription));
     }
 
     public IntersectionState getState() {
-        return new IntersectionState(new HashSet<>());
+        return intersectionState;
     }
 
     public void recalculateState() {
+        List<WeightedConnectorDescription> weightedConnectors = new ArrayList<>();
+        for (Map.Entry<String, ArrayList<VehicleDescription>> descriptionsByDirection : vehiclesByDirections.entrySet()) {
+            Collections.sort(descriptionsByDirection.getValue(), (x, y) -> Double.compare(x.getDistance(), y.getDistance()));
+            RoadConnectorDescription connectorDescription = descriptionsByDirection.getValue().get(0).getConnectorDescription();
+            int i = 0;
+            double weight = 0;
+            while (i < descriptionsByDirection.getValue().size()
+                    && descriptionsByDirection.getValue().get(i).getConnectorDescription().equals(connectorDescription)) {
+                weight += Math.exp(-0.01 * descriptionsByDirection.getValue().get(i).getDistance());
+                i++;
+            }
+            weightedConnectors.add(new WeightedConnectorDescription(connectorDescription, weight));
+        }
+        WeightedGraph graph = new WeightedGraph(weightedConnectors, nonConflictConnectors);
+        intersectionState = new IntersectionState(new HashSet<>(graph.getBestConnectors()));
+        vehiclesByDirections.clear();
         recalculationStarted = false;
     }
 
     public void generateControlMessages(SimulationState simulationState, MessagingQueue messagingQueue) {
-        for (VehicleDescription vehicle : vehicles) {
+        for (VehicleDescription vehicle : vehiclesByDirections.entrySet()
+                .stream()
+                .map(x -> x.getValue())
+                .flatMap(x -> x.stream())
+                .collect(Collectors.toList())) {
             messagingQueue.addMessage(new AutonomousIntersectionCommand(intersection.getName(), vehicle.getId()));
         }
     }

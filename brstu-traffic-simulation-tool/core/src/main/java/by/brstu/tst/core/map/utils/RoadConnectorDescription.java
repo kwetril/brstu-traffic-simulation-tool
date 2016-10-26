@@ -49,4 +49,9 @@ public class RoadConnectorDescription {
     public int hashCode() {
         return strValue.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return strValue;
+    }
 }

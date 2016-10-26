@@ -12,6 +12,7 @@ import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.control.autonomous.algorithm.StateRecalculationAlgorithm;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
+import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionStateMessage;
 import by.brstu.tst.core.simulation.messaging.autonomous.RequestVehicleDirections;
 import by.brstu.tst.core.simulation.messaging.autonomous.ResponseVehicleDirection;
 
@@ -30,6 +31,7 @@ public class AutonomousIntersectionController implements IntersectionController 
     private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
     private double laneWidth;
     private double nextRecalculationTime;
+    private double recalculationCollectionTime;
     private double recalculationPeriod;
     private StateRecalculationAlgorithm stateRecalculationAlgorithm;
 
@@ -40,9 +42,9 @@ public class AutonomousIntersectionController implements IntersectionController 
         laneWidth = Double.MAX_VALUE;
         this.recalculationPeriod = recalculationPeriod;
         nextRecalculationTime = 0;
-        stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection, numStatesToCalculate);
         nonConflictConnectors = new HashMap<>();
         findNonConflictConnectors();
+        stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection, numStatesToCalculate, nonConflictConnectors);
     }
 
     private void findNonConflictConnectors() {
@@ -79,14 +81,17 @@ public class AutonomousIntersectionController implements IntersectionController 
     public void updateInnerState(SimulationState simulationState, MessagingQueue messagingQueue) {
         processMessages(messagingQueue);
 
-        if (stateRecalculationAlgorithm.isRecalculationStarted()) {
+        if (stateRecalculationAlgorithm.isRecalculationStarted()
+                && simulationState.getSimulationTime() + 1e-4 >= recalculationCollectionTime) {
             stateRecalculationAlgorithm.recalculateState();
             stateRecalculationAlgorithm.generateControlMessages(simulationState, messagingQueue);
+            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), getState()));
         }
 
-        if (simulationState.getSimulationTime() + 1e-6 >= nextRecalculationTime) {
+        if (simulationState.getSimulationTime() + 1e-4 >= nextRecalculationTime) {
             messagingQueue.addMessage(new RequestVehicleDirections(intersection.getName()));
             stateRecalculationAlgorithm.startRecalculation();
+            recalculationCollectionTime = simulationState.getSimulationTime() + 0.3;
             nextRecalculationTime += recalculationPeriod;
         }
     }
