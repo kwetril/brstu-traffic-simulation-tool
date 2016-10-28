@@ -65,13 +65,22 @@ public class AutonomousIntersectionController implements IntersectionController 
         }
         for (int i = 0; i < allConnectors.size(); i++) {
             for (int j = i + 1; j < allConnectors.size(); j++) {
-                BezierCurve connector = intersection.getConnector(allConnectors.get(i));
-                BezierCurve anotherConnector = intersection.getConnector(allConnectors.get(j));
+                RoadConnectorDescription first = allConnectors.get(i);
+                RoadConnectorDescription second = allConnectors.get(j);
+                if (first.getFrom().getName().equals(second.getFrom().getName())
+                        && first.getFromLane() == second.getFromLane())  {
+                    //non conflict when from the same lane
+                    nonConflictConnectors.get(first).add(second);
+                    nonConflictConnectors.get(second).add(first);
+                    continue;
+                }
+                BezierCurve connector = intersection.getConnector(first);
+                BezierCurve anotherConnector = intersection.getConnector(second);
                 double distance = connector.getDistance(anotherConnector);
                 boolean connectorsConflict = distance < laneWidth * 0.8;
                 if (!connectorsConflict) {
-                    nonConflictConnectors.get(allConnectors.get(i)).add(allConnectors.get(j));
-                    nonConflictConnectors.get(allConnectors.get(j)).add(allConnectors.get(i));
+                    nonConflictConnectors.get(first).add(second);
+                    nonConflictConnectors.get(second).add(first);
                 }
             }
         }

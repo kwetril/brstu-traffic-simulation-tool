@@ -4,7 +4,7 @@ import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IntersectionState;
-import by.brstu.tst.core.simulation.control.autonomous.WeightedConnectorDescription;
+import by.brstu.tst.core.simulation.control.autonomous.WeightedSectionPart;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionCommand;
 
@@ -46,7 +46,7 @@ public class StateRecalculationAlgorithm {
     }
 
     public void recalculateState() {
-        List<WeightedConnectorDescription> weightedConnectors = new ArrayList<>();
+        List<WeightedSectionPart> weightedConnectors = new ArrayList<>();
         for (Map.Entry<String, ArrayList<VehicleDescription>> descriptionsByDirection : vehiclesByDirections.entrySet()) {
             Collections.sort(descriptionsByDirection.getValue(), (x, y) -> Double.compare(x.getDistance(), y.getDistance()));
             RoadConnectorDescription connectorDescription = descriptionsByDirection.getValue().get(0).getConnectorDescription();
@@ -57,9 +57,9 @@ public class StateRecalculationAlgorithm {
                 weight += Math.exp(-0.01 * descriptionsByDirection.getValue().get(i).getDistance());
                 i++;
             }
-            weightedConnectors.add(new WeightedConnectorDescription(connectorDescription, weight));
+            weightedConnectors.add(new WeightedSectionPart(connectorDescription, weight, nonConflictConnectors));
         }
-        WeightedGraph graph = new WeightedGraph(weightedConnectors, nonConflictConnectors);
+        WeightedGraph graph = new WeightedGraph(weightedConnectors);
         intersectionState = new IntersectionState(new HashSet<>(graph.getBestConnectors()));
         vehiclesByDirections.clear();
         recalculationStarted = false;
