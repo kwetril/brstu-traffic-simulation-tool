@@ -49,15 +49,26 @@ public class StateRecalculationAlgorithm {
         List<WeightedSectionPart> weightedConnectors = new ArrayList<>();
         for (Map.Entry<String, ArrayList<VehicleDescription>> descriptionsByDirection : vehiclesByDirections.entrySet()) {
             Collections.sort(descriptionsByDirection.getValue(), (x, y) -> Double.compare(x.getDistance(), y.getDistance()));
-            RoadConnectorDescription connectorDescription = descriptionsByDirection.getValue().get(0).getConnectorDescription();
+            ArrayList<RoadConnectorDescription> connectorDescriptions = new ArrayList<>();
+            connectorDescriptions.add(descriptionsByDirection.getValue().get(0).getConnectorDescription());
             int i = 0;
             double weight = 0;
             while (i < descriptionsByDirection.getValue().size()
-                    && descriptionsByDirection.getValue().get(i).getConnectorDescription().equals(connectorDescription)) {
+                    && descriptionsByDirection.getValue().get(i).getConnectorDescription().equals(connectorDescriptions.get(0))) {
                 weight += Math.exp(-0.01 * descriptionsByDirection.getValue().get(i).getDistance());
                 i++;
             }
-            weightedConnectors.add(new WeightedSectionPart(connectorDescription, weight, nonConflictConnectors));
+            weightedConnectors.add(new WeightedSectionPart(connectorDescriptions, weight, nonConflictConnectors));
+            if (i >= descriptionsByDirection.getValue().size()) {
+                continue;
+            }
+            connectorDescriptions.add(descriptionsByDirection.getValue().get(i).getConnectorDescription());
+            while (i < descriptionsByDirection.getValue().size()
+                    && descriptionsByDirection.getValue().get(i).getConnectorDescription().equals(connectorDescriptions.get(1))) {
+                weight += Math.exp(-0.01 * descriptionsByDirection.getValue().get(i).getDistance());
+                i++;
+            }
+            weightedConnectors.add(new WeightedSectionPart(connectorDescriptions, weight, nonConflictConnectors));
         }
         WeightedGraph graph = new WeightedGraph(weightedConnectors);
         intersectionState = new IntersectionState(new HashSet<>(graph.getBestConnectors()));
