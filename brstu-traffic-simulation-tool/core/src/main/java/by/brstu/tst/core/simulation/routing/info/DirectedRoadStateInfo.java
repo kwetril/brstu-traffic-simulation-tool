@@ -126,4 +126,9 @@ public class DirectedRoadStateInfo extends RouteStateInfo {
     public int getNumLanes() {
         return road.getNumLanes();
     }
+
+    @Override
+    public NodeRoadElement getCurrentNode() {
+        throw new IllegalStateException("Can't get current node when on road");
+    }
 }

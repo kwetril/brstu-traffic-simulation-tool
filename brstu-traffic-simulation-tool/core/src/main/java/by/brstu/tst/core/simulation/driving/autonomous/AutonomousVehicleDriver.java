@@ -1,6 +1,7 @@
 package by.brstu.tst.core.simulation.driving.autonomous;
 
 import by.brstu.tst.core.map.elements.DirectedRoad;
+import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
@@ -11,6 +12,7 @@ import by.brstu.tst.core.simulation.driving.BaseVehicleDriver;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionStateMessage;
+import by.brstu.tst.core.simulation.messaging.autonomous.IntersectionPassedNotification;
 import by.brstu.tst.core.simulation.messaging.autonomous.ResponseVehicleDirection;
 import by.brstu.tst.core.simulation.routing.info.RouteStateInfo;
 import by.brstu.tst.core.vehicle.VehicleTechnicalParameters;
@@ -24,6 +26,8 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
     private double maxDeceleration;
     private RouteStateInfo routeState;
     private IntersectionState intersectionState;
+    private Intersection currentIntersection; //is set when vehicle is on intersection and unsed when it's passed
+    private boolean carsInFront;
 
     public AutonomousVehicleDriver(MovingVehicle vehicle) {
         super(vehicle);
@@ -31,11 +35,12 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
         maxAcceleration = techParams.getMaxAccelerationRate();
         maxDeceleration = techParams.getMaxDecelerationRate();
         intersectionState = null;
+        currentIntersection = null;
     }
 
     @Override
     public boolean seeCarsInFront() {
-        return false;
+        return carsInFront;
     }
 
     @Override
@@ -43,6 +48,8 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
         routeState = vehicle.getRouteStateInfo();
         processMessages(messagingQueue);
         updateVehicleState(simulationState);
+        sendNotifications(messagingQueue);
+
     }
 
     private void processMessages(MessagingQueue messageQueue) {
@@ -82,13 +89,30 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
     private void updateVehicleState(SimulationState simulationState) {
         vehicle.setAcceletation(getPrefferedAcceleration());
 
-        boolean carsInfront = checkCarsInfront(simulationState);
-        if (carsInfront) {
+        carsInFront = checkCarsInfront(simulationState);
+        if (carsInFront) {
             return;
         }
         boolean intersectionClosed = checkIntersectionClosed(intersectionState);
         if (intersectionClosed) {
             return;
+        }
+    }
+
+    private void sendNotifications(MessagingQueue messageQueue) {
+        if (currentIntersection == null) {
+            if (!routeState.isOnRoad() && routeState.getCurrentNode() instanceof Intersection) {
+                currentIntersection = (Intersection) routeState.getCurrentNode();
+                //enter intersection
+            }
+        }
+        else {
+            if (routeState.isOnRoad()) {
+                //intersection passed
+                messageQueue.addMessage(new IntersectionPassedNotification(vehicle.getVehicleInfo().getIdentifier(),
+                        currentIntersection.getName()));
+                currentIntersection = null;
+            }
         }
     }
 

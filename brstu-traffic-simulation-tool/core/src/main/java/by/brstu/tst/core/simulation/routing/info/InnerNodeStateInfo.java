@@ -104,4 +104,9 @@ public class InnerNodeStateInfo extends RouteStateInfo {
     public int getNumLanes() {
         throw new IllegalStateException("Can't get number of lanes when not on road");
     }
+
+    @Override
+    public NodeRoadElement getCurrentNode() {
+        return node;
+    }
 }

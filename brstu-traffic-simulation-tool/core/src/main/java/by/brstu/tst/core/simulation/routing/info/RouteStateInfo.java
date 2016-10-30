@@ -43,4 +43,5 @@ public abstract class RouteStateInfo {
     public boolean reachedDestination() {
         return false;
     }
+    public abstract NodeRoadElement getCurrentNode();
 }

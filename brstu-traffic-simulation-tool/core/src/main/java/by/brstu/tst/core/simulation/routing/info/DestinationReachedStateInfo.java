@@ -100,4 +100,9 @@ public class DestinationReachedStateInfo extends RouteStateInfo {
         return true;
     }
 
+    @Override
+    public NodeRoadElement getCurrentNode() {
+        return route.getDestination();
+    }
+
 }

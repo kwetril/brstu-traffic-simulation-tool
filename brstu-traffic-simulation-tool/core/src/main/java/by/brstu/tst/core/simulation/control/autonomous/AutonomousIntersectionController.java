@@ -120,6 +120,7 @@ public class AutonomousIntersectionController implements IntersectionController 
                         break;
                     case AUTONOMOUS_INTERSECTION_PASSED:
                         stateRecalculationAlgorithm.vehiclePassed(message.getSender());
+                        break;
                     default:
                         throw new RuntimeException("Not supported message type");
                 }

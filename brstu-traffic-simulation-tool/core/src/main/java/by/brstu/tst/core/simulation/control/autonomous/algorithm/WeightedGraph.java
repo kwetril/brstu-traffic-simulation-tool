@@ -1,6 +1,5 @@
 package by.brstu.tst.core.simulation.control.autonomous.algorithm;
 
-import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.control.autonomous.WeightedSectionPart;
 
 import java.util.*;
@@ -34,11 +33,14 @@ public class WeightedGraph {
         }
     }
 
-    public List<RoadConnectorDescription> getBestConnectors() {
+    public List<WeightedSectionPart> getOptimalSectionParts() {
         if (sectionParts.size() == 0) {
             return Collections.EMPTY_LIST;
-        } else if (sectionParts.size() == 1) {
-            return new ArrayList<>(sectionParts.get(0).getConnectorDescriptions());
+        }
+        List<WeightedSectionPart> result = new ArrayList<>();
+        if (sectionParts.size() == 1) {
+            result.add(sectionParts.get(0));
+            return result;
         }
         //current implementation returns maximum 6 directions
         boolean answerFound = false;
@@ -123,18 +125,17 @@ public class WeightedGraph {
                 }
             }
         }
-        List<RoadConnectorDescription> result = new ArrayList<>();
         if (answerFound) {
-            result.addAll(sectionParts.get(first).getConnectorDescriptions());
-            result.addAll(sectionParts.get(second).getConnectorDescriptions());
+            result.add(sectionParts.get(first));
+            result.add(sectionParts.get(second));
             if (answerFound3) {
-                result.addAll(sectionParts.get(third).getConnectorDescriptions());
+                result.add(sectionParts.get(third));
                 if (answerFound4) {
-                    result.addAll(sectionParts.get(fourth).getConnectorDescriptions());
+                    result.add(sectionParts.get(fourth));
                     if (answerFound5) {
-                        result.addAll(sectionParts.get(fifth).getConnectorDescriptions());
+                        result.add(sectionParts.get(fifth));
                         if (answerFound6) {
-                            result.addAll(sectionParts.get(sixth).getConnectorDescriptions());
+                            result.add(sectionParts.get(sixth));
                         }
                     }
                 }
