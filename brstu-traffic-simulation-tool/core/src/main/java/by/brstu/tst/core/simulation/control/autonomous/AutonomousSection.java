@@ -1,7 +1,5 @@
 package by.brstu.tst.core.simulation.control.autonomous;
 
-import by.brstu.tst.core.map.elements.Intersection;
-import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 
 import java.util.HashSet;

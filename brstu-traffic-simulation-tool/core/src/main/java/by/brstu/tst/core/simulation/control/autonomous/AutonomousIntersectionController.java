@@ -12,9 +12,7 @@ import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.control.autonomous.algorithm.StateRecalculationAlgorithm;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
-import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionStateMessage;
-import by.brstu.tst.core.simulation.messaging.autonomous.RequestVehicleDirections;
-import by.brstu.tst.core.simulation.messaging.autonomous.ResponseVehicleDirection;
+import by.brstu.tst.core.simulation.messaging.autonomous.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,29 +23,26 @@ import java.util.List;
  * Created by a.klimovich on 22.10.2016.
  */
 public class AutonomousIntersectionController implements IntersectionController {
-
     private Intersection intersection;
-    private List<RoadConnectorDescription> allConnectors;
-    private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
-    private double laneWidth;
     private double nextRecalculationTime;
     private double recalculationCollectionTime;
     private double recalculationPeriod;
     private StateRecalculationAlgorithm stateRecalculationAlgorithm;
+    private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
 
     public AutonomousIntersectionController(Intersection intersection, double recalculationPeriod,
                                             int numStatesToCalculate) {
         this.intersection = intersection;
-        allConnectors = new ArrayList<>();
-        laneWidth = Double.MAX_VALUE;
         this.recalculationPeriod = recalculationPeriod;
         nextRecalculationTime = 0;
-        nonConflictConnectors = new HashMap<>();
         findNonConflictConnectors();
-        stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection, numStatesToCalculate, nonConflictConnectors);
+        stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection.getName(), numStatesToCalculate, nonConflictConnectors);
     }
 
     private void findNonConflictConnectors() {
+        nonConflictConnectors = new HashMap<>();
+        double laneWidth = Double.MAX_VALUE;
+        List<RoadConnectorDescription> allConnectors = new ArrayList<>();
         for (EdgeRoadElement input : intersection.getInputElements()) {
             for (EdgeRoadElement output : intersection.getOutputElements()) {
                 DirectedRoad inputRoad = input.getDirectedRoadByEndNode(intersection);
@@ -93,7 +88,7 @@ public class AutonomousIntersectionController implements IntersectionController 
         if (stateRecalculationAlgorithm.isRecalculationStarted()
                 && simulationState.getSimulationTime() + 1e-4 >= recalculationCollectionTime) {
             stateRecalculationAlgorithm.recalculateState();
-            stateRecalculationAlgorithm.generateControlMessages(simulationState, messagingQueue);
+            stateRecalculationAlgorithm.generateControlMessages(messagingQueue);
             messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), getState()));
         }
 
@@ -114,18 +109,51 @@ public class AutonomousIntersectionController implements IntersectionController 
                             continue;
                         }
                         ResponseVehicleDirection directionResponse = (ResponseVehicleDirection) message;
+                        if (directionResponse.getPosition().distanceTo(intersection.getBasePoint()) > 300) {
+                            continue;
+                        }
                         stateRecalculationAlgorithm.addVehicleDescription(directionResponse.getSender(),
                                 directionResponse.getPosition().distanceTo(intersection.getBasePoint()),
                                 directionResponse.getConnectorDescription(), directionResponse.getWaitingTime());
                         break;
                     case AUTONOMOUS_INTERSECTION_PASSED:
-                        stateRecalculationAlgorithm.vehiclePassed(message.getSender());
+                        if (stateRecalculationAlgorithm.vehiclePassed(message.getSender())) {
+                            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), getState()));
+                        }
+                        break;
+                    case AUTONOMOUS_REQUEST_PREFFERED_LANES:
+                        messagingQueue.addMessage(responseToPrefferedLanesRequst((RequestPrefferedLanes) message));
                         break;
                     default:
                         throw new RuntimeException("Not supported message type");
                 }
             }
         }
+    }
+
+    private ResponsePrefferedLanes responseToPrefferedLanesRequst(RequestPrefferedLanes request) {
+        double[] priorities = new double[request.getRoadFrom().getNumLanes()];
+        double min = Double.MAX_VALUE;
+        for (int laneFrom = 0; laneFrom < request.getRoadFrom().getNumLanes(); laneFrom++) {
+            int laneTo = Math.min(laneFrom, request.getRoadTo().getNumLanes());
+            priorities[laneFrom] = nonConflictConnectors.get(new RoadConnectorDescription(
+                    request.getRoadFrom(), laneFrom,
+                    request.getRoadTo(), laneTo
+            )).size();
+            if (min > priorities[laneFrom]) {
+                min = priorities[laneFrom];
+            }
+        }
+        double sum = 0;
+        for (int i = 0; i < priorities.length; i++) {
+            priorities[i] -= min - 1;
+            sum += priorities[i];
+        }
+        HashMap<Integer, Double> data = new HashMap<>();
+        for (int i = 0; i < priorities.length; i++) {
+            data.put(i, priorities[i] / sum);
+        }
+        return new ResponsePrefferedLanes(request.getReceiver(), request.getSender(), data);
     }
 
     @Override

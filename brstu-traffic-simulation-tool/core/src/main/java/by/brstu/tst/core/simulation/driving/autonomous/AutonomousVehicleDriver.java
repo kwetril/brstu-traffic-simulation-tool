@@ -11,12 +11,16 @@ import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.driving.BaseVehicleDriver;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
-import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionStateMessage;
-import by.brstu.tst.core.simulation.messaging.autonomous.IntersectionPassedNotification;
-import by.brstu.tst.core.simulation.messaging.autonomous.ResponseVehicleDirection;
+import by.brstu.tst.core.simulation.messaging.autonomous.*;
 import by.brstu.tst.core.simulation.routing.info.RouteStateInfo;
+import by.brstu.tst.core.simulation.routing.state.ChangeLaneType;
 import by.brstu.tst.core.vehicle.VehicleTechnicalParameters;
 import com.google.common.collect.Iterables;
+
+import java.awt.geom.Path2D;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by a.klimovich on 22.10.2016.
@@ -31,6 +35,8 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
     private double waitingTime = 0;
     private final double speedLimitToCountWaiting = 3;
     private boolean carsInFront;
+
+    private int choosenLane = -2;
 
     public AutonomousVehicleDriver(MovingVehicle vehicle) {
         super(vehicle);
@@ -82,10 +88,30 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
                     }
                     intersectionState = ((AutonomousIntersectionStateMessage) message).getState();
                     break;
+                case AUTONOMOUS_RESPONSE_PREFFERED_LANES:
+                    if (choosenLane == -1) {
+                        chooseLane((ResponsePrefferedLanes) message);
+                    }
+                    break;
                 default:
                     throw new RuntimeException("Unsupported message type");
             }
         }
+    }
+
+    private void chooseLane(ResponsePrefferedLanes message) {
+        HashMap<Integer, Double> laneToPriority = message.getLaneToPriority();
+        Random rand = new Random();
+        double randomValue = rand.nextDouble();
+        int i = 0;
+        for (Map.Entry<Integer, Double> laneWithPriority : laneToPriority.entrySet()) {
+            if (randomValue < laneWithPriority.getValue() || i + 1 >= laneToPriority.size()) {
+                choosenLane = laneWithPriority.getKey();
+                break;
+            }
+            randomValue -= laneWithPriority.getValue();
+        }
+        i++;
     }
 
     private void updateVehicleState(SimulationState simulationState) {
@@ -99,6 +125,9 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
         if (intersectionClosed) {
             return;
         }
+        if (vehicle.getSpeed() > 10) {
+            checkLaneChanging();
+        }
 
         //calculate waiting time
         if (lastUpdateTime >= 0) {
@@ -110,6 +139,12 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
     }
 
     private void sendNotifications(MessagingQueue messageQueue) {
+        if (routeState.isBeforeIntersection() && choosenLane == -2) {
+            messageQueue.addMessage(new RequestPrefferedLanes(vehicle.getVehicleInfo().getIdentifier(),
+                    routeState.getNextIntersection().getName(),
+                    routeState.getCurrentRoad(), routeState.getNextRoad()));
+            choosenLane = -1;
+        }
         if (currentIntersection == null) {
             if (!routeState.isOnRoad() && routeState.getCurrentNode() instanceof Intersection) {
                 currentIntersection = (Intersection) routeState.getCurrentNode();
@@ -122,6 +157,7 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
                 messageQueue.addMessage(new IntersectionPassedNotification(vehicle.getVehicleInfo().getIdentifier(),
                         currentIntersection.getName()));
                 currentIntersection = null;
+                choosenLane = -2;
             }
         }
     }
@@ -220,5 +256,20 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
 
         vehicle.setAcceletation(-maxDeceleration);
         return true;
+    }
+
+    private void checkLaneChanging() {
+        if (routeState.isOnRoad()
+                && routeState.isBeforeIntersection()
+                && !routeState.isChangingLane()
+                && choosenLane >= 0
+                && choosenLane != routeState.getLane()) {
+            int lane = routeState.getLane();
+            if (choosenLane > lane) {
+                vehicle.changeLane(ChangeLaneType.RIGHT);
+            } else {
+                vehicle.changeLane(ChangeLaneType.LEFT);
+            }
+        }
     }
 }

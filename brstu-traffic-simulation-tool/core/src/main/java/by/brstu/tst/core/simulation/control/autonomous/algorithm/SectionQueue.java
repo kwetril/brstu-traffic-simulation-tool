@@ -32,11 +32,16 @@ public class SectionQueue {
         }
     }
 
-    public void vehiclePassed(String vehicleId) {
+    public boolean vehiclePassed(String vehicleId) {
         if (vehicleToSection.containsKey(vehicleId)) {
-            vehicleToSection.get(vehicleId).vehiclePassed(vehicleId);
+            AutonomousSection section = vehicleToSection.get(vehicleId);
+            section.vehiclePassed(vehicleId);
             vehicleToSection.remove(vehicleId);
+            if (section.allPassed()) {
+                return true;
+            }
         }
+        return false;
     }
 
     public boolean vehicleRegistered(String id) {

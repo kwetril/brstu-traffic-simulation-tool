@@ -1,6 +1,5 @@
 package by.brstu.tst.core.simulation.control;
 
-import by.brstu.tst.core.map.elements.DirectedRoad;
 import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.simulation.messaging.IMessagingAgent;
 

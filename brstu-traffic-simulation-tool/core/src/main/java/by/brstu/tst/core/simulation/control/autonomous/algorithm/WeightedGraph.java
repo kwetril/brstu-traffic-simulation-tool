@@ -11,12 +11,12 @@ import java.util.*;
  *
  * Possible implementation: Deniss Kumlander's article
  */
-public class WeightedGraph {
+class WeightedGraph {
     private List<WeightedSectionPart> sectionParts;
     private boolean[][] graph;
     private double[] weights;
 
-    public WeightedGraph(List<WeightedSectionPart> sectionParts) {
+    WeightedGraph(List<WeightedSectionPart> sectionParts) {
         this.sectionParts = sectionParts;
         graph = new boolean[sectionParts.size()][sectionParts.size()];
         weights = new double[sectionParts.size()];
@@ -33,7 +33,7 @@ public class WeightedGraph {
         }
     }
 
-    public List<WeightedSectionPart> getOptimalSectionParts() {
+    List<WeightedSectionPart> getOptimalSectionParts() {
         if (sectionParts.size() == 0) {
             return Collections.EMPTY_LIST;
         }

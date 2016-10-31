@@ -1,8 +1,6 @@
 package by.brstu.tst.core.simulation.control.autonomous.algorithm;
 
-import by.brstu.tst.core.map.elements.Intersection;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
-import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.control.autonomous.AutonomousSection;
 import by.brstu.tst.core.simulation.control.autonomous.WeightedSectionPart;
@@ -16,17 +14,15 @@ import java.util.stream.Collectors;
  * Created by a.klimovich on 23.10.2016.
  */
 public class StateRecalculationAlgorithm {
-    private Intersection intersection;
+    private String intersectionName;
     private HashMap<String, ArrayList<VehicleDescription>> vehiclesByDirections;
-    private int numStatesToCalculate;
     private boolean recalculationStarted;
     private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
     private SectionQueue sectionQueue;
 
-    public StateRecalculationAlgorithm(Intersection intersection, int numStatesToCalculate,
+    public StateRecalculationAlgorithm(String intersectionName, int numStatesToCalculate,
                                        HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors) {
-        this.intersection = intersection;
-        this.numStatesToCalculate = numStatesToCalculate;
+        this.intersectionName = intersectionName;
         this.recalculationStarted = false;
         this.nonConflictConnectors = nonConflictConnectors;
         vehiclesByDirections = new HashMap<>();
@@ -100,13 +96,13 @@ public class StateRecalculationAlgorithm {
         return new AutonomousSection(state, vehicles);
     }
 
-    public void generateControlMessages(SimulationState simulationState, MessagingQueue messagingQueue) {
+    public void generateControlMessages(MessagingQueue messagingQueue) {
         for (VehicleDescription vehicle : vehiclesByDirections.entrySet()
                 .stream()
                 .map(x -> x.getValue())
                 .flatMap(x -> x.stream())
                 .collect(Collectors.toList())) {
-            messagingQueue.addMessage(new AutonomousIntersectionCommand(intersection.getName(), vehicle.getId()));
+            messagingQueue.addMessage(new AutonomousIntersectionCommand(intersectionName, vehicle.getId()));
         }
     }
 
@@ -118,7 +114,7 @@ public class StateRecalculationAlgorithm {
         return recalculationStarted;
     }
 
-    public void vehiclePassed(String sender) {
-        sectionQueue.vehiclePassed(sender);
+    public boolean vehiclePassed(String sender) {
+        return sectionQueue.vehiclePassed(sender);
     }
 }
