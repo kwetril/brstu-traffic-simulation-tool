@@ -27,6 +27,9 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
     private RouteStateInfo routeState;
     private IntersectionState intersectionState;
     private Intersection currentIntersection; //is set when vehicle is on intersection and unsed when it's passed
+    private double lastUpdateTime = -1;
+    private double waitingTime = 0;
+    private final double speedLimitToCountWaiting = 3;
     private boolean carsInFront;
 
     public AutonomousVehicleDriver(MovingVehicle vehicle) {
@@ -49,7 +52,6 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
         processMessages(messagingQueue);
         updateVehicleState(simulationState);
         sendNotifications(messagingQueue);
-
     }
 
     private void processMessages(MessagingQueue messageQueue) {
@@ -69,7 +71,7 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
                             routeState.getLane()
                     );
                     messageQueue.addMessage(new ResponseVehicleDirection(vehicle.getVehicleInfo().getIdentifier(),
-                            message.getSender(), routeState.getPosition(), roadConnector));
+                            message.getSender(), routeState.getPosition(), roadConnector, waitingTime));
                     break;
                 case AUTONMOUS_INTERSECTION_COMMAND:
                     break;
@@ -97,6 +99,14 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
         if (intersectionClosed) {
             return;
         }
+
+        //calculate waiting time
+        if (lastUpdateTime >= 0) {
+            if (vehicle.getSpeed() < speedLimitToCountWaiting) {
+                waitingTime += simulationState.getSimulationTime() - lastUpdateTime;
+            }
+        }
+        lastUpdateTime = simulationState.getSimulationTime();
     }
 
     private void sendNotifications(MessagingQueue messageQueue) {

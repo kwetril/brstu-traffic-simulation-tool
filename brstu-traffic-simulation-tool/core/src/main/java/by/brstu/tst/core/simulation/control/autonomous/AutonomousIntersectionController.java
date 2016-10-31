@@ -116,7 +116,7 @@ public class AutonomousIntersectionController implements IntersectionController 
                         ResponseVehicleDirection directionResponse = (ResponseVehicleDirection) message;
                         stateRecalculationAlgorithm.addVehicleDescription(directionResponse.getSender(),
                                 directionResponse.getPosition().distanceTo(intersection.getBasePoint()),
-                                directionResponse.getConnectorDescription());
+                                directionResponse.getConnectorDescription(), directionResponse.getWaitingTime());
                         break;
                     case AUTONOMOUS_INTERSECTION_PASSED:
                         stateRecalculationAlgorithm.vehiclePassed(message.getSender());

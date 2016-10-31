@@ -33,12 +33,13 @@ public class StateRecalculationAlgorithm {
         sectionQueue = new SectionQueue();
     }
 
-    public void addVehicleDescription(String id, double distance, RoadConnectorDescription connectorDescription) {
+    public void addVehicleDescription(String id, double distance, RoadConnectorDescription connectorDescription,
+                                      double waitingTime) {
         String key = String.format("%s %s", connectorDescription.getFrom(), connectorDescription.getFromLane());
         if (!vehiclesByDirections.containsKey(key)) {
             vehiclesByDirections.put(key, new ArrayList<>());
         }
-        vehiclesByDirections.get(key).add(new VehicleDescription(id, distance, connectorDescription));
+        vehiclesByDirections.get(key).add(new VehicleDescription(id, distance, connectorDescription, waitingTime));
     }
 
     public IntersectionState getState() {
@@ -73,6 +74,7 @@ public class StateRecalculationAlgorithm {
                     }
                     vehicles.add(vehicleDescriptions.get(i).getId());
                     weight += Math.exp(-0.01 * vehicleDescriptions.get(i).getDistance());
+                    weight += Math.exp(0.1 * vehicleDescriptions.get(i).getWaitingTime()) - 1;
                     i++;
                 }
                 weightedConnectors.add(new WeightedSectionPart(connectorDescriptions, weight, nonConflictConnectors, vehicles));

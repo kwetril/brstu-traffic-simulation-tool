@@ -9,11 +9,14 @@ public class VehicleDescription {
     private String name;
     private double distance;
     private RoadConnectorDescription connectorDescription;
+    private double waitingTime;
 
-    public VehicleDescription(String name, double distance, RoadConnectorDescription connectorDescription) {
+    public VehicleDescription(String name, double distance, RoadConnectorDescription connectorDescription,
+                              double waitingTime) {
         this.name = name;
         this.distance = distance;
         this.connectorDescription = connectorDescription;
+        this.waitingTime = waitingTime;
     }
 
     public String getId() {
@@ -26,5 +29,9 @@ public class VehicleDescription {
 
     public RoadConnectorDescription getConnectorDescription() {
         return connectorDescription;
+    }
+
+    public double getWaitingTime() {
+        return waitingTime;
     }
 }

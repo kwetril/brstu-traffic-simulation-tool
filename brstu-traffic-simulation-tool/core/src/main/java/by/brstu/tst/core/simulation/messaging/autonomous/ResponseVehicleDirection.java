@@ -12,12 +12,15 @@ import static by.brstu.tst.core.simulation.messaging.ControlMessageType.AUTONOMO
 public class ResponseVehicleDirection extends ControlMessage {
     private MapPoint position;
     private RoadConnectorDescription connectorDescription;
+    private double waitingTime;
 
     public ResponseVehicleDirection(String sender, String receiver,
-                                    MapPoint position, RoadConnectorDescription connectorDescription) {
+                                    MapPoint position, RoadConnectorDescription connectorDescription,
+                                    double waitingTime) {
         super(AUTONOMOUS_RESPONSE_DIRECTIONS, sender, receiver);
         this.position = position;
         this.connectorDescription = connectorDescription;
+        this.waitingTime = waitingTime;
     }
 
     public MapPoint getPosition() {
@@ -26,5 +29,9 @@ public class ResponseVehicleDirection extends ControlMessage {
 
     public RoadConnectorDescription getConnectorDescription() {
         return connectorDescription;
+    }
+
+    public double getWaitingTime() {
+        return waitingTime;
     }
 }
