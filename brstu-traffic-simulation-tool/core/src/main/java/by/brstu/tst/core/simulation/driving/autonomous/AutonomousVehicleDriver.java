@@ -110,8 +110,8 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
                 break;
             }
             randomValue -= laneWithPriority.getValue();
+            i++;
         }
-        i++;
     }
 
     private void updateVehicleState(SimulationState simulationState) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<simulation timeStep="0.1" type="autonomous">
+<simulation timeStep="0.1" type="cyclic">
     <flows>
         <flow type="static" vehicleType="car">
             <activation from="0" to="1000000" />
@@ -135,7 +135,65 @@
         </flow>
     </flows>
     <controllers>
-        <controller type="autonomous" intersection="intersection" recalculationPeriod="10"
-                    maxStatesToCalculate="3" operationRadius="200" />
+        <controller type="cycled" intersection="intersection">
+            <cycle>
+                <section duration="20">
+                    <connectors>
+                        <connector from="rd-1" fromLane="0" to="rd-8" toLane="0" />
+                        <connector from="rd-1" fromLane="0" to="rd-5" toLane="0" />
+                        <connector from="rd-1" fromLane="1" to="rd-5" toLane="1" />
+                        <connector from="rd-1" fromLane="2" to="rd-5" toLane="2" />
+                        <connector from="rd-1" fromLane="2" to="rd-7" toLane="2" />
+                        <connector from="rd-2" fromLane="2" to="rd-8" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="5">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="20">
+                    <connectors>
+                        <connector from="rd-2" fromLane="0" to="rd-7" toLane="0" />
+                        <connector from="rd-2" fromLane="0" to="rd-6" toLane="0" />
+                        <connector from="rd-2" fromLane="1" to="rd-6" toLane="1" />
+                        <connector from="rd-2" fromLane="2" to="rd-6" toLane="2" />
+                        <connector from="rd-2" fromLane="2" to="rd-8" toLane="2" />
+                        <connector from="rd-1" fromLane="2" to="rd-7" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="5">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="20">
+                    <connectors>
+                        <connector from="rd-3" fromLane="0" to="rd-5" toLane="0" />
+                        <connector from="rd-3" fromLane="0" to="rd-7" toLane="0" />
+                        <connector from="rd-3" fromLane="1" to="rd-7" toLane="1" />
+                        <connector from="rd-3" fromLane="2" to="rd-7" toLane="2" />
+                        <connector from="rd-3" fromLane="2" to="rd-6" toLane="2" />
+                        <connector from="rd-4" fromLane="2" to="rd-5" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="5">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="20">
+                    <connectors>
+                        <connector from="rd-4" fromLane="0" to="rd-6" toLane="0" />
+                        <connector from="rd-4" fromLane="0" to="rd-8" toLane="0" />
+                        <connector from="rd-4" fromLane="1" to="rd-8" toLane="1" />
+                        <connector from="rd-4" fromLane="2" to="rd-8" toLane="2" />
+                        <connector from="rd-4" fromLane="2" to="rd-5" toLane="2" />
+                        <connector from="rd-3" fromLane="2" to="rd-6" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="5">
+                    <connectors>
+                    </connectors>
+                </section>
+            </cycle>
+        </controller>
     </controllers>
 </simulation>

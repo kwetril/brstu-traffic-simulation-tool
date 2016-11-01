@@ -50,7 +50,7 @@ public class StateRecalculationAlgorithm {
             Collections.sort(vehicleDescriptions, (x, y) -> Double.compare(x.getDistance(), y.getDistance()));
             ArrayList<RoadConnectorDescription> connectorDescriptions = new ArrayList<>();
             ArrayList<String> vehicles = new ArrayList<>();
-            int maxVehicles = 5;
+            int maxVehicles = 15;
             int i = 0;
             double weight = 0;
             for (int k = 0; k < 3 && i < vehicleDescriptions.size() && vehicles.size() < maxVehicles; k++) {
