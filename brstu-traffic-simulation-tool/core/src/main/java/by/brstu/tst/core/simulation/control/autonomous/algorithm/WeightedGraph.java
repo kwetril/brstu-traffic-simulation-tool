@@ -141,6 +141,16 @@ class WeightedGraph {
                 }
             }
         }
+        else {
+            //single vertex as answer
+            int maxIndex = 0;
+            for (int i = 1; i < sectionParts.size(); i++) {
+                if (sectionParts.get(i).getWeight() > sectionParts.get(maxIndex).getWeight()) {
+                    maxIndex = i;
+                }
+            }
+            result.add(sectionParts.get(maxIndex));
+        }
         return result;
     }
 }

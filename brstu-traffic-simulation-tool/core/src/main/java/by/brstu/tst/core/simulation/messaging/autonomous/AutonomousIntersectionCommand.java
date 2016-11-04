@@ -9,7 +9,13 @@ import static by.brstu.tst.core.simulation.messaging.ControlMessageType.AUTONMOU
  * Created by a.klimovich on 24.10.2016.
  */
 public class AutonomousIntersectionCommand extends ControlMessage {
-    public AutonomousIntersectionCommand(String sender, String receiver) {
+    private int sectionId;
+    public AutonomousIntersectionCommand(String sender, String receiver, int sectionId) {
         super(AUTONMOUS_INTERSECTION_COMMAND, sender, receiver);
+        this.sectionId = sectionId;
+    }
+
+    public int getSectionId() {
+        return sectionId;
     }
 }

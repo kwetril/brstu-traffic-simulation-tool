@@ -87,9 +87,11 @@ public class AutonomousIntersectionController implements IntersectionController 
 
         if (stateRecalculationAlgorithm.isRecalculationStarted()
                 && simulationState.getSimulationTime() + 1e-4 >= recalculationCollectionTime) {
-            stateRecalculationAlgorithm.recalculateState();
-            stateRecalculationAlgorithm.generateControlMessages(messagingQueue);
-            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), getState()));
+            stateRecalculationAlgorithm.recalculateState(messagingQueue);
+            IntersectionState state = getState();
+            int sectionId = stateRecalculationAlgorithm.getSection() != null ? stateRecalculationAlgorithm.getSection().getId() : -1;
+            double duration = stateRecalculationAlgorithm.getAverageSectionDuration();
+            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), state, sectionId, duration));
         }
 
         if (simulationState.getSimulationTime() + 1e-4 >= nextRecalculationTime) {
@@ -118,7 +120,10 @@ public class AutonomousIntersectionController implements IntersectionController 
                         break;
                     case AUTONOMOUS_INTERSECTION_PASSED:
                         if (stateRecalculationAlgorithm.vehiclePassed(message.getSender())) {
-                            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), getState()));
+                            IntersectionState state = getState();
+                            int sectionId = stateRecalculationAlgorithm.getSection() != null ? stateRecalculationAlgorithm.getSection().getId() : -1;
+                            double duration = stateRecalculationAlgorithm.getAverageSectionDuration();
+                            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), state, sectionId, duration));
                         }
                         break;
                     case AUTONOMOUS_REQUEST_PREFFERED_LANES:
@@ -153,6 +158,7 @@ public class AutonomousIntersectionController implements IntersectionController 
             }
         }
         */
+        //TODO change this logic to more generic
         int x = (int) Math.round(priorities[0]);
         priorities[0] = priorities[1] = priorities[2] = 0;
         switch (x) {
@@ -164,7 +170,9 @@ public class AutonomousIntersectionController implements IntersectionController 
                 priorities[0] = 1;
                 break;
             case 72:
-                priorities[1] = 1;
+                priorities[0] = 0.25;
+                priorities[1] = 0.5;
+                priorities[2] = 0.25;
                 break;
             default:
                 System.out.println(x);
@@ -177,7 +185,6 @@ public class AutonomousIntersectionController implements IntersectionController 
         double sum = 0;
         for (int i = 0; i < priorities.length; i++) {
             priorities[i] -= min - 1;
-            priorities[i] = Math.exp(priorities[i]);
             sum += priorities[i];
         }
         for (int i = 0; i < priorities.length; i++) {

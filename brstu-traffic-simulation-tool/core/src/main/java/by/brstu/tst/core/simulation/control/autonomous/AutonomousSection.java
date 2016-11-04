@@ -23,6 +23,10 @@ public class AutonomousSection {
         }
     }
 
+    public static void decreaseId() {
+        nextId--;
+    }
+
     public int getId() {
         return id;
     }
@@ -41,5 +45,9 @@ public class AutonomousSection {
 
     public HashSet<String> getVehicles() {
         return vehicles;
+    }
+
+    public int getNumVehicles() {
+        return vehicles.size();
     }
 }

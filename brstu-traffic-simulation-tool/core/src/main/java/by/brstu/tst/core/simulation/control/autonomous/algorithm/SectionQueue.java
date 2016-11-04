@@ -5,34 +5,50 @@ import by.brstu.tst.core.simulation.control.autonomous.AutonomousSection;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Queue;
 
 /**
  * Created by a.klimovich on 30.10.2016.
  */
-public class SectionQueue {
-    private Queue<AutonomousSection> sectionQueue;
+class SectionQueue {
+    private ArrayDeque<AutonomousSection> sectionQueue;
     private HashMap<String, AutonomousSection> vehicleToSection;
 
-    public SectionQueue() {
+    SectionQueue() {
         sectionQueue = new ArrayDeque<>();
         vehicleToSection = new HashMap<>();
     }
 
-    public void addSection(AutonomousSection section) {
+    void addSection(AutonomousSection section) {
         sectionQueue.add(section);
         for (String vehicle : section.getVehicles()) {
             vehicleToSection.put(vehicle, section);
         }
     }
 
-    public void updateState() {
+    AutonomousSection getLastSection() {
+        return sectionQueue.getLast();
+    }
+
+    void removeLastSection() {
+        HashSet<String> sectionVehicles = sectionQueue.getLast().getVehicles();
+        for (String vehicle : sectionVehicles) {
+            if (vehicleToSection.containsKey(vehicle)) {
+                vehicleToSection.remove(vehicle);
+            }
+        }
+        sectionQueue.removeLast();
+        AutonomousSection.decreaseId();
+    }
+
+    void updateState() {
         while (!sectionQueue.isEmpty() && sectionQueue.peek().allPassed()) {
             sectionQueue.remove();
         }
     }
 
-    public boolean vehiclePassed(String vehicleId) {
+    boolean vehiclePassed(String vehicleId) {
         if (vehicleToSection.containsKey(vehicleId)) {
             AutonomousSection section = vehicleToSection.get(vehicleId);
             section.vehiclePassed(vehicleId);
@@ -44,14 +60,22 @@ public class SectionQueue {
         return false;
     }
 
-    public boolean vehicleRegistered(String id) {
+    boolean vehicleRegistered(String id) {
         return vehicleToSection.containsKey(id);
     }
 
-    public IntersectionState getCurrentState() {
+    IntersectionState getCurrentState() {
         if (sectionQueue.isEmpty()) {
             return IntersectionState.EMPTY;
         }
         return sectionQueue.peek().getState();
+    }
+
+    AutonomousSection getCurrentSection() {
+        return sectionQueue.peek();
+    }
+
+    int getSize() {
+        return sectionQueue.size();
     }
 }

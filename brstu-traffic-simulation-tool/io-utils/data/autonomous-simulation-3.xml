@@ -135,7 +135,7 @@
         </flow>
     </flows>
     <controllers>
-        <controller type="autonomous" intersection="intersection" recalculationPeriod="10"
+        <controller type="autonomous" intersection="intersection" recalculationPeriod="5"
                     maxStatesToCalculate="3" operationRadius="200" />
     </controllers>
 </simulation>

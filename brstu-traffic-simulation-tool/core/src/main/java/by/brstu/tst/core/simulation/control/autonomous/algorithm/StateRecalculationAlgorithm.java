@@ -8,7 +8,6 @@ import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionCommand;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by a.klimovich on 23.10.2016.
@@ -43,42 +42,79 @@ public class StateRecalculationAlgorithm {
         return sectionQueue.getCurrentState();
     }
 
-    public void recalculateState() {
-        List<WeightedSectionPart> weightedConnectors = new ArrayList<>();
-        for (Map.Entry<String, ArrayList<VehicleDescription>> descriptionsByDirection : vehiclesByDirections.entrySet()) {
-            ArrayList<VehicleDescription> vehicleDescriptions = descriptionsByDirection.getValue();
-            Collections.sort(vehicleDescriptions, (x, y) -> Double.compare(x.getDistance(), y.getDistance()));
-            ArrayList<RoadConnectorDescription> connectorDescriptions = new ArrayList<>();
-            ArrayList<String> vehicles = new ArrayList<>();
-            int maxVehicles = 15;
-            int i = 0;
-            double weight = 0;
-            for (int k = 0; k < 3 && i < vehicleDescriptions.size() && vehicles.size() < maxVehicles; k++) {
-                while (i < vehicleDescriptions.size() && sectionQueue.vehicleRegistered(vehicleDescriptions.get(i).getId())) {
-                    i++;
-                }
-                if (i >= vehicleDescriptions.size()) {
-                    break;
-                }
-                connectorDescriptions.add(vehicleDescriptions.get(i).getConnectorDescription());
-                while (i < vehicleDescriptions.size()
-                        && vehicles.size() < maxVehicles
-                        && connectorDescriptions.contains(vehicleDescriptions.get(i).getConnectorDescription())) {
-                    if (sectionQueue.vehicleRegistered(vehicleDescriptions.get(i).getId())) {
+    public AutonomousSection getSection() {
+        return sectionQueue.getCurrentSection();
+    }
+
+    public double getAverageSectionDuration() {
+        return 20.0;
+    }
+
+    public void recalculateState(MessagingQueue messageQueue) {
+        while (sectionQueue.getSize() > 3 && sectionQueue.getLastSection().getNumVehicles() < 40) {
+            sectionQueue.removeLastSection();
+        }
+        boolean wereUpdates = true;
+        while (wereUpdates) {
+            wereUpdates = false;
+            List<WeightedSectionPart> weightedConnectors = new ArrayList<>();
+            for (Map.Entry<String, ArrayList<VehicleDescription>> descriptionsByDirection : vehiclesByDirections.entrySet()) {
+                ArrayList<VehicleDescription> vehicleDescriptions = descriptionsByDirection.getValue();
+                Collections.sort(vehicleDescriptions, (x, y) -> Double.compare(x.getDistance(), y.getDistance()));
+                ArrayList<RoadConnectorDescription> connectorDescriptions = new ArrayList<>();
+                ArrayList<String> vehicles = new ArrayList<>();
+                int maxVehicles = 15;
+                int i = 0;
+                double weight = 0;
+                for (int k = 0; k < 3 && i < vehicleDescriptions.size() && vehicles.size() < maxVehicles; k++) {
+                    while (i < vehicleDescriptions.size() && sectionQueue.vehicleRegistered(vehicleDescriptions.get(i).getId())) {
                         i++;
-                        continue;
                     }
-                    vehicles.add(vehicleDescriptions.get(i).getId());
-                    weight += Math.exp(-0.01 * vehicleDescriptions.get(i).getDistance());
-                    weight += Math.exp(0.1 * vehicleDescriptions.get(i).getWaitingTime()) - 1;
-                    i++;
+                    if (i >= vehicleDescriptions.size()) {
+                        break;
+                    }
+                    connectorDescriptions.add(vehicleDescriptions.get(i).getConnectorDescription());
+                    wereUpdates = true;
+                    while (i < vehicleDescriptions.size()
+                            && vehicles.size() < maxVehicles
+                            && connectorDescriptions.contains(vehicleDescriptions.get(i).getConnectorDescription())) {
+                        if (sectionQueue.vehicleRegistered(vehicleDescriptions.get(i).getId())) {
+                            i++;
+                            continue;
+                        }
+                        vehicles.add(vehicleDescriptions.get(i).getId());
+                        weight += 10 + Math.exp(-0.01 * vehicleDescriptions.get(i).getDistance());
+                        weight += Math.exp(0.1 * vehicleDescriptions.get(i).getWaitingTime()) - 1;
+                        i++;
+                    }
+                    weightedConnectors.add(new WeightedSectionPart(connectorDescriptions, weight, nonConflictConnectors, vehicles));
                 }
-                weightedConnectors.add(new WeightedSectionPart(connectorDescriptions, weight, nonConflictConnectors, vehicles));
+            }
+            if (weightedConnectors.size() == 0) {
+                break;
+            }
+            WeightedGraph graph = new WeightedGraph(weightedConnectors);
+            List<WeightedSectionPart> optimalParts = graph.getOptimalSectionParts();
+            AutonomousSection section = weightedSectionPartsToSection(optimalParts);
+            int numVehicles = 0;
+            for (WeightedSectionPart part : optimalParts) {
+                for (String vehicle : part.getVehicles()) {
+                    numVehicles++;
+                    messageQueue.addMessage(new AutonomousIntersectionCommand(intersectionName,
+                            vehicle, section.getId()));
+                }
+            }
+            System.out.printf("Section %s: %s\n", section.getId(), numVehicles);
+            sectionQueue.addSection(section);
+        }
+        for (Map.Entry<String, ArrayList<VehicleDescription>> descriptionsByDirection : vehiclesByDirections.entrySet()) {
+            for (VehicleDescription vehicle : descriptionsByDirection.getValue()) {
+                if (!sectionQueue.vehicleRegistered(vehicle.getId())) {
+                    messageQueue.addMessage(new AutonomousIntersectionCommand(intersectionName,
+                            vehicle.getId(), sectionQueue.getSize() + 1));
+                }
             }
         }
-        WeightedGraph graph = new WeightedGraph(weightedConnectors);
-        AutonomousSection section = weightedSectionPartsToSection(graph.getOptimalSectionParts());
-        sectionQueue.addSection(section);
         vehiclesByDirections.clear();
         recalculationStarted = false;
     }
@@ -94,16 +130,6 @@ public class StateRecalculationAlgorithm {
         }
         IntersectionState state = new IntersectionState(connectors);
         return new AutonomousSection(state, vehicles);
-    }
-
-    public void generateControlMessages(MessagingQueue messagingQueue) {
-        for (VehicleDescription vehicle : vehiclesByDirections.entrySet()
-                .stream()
-                .map(x -> x.getValue())
-                .flatMap(x -> x.stream())
-                .collect(Collectors.toList())) {
-            messagingQueue.addMessage(new AutonomousIntersectionCommand(intersectionName, vehicle.getId()));
-        }
     }
 
     public void startRecalculation() {
