@@ -10,6 +10,6 @@ import by.brstu.tst.core.simulation.driving.IDriverFactory;
 public class AdaptiveDriverFactory implements IDriverFactory {
     @Override
     public BaseVehicleDriver createDriver(MovingVehicle vehicle) {
-        return null;
+        return new AdaptiveVehicleDriver(vehicle);
     }
 }

@@ -5,7 +5,6 @@ import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.control.autonomous.AutonomousSection;
 import by.brstu.tst.core.simulation.control.autonomous.WeightedSectionPart;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
-import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionCommand;
 
 import java.util.*;
 
@@ -25,7 +24,7 @@ public class StateRecalculationAlgorithm {
         this.recalculationStarted = false;
         this.nonConflictConnectors = nonConflictConnectors;
         vehiclesByDirections = new HashMap<>();
-        sectionQueue = new SectionQueue();
+        sectionQueue = new SectionQueue(intersectionName, 5, nonConflictConnectors);
     }
 
     public void addVehicleDescription(String id, double distance, RoadConnectorDescription connectorDescription,
@@ -37,9 +36,8 @@ public class StateRecalculationAlgorithm {
         vehiclesByDirections.get(key).add(new VehicleDescription(id, distance, connectorDescription, waitingTime));
     }
 
-    public IntersectionState getState() {
-        sectionQueue.updateState();
-        return sectionQueue.getCurrentState();
+    public IntersectionState getState(double simulationTime, MessagingQueue messagingQueue) {
+        return sectionQueue.getCurrentState(simulationTime, messagingQueue);
     }
 
     public AutonomousSection getSection() {
@@ -50,7 +48,7 @@ public class StateRecalculationAlgorithm {
         return 20.0;
     }
 
-    public void recalculateState(MessagingQueue messageQueue) {
+    public void recalculateState() {
         while (sectionQueue.getSize() > 3 && sectionQueue.getLastSection().getNumVehicles() < 40) {
             sectionQueue.removeLastSection();
         }
@@ -96,24 +94,7 @@ public class StateRecalculationAlgorithm {
             WeightedGraph graph = new WeightedGraph(weightedConnectors);
             List<WeightedSectionPart> optimalParts = graph.getOptimalSectionParts();
             AutonomousSection section = weightedSectionPartsToSection(optimalParts);
-            int numVehicles = 0;
-            for (WeightedSectionPart part : optimalParts) {
-                for (String vehicle : part.getVehicles()) {
-                    numVehicles++;
-                    messageQueue.addMessage(new AutonomousIntersectionCommand(intersectionName,
-                            vehicle, section.getId()));
-                }
-            }
-            System.out.printf("Section %s: %s\n", section.getId(), numVehicles);
             sectionQueue.addSection(section);
-        }
-        for (Map.Entry<String, ArrayList<VehicleDescription>> descriptionsByDirection : vehiclesByDirections.entrySet()) {
-            for (VehicleDescription vehicle : descriptionsByDirection.getValue()) {
-                if (!sectionQueue.vehicleRegistered(vehicle.getId())) {
-                    messageQueue.addMessage(new AutonomousIntersectionCommand(intersectionName,
-                            vehicle.getId(), sectionQueue.getSize() + 1));
-                }
-            }
         }
         vehiclesByDirections.clear();
         recalculationStarted = false;
@@ -140,7 +121,7 @@ public class StateRecalculationAlgorithm {
         return recalculationStarted;
     }
 
-    public boolean vehiclePassed(String sender) {
-        return sectionQueue.vehiclePassed(sender);
+    public boolean vehiclePassed(String sender, double simulationTime) {
+        return sectionQueue.vehiclePassed(sender, simulationTime);
     }
 }

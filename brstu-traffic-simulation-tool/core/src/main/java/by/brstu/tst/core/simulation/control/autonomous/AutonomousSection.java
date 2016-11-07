@@ -1,7 +1,9 @@
 package by.brstu.tst.core.simulation.control.autonomous;
 
+import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -49,5 +51,38 @@ public class AutonomousSection {
 
     public int getNumVehicles() {
         return vehicles.size();
+    }
+
+    public static IntersectionState buildIntermediateState(AutonomousSection currentSection,
+                                                           AutonomousSection nextSection,
+                                                           HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors) {
+        HashSet<RoadConnectorDescription> currentConnectors = currentSection.getState().getOpenedConnections();
+        HashSet<RoadConnectorDescription> nextConnectors = nextSection.getState().getOpenedConnections();
+        HashSet<RoadConnectorDescription> intermediateConnectors = new HashSet<>();
+        for (RoadConnectorDescription currentConnector : currentConnectors) {
+            boolean hasConflicts = false;
+            for (RoadConnectorDescription nextConnector : nextConnectors) {
+                if (!nonConflictConnectors.get(currentConnector).contains(nextConnector) && !currentConnector.equals(nextConnector)) {
+                    hasConflicts = true;
+                    break;
+                }
+            }
+            if (!hasConflicts) {
+                intermediateConnectors.add(currentConnector);
+            }
+        }
+        for (RoadConnectorDescription nextConnector : nextConnectors) {
+            boolean hasConflicts = false;
+            for (RoadConnectorDescription currentConnector : currentConnectors) {
+                if (!nonConflictConnectors.get(nextConnector).contains(currentConnector) && !nextConnector.equals(currentConnector)) {
+                    hasConflicts = true;
+                    break;
+                }
+            }
+            if (!hasConflicts) {
+                intermediateConnectors.add(nextConnector);
+            }
+        }
+        return new IntersectionState(intermediateConnectors);
     }
 }

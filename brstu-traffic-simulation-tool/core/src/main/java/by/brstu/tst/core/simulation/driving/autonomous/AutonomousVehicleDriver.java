@@ -37,9 +37,6 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
     private boolean carsInFront;
 
     private int choosenLane = -2;
-    private double prefferedSpeed = -1;
-    private int sectionId = -1;
-    double twoSectionsTime;
 
     public AutonomousVehicleDriver(MovingVehicle vehicle) {
         super(vehicle);
@@ -82,9 +79,6 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
                     messageQueue.addMessage(new ResponseVehicleDirection(vehicle.getVehicleInfo().getIdentifier(),
                             message.getSender(), routeState.getPosition(), roadConnector, waitingTime));
                     break;
-                case AUTONMOUS_INTERSECTION_COMMAND:
-                    sectionId = ((AutonomousIntersectionCommand) message).getSectionId();
-                    break;
                 case AUTONOMOUS_INTERSECTION_STATE:
                     if (!routeState.isBeforeIntersection()
                             || !routeState.getNextIntersection().getName().equals(message.getSender())) {
@@ -92,23 +86,6 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
                     }
                     AutonomousIntersectionStateMessage stateMessage = (AutonomousIntersectionStateMessage) message;
                     intersectionState = stateMessage.getState();
-                    if (sectionId >= 0) {
-                        double distance = routeState.getPosition().distanceTo(routeState.getCurrentRoad().getEndPoint());
-                        int deltaSections = sectionId - stateMessage.getCurrentSectionId();
-                        if (deltaSections > 1) {
-                            if (deltaSections == 2) {
-                                twoSectionsTime = simulationState.getSimulationTime();
-                            }
-                            deltaSections+=2;
-                        }
-                        else if(deltaSections == 1) {
-                            if (simulationState.getSimulationTime() - twoSectionsTime > 12) {
-                                deltaSections = 0;
-                            }
-                        }
-                        double timeToArrive = deltaSections * stateMessage.getAverageSectionTime();
-                        prefferedSpeed = distance / Math.max(timeToArrive, 1e-6);
-                    }
                     break;
                 case AUTONOMOUS_RESPONSE_PREFFERED_LANES:
                     if (choosenLane == -1) {
@@ -143,16 +120,12 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
         if (carsInFront) {
             return;
         }
-        boolean intersectionClosed = false;//checkIntersectionClosed(intersectionState);
+        boolean intersectionClosed = checkIntersectionClosed(intersectionState);
         if (intersectionClosed) {
             return;
         }
         if (vehicle.getSpeed() > 10) {
             checkLaneChanging();
-        }
-        if (routeState.isBeforeIntersection()
-                && prefferedSpeed >= 0 && vehicle.getSpeed() > prefferedSpeed) {
-            vehicle.setAcceletation(-maxDeceleration);
         }
 
         //calculate waiting time
@@ -184,8 +157,6 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
                         currentIntersection.getName()));
                 currentIntersection = null;
                 choosenLane = -2;
-                sectionId = -1;
-                prefferedSpeed = -1;
             }
         }
     }

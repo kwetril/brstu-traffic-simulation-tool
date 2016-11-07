@@ -29,6 +29,8 @@ public class AutonomousIntersectionController implements IntersectionController 
     private double recalculationPeriod;
     private StateRecalculationAlgorithm stateRecalculationAlgorithm;
     private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
+    private double simulationTime;
+    private MessagingQueue messagingQueue;
 
     public AutonomousIntersectionController(Intersection intersection, double recalculationPeriod,
                                             int numStatesToCalculate) {
@@ -37,6 +39,7 @@ public class AutonomousIntersectionController implements IntersectionController 
         nextRecalculationTime = 0;
         findNonConflictConnectors();
         stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection.getName(), numStatesToCalculate, nonConflictConnectors);
+        simulationTime = 0;
     }
 
     private void findNonConflictConnectors() {
@@ -83,11 +86,13 @@ public class AutonomousIntersectionController implements IntersectionController 
 
     @Override
     public void updateInnerState(SimulationState simulationState, MessagingQueue messagingQueue) {
+        simulationTime = simulationState.getSimulationTime();
+        this.messagingQueue = messagingQueue;
         processMessages(messagingQueue);
 
         if (stateRecalculationAlgorithm.isRecalculationStarted()
                 && simulationState.getSimulationTime() + 1e-4 >= recalculationCollectionTime) {
-            stateRecalculationAlgorithm.recalculateState(messagingQueue);
+            stateRecalculationAlgorithm.recalculateState();
             IntersectionState state = getState();
             int sectionId = stateRecalculationAlgorithm.getSection() != null ? stateRecalculationAlgorithm.getSection().getId() : -1;
             double duration = stateRecalculationAlgorithm.getAverageSectionDuration();
@@ -119,7 +124,7 @@ public class AutonomousIntersectionController implements IntersectionController 
                                 directionResponse.getConnectorDescription(), directionResponse.getWaitingTime());
                         break;
                     case AUTONOMOUS_INTERSECTION_PASSED:
-                        if (stateRecalculationAlgorithm.vehiclePassed(message.getSender())) {
+                        if (stateRecalculationAlgorithm.vehiclePassed(message.getSender(), simulationTime)) {
                             IntersectionState state = getState();
                             int sectionId = stateRecalculationAlgorithm.getSection() != null ? stateRecalculationAlgorithm.getSection().getId() : -1;
                             double duration = stateRecalculationAlgorithm.getAverageSectionDuration();
@@ -170,9 +175,9 @@ public class AutonomousIntersectionController implements IntersectionController 
                 priorities[0] = 1;
                 break;
             case 72:
-                priorities[0] = 0.25;
-                priorities[1] = 0.5;
-                priorities[2] = 0.25;
+                priorities[0] = 0;
+                priorities[1] = 1.0;
+                priorities[2] = 0.0;
                 break;
             default:
                 System.out.println(x);
@@ -196,7 +201,7 @@ public class AutonomousIntersectionController implements IntersectionController 
 
     @Override
     public IntersectionState getState() {
-        return stateRecalculationAlgorithm.getState();
+        return stateRecalculationAlgorithm.getState(simulationTime, messagingQueue);
     }
 
     @Override
