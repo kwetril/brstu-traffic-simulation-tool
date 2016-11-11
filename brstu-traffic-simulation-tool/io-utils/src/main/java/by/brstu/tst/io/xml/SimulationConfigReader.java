@@ -164,9 +164,8 @@ public class SimulationConfigReader {
                 return new CyclicIntersectionController(intersection, cycleSections);
             case "autonomous":
                 float recalculationPeriod = getFloatAttr(controllerAttributes, "recalculationPeriod");
-                int maxStatesToCalculate = getIntAttr(controllerAttributes, "maxStatesToCalculate");
                 float operationRadius = getFloatAttr(controllerAttributes, "operationRadius");
-                return new AutonomousIntersectionController(intersection, recalculationPeriod, maxStatesToCalculate);
+                return new AutonomousIntersectionController(intersection, recalculationPeriod, operationRadius);
             case "adaptive":
                 double period = getDoubleAttr(controllerAttributes, "period");
                 int historyMinutes = getIntAttr(controllerAttributes, "historyMinutes");

@@ -136,6 +136,6 @@
     </flows>
     <controllers>
         <controller type="autonomous" intersection="intersection" recalculationPeriod="5"
-                    maxStatesToCalculate="3" operationRadius="200" />
+                    operationRadius="300" />
     </controllers>
 </simulation>

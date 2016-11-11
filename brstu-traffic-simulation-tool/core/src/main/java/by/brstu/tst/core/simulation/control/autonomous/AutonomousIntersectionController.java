@@ -27,18 +27,20 @@ public class AutonomousIntersectionController implements IntersectionController 
     private double nextRecalculationTime;
     private double recalculationCollectionTime;
     private double recalculationPeriod;
+    private double operationRange;
     private StateRecalculationAlgorithm stateRecalculationAlgorithm;
     private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
     private double simulationTime;
     private MessagingQueue messagingQueue;
 
     public AutonomousIntersectionController(Intersection intersection, double recalculationPeriod,
-                                            int numStatesToCalculate) {
+                                            double operationRange) {
         this.intersection = intersection;
         this.recalculationPeriod = recalculationPeriod;
+        this.operationRange = operationRange;
         nextRecalculationTime = 0;
         findNonConflictConnectors();
-        stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection.getName(), numStatesToCalculate, nonConflictConnectors);
+        stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection.getName(), nonConflictConnectors);
         simulationTime = 0;
     }
 
@@ -116,7 +118,7 @@ public class AutonomousIntersectionController implements IntersectionController 
                             continue;
                         }
                         ResponseVehicleDirection directionResponse = (ResponseVehicleDirection) message;
-                        if (directionResponse.getPosition().distanceTo(intersection.getBasePoint()) > 300) {
+                        if (directionResponse.getPosition().distanceTo(intersection.getBasePoint()) > operationRange) {
                             continue;
                         }
                         stateRecalculationAlgorithm.addVehicleDescription(directionResponse.getSender(),

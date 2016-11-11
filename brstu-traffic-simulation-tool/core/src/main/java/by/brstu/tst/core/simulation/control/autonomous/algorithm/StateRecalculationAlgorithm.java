@@ -18,7 +18,7 @@ public class StateRecalculationAlgorithm {
     private HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors;
     private SectionQueue sectionQueue;
 
-    public StateRecalculationAlgorithm(String intersectionName, int numStatesToCalculate,
+    public StateRecalculationAlgorithm(String intersectionName,
                                        HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> nonConflictConnectors) {
         this.intersectionName = intersectionName;
         this.recalculationStarted = false;
