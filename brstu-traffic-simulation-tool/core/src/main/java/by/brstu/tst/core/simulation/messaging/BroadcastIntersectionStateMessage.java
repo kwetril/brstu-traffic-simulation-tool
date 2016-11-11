@@ -1,4 +1,4 @@
-package by.brstu.tst.core.simulation.messaging.cyclic;
+package by.brstu.tst.core.simulation.messaging;
 
 import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
@@ -12,7 +12,7 @@ public class BroadcastIntersectionStateMessage extends ControlMessage {
 
     public BroadcastIntersectionStateMessage(String intersectionName,
                                              IntersectionState intersectionState) {
-        super(ControlMessageType.CYCLIC_INTERSECTION_STATE, intersectionName, null);
+        super(ControlMessageType.BROADCAST_INTERSECTION_STATE, intersectionName, null);
         this.intersectionState = intersectionState;
     }
 

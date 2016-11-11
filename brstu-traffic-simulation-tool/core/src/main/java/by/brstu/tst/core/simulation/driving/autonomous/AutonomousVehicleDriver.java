@@ -9,6 +9,7 @@ import by.brstu.tst.core.simulation.driving.BaseVehicleDriver;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.autonomous.*;
+import by.brstu.tst.core.simulation.messaging.BroadcastIntersectionStateMessage;
 import by.brstu.tst.core.simulation.routing.state.ChangeLaneType;
 import com.google.common.collect.Iterables;
 
@@ -61,13 +62,13 @@ public class AutonomousVehicleDriver extends BaseVehicleDriver {
                     messageQueue.addMessage(new ResponseVehicleDirection(vehicle.getVehicleInfo().getIdentifier(),
                             message.getSender(), routeState.getPosition(), roadConnector, waitingTime));
                     break;
-                case AUTONOMOUS_INTERSECTION_STATE:
+                case BROADCAST_INTERSECTION_STATE:
                     if (!routeState.isBeforeIntersection()
                             || !routeState.getNextIntersection().getName().equals(message.getSender())) {
                         continue;
                     }
-                    AutonomousIntersectionStateMessage stateMessage = (AutonomousIntersectionStateMessage) message;
-                    intersectionState = stateMessage.getState();
+                    BroadcastIntersectionStateMessage stateMessage = (BroadcastIntersectionStateMessage) message;
+                    intersectionState = stateMessage.getIntersectionState();
                     break;
                 case AUTONOMOUS_RESPONSE_PREFFERED_LANES:
                     if (choosenLane == -1) {

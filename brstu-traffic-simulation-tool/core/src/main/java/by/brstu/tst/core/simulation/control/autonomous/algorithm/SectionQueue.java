@@ -4,12 +4,11 @@ import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.control.autonomous.AutonomousSection;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
-import by.brstu.tst.core.simulation.messaging.autonomous.AutonomousIntersectionStateMessage;
+import by.brstu.tst.core.simulation.messaging.BroadcastIntersectionStateMessage;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Queue;
 
 /**
  * Created by a.klimovich on 30.10.2016.
@@ -97,7 +96,7 @@ class SectionQueue {
             result = sectionQueue.peek().getState();
         }
         if (intermediateStateFinished) {
-            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersectionName, result, 0, 0));
+            messagingQueue.addMessage(new BroadcastIntersectionStateMessage(intersectionName, result));
         }
         return result;
     }

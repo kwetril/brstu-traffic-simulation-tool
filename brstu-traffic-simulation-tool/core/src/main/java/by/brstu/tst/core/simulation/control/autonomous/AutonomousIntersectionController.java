@@ -10,6 +10,7 @@ import by.brstu.tst.core.simulation.control.autonomous.algorithm.StateRecalculat
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.autonomous.*;
+import by.brstu.tst.core.simulation.messaging.BroadcastIntersectionStateMessage;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +29,10 @@ public class AutonomousIntersectionController implements IntersectionController 
     private double simulationTime;
     private MessagingQueue messagingQueue;
 
+    //statistics, key is road-road pair, value - number of vehicles seen
+    //it is used to find best lanes to move for this road-road pair
+    private HashMap<String, Integer> directionToCount;
+
     public AutonomousIntersectionController(Intersection intersection, double recalculationPeriod,
                                             double operationRange) {
         this.intersection = intersection;
@@ -37,6 +42,8 @@ public class AutonomousIntersectionController implements IntersectionController 
         nonConflictConnectors = intersection.findNonConflictConnectors();
         stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection.getName(), nonConflictConnectors);
         simulationTime = 0;
+
+        directionToCount = new HashMap<>();
     }
 
 
@@ -49,10 +56,7 @@ public class AutonomousIntersectionController implements IntersectionController 
         if (stateRecalculationAlgorithm.isRecalculationStarted()
                 && simulationState.getSimulationTime() + 1e-4 >= recalculationCollectionTime) {
             stateRecalculationAlgorithm.recalculateState();
-            IntersectionState state = getState();
-            int sectionId = stateRecalculationAlgorithm.getSection() != null ? stateRecalculationAlgorithm.getSection().getId() : -1;
-            double duration = stateRecalculationAlgorithm.getAverageSectionDuration();
-            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), state, sectionId, duration));
+            messagingQueue.addMessage(new BroadcastIntersectionStateMessage(intersection.getName(), getState()));
         }
 
         if (simulationState.getSimulationTime() + 1e-4 >= nextRecalculationTime) {
@@ -81,10 +85,7 @@ public class AutonomousIntersectionController implements IntersectionController 
                         break;
                     case AUTONOMOUS_INTERSECTION_PASSED:
                         if (stateRecalculationAlgorithm.vehiclePassed(message.getSender(), simulationTime)) {
-                            IntersectionState state = getState();
-                            int sectionId = stateRecalculationAlgorithm.getSection() != null ? stateRecalculationAlgorithm.getSection().getId() : -1;
-                            double duration = stateRecalculationAlgorithm.getAverageSectionDuration();
-                            messagingQueue.addMessage(new AutonomousIntersectionStateMessage(intersection.getName(), state, sectionId, duration));
+                            messagingQueue.addMessage(new BroadcastIntersectionStateMessage(intersection.getName(), getState()));
                         }
                         break;
                     case AUTONOMOUS_REQUEST_PREFFERED_LANES:

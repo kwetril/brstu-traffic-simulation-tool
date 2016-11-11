@@ -6,7 +6,7 @@ import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.driving.BaseVehicleDriver;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
-import by.brstu.tst.core.simulation.messaging.cyclic.BroadcastIntersectionStateMessage;
+import by.brstu.tst.core.simulation.messaging.BroadcastIntersectionStateMessage;
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesRequestMessage;
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesResponseMessage;
 import by.brstu.tst.core.simulation.routing.state.ChangeLaneType;
@@ -45,7 +45,7 @@ public class CyclicVehicleDriver extends BaseVehicleDriver {
                 message -> message.isBroadcast() || message.getReceiver().equals(vehicle.getVehicleInfo().getIdentifier()));
         for (ControlMessage message : messagesToProcess) {
             switch (message.getType()) {
-                case CYCLIC_INTERSECTION_STATE:
+                case BROADCAST_INTERSECTION_STATE:
                     BroadcastIntersectionStateMessage m1 = (BroadcastIntersectionStateMessage) message;
                     if (routeState.isBeforeIntersection()
                             && routeState.getNextIntersection().getName().equals(m1.getSender())) {

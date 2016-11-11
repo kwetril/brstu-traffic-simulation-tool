@@ -44,10 +44,6 @@ public class StateRecalculationAlgorithm {
         return sectionQueue.getCurrentSection();
     }
 
-    public double getAverageSectionDuration() {
-        return 20.0;
-    }
-
     public void recalculateState() {
         while (sectionQueue.getSize() > 2) {// && sectionQueue.getLastSection().getNumVehicles() < 40) {
             sectionQueue.removeLastSection();

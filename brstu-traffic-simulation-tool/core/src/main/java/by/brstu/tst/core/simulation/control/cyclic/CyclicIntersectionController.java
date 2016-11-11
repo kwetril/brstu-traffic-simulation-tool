@@ -9,7 +9,7 @@ import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
-import by.brstu.tst.core.simulation.messaging.cyclic.BroadcastIntersectionStateMessage;
+import by.brstu.tst.core.simulation.messaging.BroadcastIntersectionStateMessage;
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesRequestMessage;
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesResponseMessage;
 import com.google.common.collect.Iterables;
