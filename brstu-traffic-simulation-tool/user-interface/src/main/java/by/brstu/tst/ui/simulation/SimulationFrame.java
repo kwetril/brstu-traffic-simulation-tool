@@ -121,7 +121,7 @@ public class SimulationFrame extends JFrame {
         try {
             SimulationConfigReader simulationConfigReader = new SimulationConfigReader(map);
             SimulationConfig simulationConfig = simulationConfigReader.readSimulationConfig(
-                    "io-utils\\data\\adaptive-simulation-3.xml");
+                    "io-utils\\data\\autonomous-simulation-3.xml");
             SimulationModel simulationModel = new SimulationModel(map, simulationConfig.getVehicleFlows(),
                     simulationConfig.getIntersectionControllers(), simulationConfig.getTimeStep());
             SpeedStatsCollector speedStatsCollector = new SpeedStatsCollector(1.0);

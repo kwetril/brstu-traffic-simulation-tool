@@ -49,7 +49,7 @@ public class StateRecalculationAlgorithm {
     }
 
     public void recalculateState() {
-        while (sectionQueue.getSize() > 3 && sectionQueue.getLastSection().getNumVehicles() < 40) {
+        while (sectionQueue.getSize() > 2) {// && sectionQueue.getLastSection().getNumVehicles() < 40) {
             sectionQueue.removeLastSection();
         }
         boolean wereUpdates = true;
