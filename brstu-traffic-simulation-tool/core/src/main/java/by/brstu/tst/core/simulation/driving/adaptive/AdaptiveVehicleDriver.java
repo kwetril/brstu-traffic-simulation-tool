@@ -1,8 +1,5 @@
 package by.brstu.tst.core.simulation.driving.adaptive;
 
-import by.brstu.tst.core.map.elements.DirectedRoad;
-import by.brstu.tst.core.map.primitives.MapPoint;
-import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.simulation.MovingVehicle;
 import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IntersectionState;
@@ -15,7 +12,6 @@ import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesRequestMess
 import by.brstu.tst.core.simulation.messaging.cyclic.GetSuitableLanesResponseMessage;
 import by.brstu.tst.core.simulation.routing.info.RouteStateInfo;
 import by.brstu.tst.core.simulation.routing.state.ChangeLaneType;
-import by.brstu.tst.core.vehicle.VehicleTechnicalParameters;
 import com.google.common.collect.Iterables;
 
 import java.util.List;
@@ -24,21 +20,15 @@ import java.util.List;
 /**
  * Created by a.klimovich on 02.10.2016.
  */
-public class AdaptiveVehicleDriver extends BaseVehicleDriver {
-    private double maxAcceleration;
-    private double maxDeceleration;
+class AdaptiveVehicleDriver extends BaseVehicleDriver {
     private RouteStateInfo routeState;
     private IntersectionState intersectionState;
     private List<Integer> suitableLanes;
-    private boolean carsInfront;
 
     boolean messageSent;
 
-    public AdaptiveVehicleDriver(MovingVehicle vehicle) {
+    AdaptiveVehicleDriver(MovingVehicle vehicle) {
         super(vehicle);
-        VehicleTechnicalParameters techParams = vehicle.getVehicleInfo().getTechnicalParameters();
-        maxAcceleration = techParams.getMaxAccelerationRate();
-        maxDeceleration = techParams.getMaxDecelerationRate();
         intersectionState = null;
         suitableLanes = null;
         messageSent = false;
@@ -62,11 +52,6 @@ public class AdaptiveVehicleDriver extends BaseVehicleDriver {
         processMessages(messagingQueue.getCurrentMessages());
         updateVehicleState(simulationState);
         sendMessages(messagingQueue);
-    }
-
-    @Override
-    public boolean seeCarsInFront() {
-        return carsInfront;
     }
 
     private void processMessages(Iterable<ControlMessage> messages) {
@@ -93,13 +78,10 @@ public class AdaptiveVehicleDriver extends BaseVehicleDriver {
 
     private void updateVehicleState(SimulationState simulationState) {
         vehicle.setAcceletation(getPrefferedAcceleration());
-
-        carsInfront = checkCarsInfront(simulationState);
-        if (carsInfront) {
+        if (checkCarsInfront(simulationState)) {
             return;
         }
-        boolean intersectionClosed = checkIntersectionClosed(intersectionState);
-        if (intersectionClosed) {
+        if (checkIntersectionClosed(intersectionState)) {
             return;
         }
         if (vehicle.getSpeed() > 10) {
@@ -117,25 +99,6 @@ public class AdaptiveVehicleDriver extends BaseVehicleDriver {
         }
     }
 
-
-    private double getPrefferedAcceleration() {
-        if (vehicle.getSpeed() < 10) {
-            return maxAcceleration;
-        } else {
-            return maxAcceleration * 0.5;
-        }
-    }
-
-    private double getPrefferedDistance(double convergenceSpeed) {
-        double timeToStop = vehicle.getSpeed() / maxDeceleration;
-        return convergenceSpeed * timeToStop + 0.3 * vehicle.getSpeed() + 8;
-    }
-
-    private double getDistanceToStop() {
-        double timeToStop = vehicle.getSpeed() / maxDeceleration;
-        return maxDeceleration * timeToStop * timeToStop / 2;
-    }
-
     private void checkLaneChanging() {
         if (routeState.isOnRoad()
                 && routeState.isBeforeIntersection()
@@ -151,83 +114,5 @@ public class AdaptiveVehicleDriver extends BaseVehicleDriver {
                 vehicle.changeLane(ChangeLaneType.LEFT);
             }
         }
-    }
-
-    private boolean checkCarsInfront(SimulationState state) {
-        Vector direction = routeState.getDirection();
-        MapPoint position = routeState.getPosition();
-        for (MovingVehicle otherVehicle : state.getVehicles()) {
-            if (otherVehicle.getVehicleInfo().getIdentifier().equals(vehicle.getVehicleInfo().getIdentifier())) {
-                continue;
-            }
-            RouteStateInfo otherStateInfo = otherVehicle.getRouteStateInfo();
-            if (otherStateInfo.reachedDestination()) {
-                continue;
-            }
-            Vector otherDirection = otherStateInfo.getDirection();
-            MapPoint otherPosition = otherStateInfo.getPosition();
-
-            Vector fromToVector = new Vector(position, otherPosition);
-            double distance = fromToVector.getLength();
-
-            Vector relationalSpeed = direction.clone().setLength(vehicle.getSpeed())
-                    .add(otherDirection.clone().setLength(otherVehicle.getSpeed()).multiply(-1));
-            double convergenceSpeed = relationalSpeed.scalarMultiply(fromToVector.setLength(1.0));
-            if ((routeState.isOnRoad() && otherStateInfo.isOnRoad()
-                    && otherStateInfo.getCurrentRoad().getName().equals(routeState.getCurrentRoad().getName())
-                    && routeState.getLane() == otherStateInfo.getLane())
-                    || (!routeState.isOnRoad() && !otherStateInfo.isOnRoad()
-                    && routeState.getNextRoad().getName().equals(otherStateInfo.getNextRoad().getName())
-                    && routeState.getLaneAfterNode() == otherStateInfo.getLaneAfterNode())
-                    || (routeState.isOnRoad() && !otherStateInfo.isOnRoad()
-                    && routeState.getLane() == otherStateInfo.getLaneAfterNode())
-                    || (!routeState.isOnRoad() && otherStateInfo.isOnRoad()
-                    && routeState.getNextRoad().getName().equals(otherStateInfo.getCurrentRoad().getName())
-                    && routeState.getLaneAfterNode() == otherStateInfo.getLane())) {
-                if (convergenceSpeed > 0 && fromToVector.scalarMultiply(direction) > 0
-                        && distance < getPrefferedDistance(convergenceSpeed)) {
-                    vehicle.setAcceletation(-maxDeceleration);
-                    return true;
-                } else if (convergenceSpeed <= 0 && distance < getPrefferedDistance(0)) {
-                    double d1 = direction.clone().setLength(distance).addToPoint(position).distanceTo(otherPosition);
-                    double d2 = otherDirection.clone().setLength(distance).addToPoint(otherPosition).distanceTo(position);
-                    if (d1 < d2) {
-                        vehicle.setAcceletation(-maxDeceleration);
-                        return true;
-                    }
-                }
-            }
-        }
-        vehicle.setAcceletation(maxAcceleration);
-        return false;
-    }
-
-    private boolean checkIntersectionClosed(IntersectionState intersectionState) {
-        if (!routeState.isBeforeIntersection() || intersectionState == null) {
-            vehicle.setAcceletation(getPrefferedAcceleration());
-            return false;
-        }
-        double approxDist = routeState.getCurrentRoad().getEndPoint().distanceTo(routeState.getPosition());
-        if (approxDist > getDistanceToStop() + 15) {
-            vehicle.setAcceletation(getPrefferedAcceleration());
-            return false;
-        }
-
-        if (approxDist < getDistanceToStop() + 5) {
-            //run as can't stop before
-            return false;
-        }
-
-        DirectedRoad currentRoad = routeState.getCurrentRoad();
-        int currentLane = routeState.getLane();
-        DirectedRoad nextRoad = routeState.getNextRoad();
-        int nextLane = Math.min(currentLane, nextRoad.getNumLanes());
-        if (intersectionState.isOpened(currentRoad, currentLane, nextRoad, nextLane)) {
-            vehicle.setAcceletation(getPrefferedAcceleration());
-            return false;
-        }
-
-        vehicle.setAcceletation(-maxDeceleration);
-        return true;
     }
 }
