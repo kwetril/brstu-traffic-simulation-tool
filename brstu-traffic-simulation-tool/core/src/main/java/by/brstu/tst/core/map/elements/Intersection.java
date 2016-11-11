@@ -5,6 +5,11 @@ import by.brstu.tst.core.map.primitives.MapPoint;
 import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 /**
  * Created by kwetril on 8/17/16.
  */
@@ -48,5 +53,48 @@ public class Intersection extends NodeRoadElement {
 
 
         return new BezierCurve(startPoint, secondPoint, thirdPoint, endPoint);
+    }
+
+    public HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> findNonConflictConnectors() {
+        HashMap<RoadConnectorDescription, HashSet<RoadConnectorDescription>> result = new HashMap<>();
+        double laneWidth = Double.MAX_VALUE;
+        List<RoadConnectorDescription> allConnectors = new ArrayList<>();
+        for (EdgeRoadElement input : getInputElements()) {
+            for (EdgeRoadElement output : getOutputElements()) {
+                DirectedRoad inputRoad = input.getDirectedRoadByEndNode(this);
+                DirectedRoad outputRoad = output.getDirectedRoadByStartNode(this);
+                laneWidth = Math.min(laneWidth, Math.min(inputRoad.getLaneWidth(), outputRoad.getLaneWidth()));
+                for (int inputLane = 0; inputLane < inputRoad.getNumLanes(); inputLane++) {
+                    for (int outputLane = 0; outputLane < outputRoad.getNumLanes(); outputLane++) {
+                        RoadConnectorDescription connector = new RoadConnectorDescription(inputRoad, inputLane,
+                                outputRoad, outputLane);
+                        allConnectors.add(connector);
+                        result.put(connector, new HashSet<>());
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < allConnectors.size(); i++) {
+            for (int j = i + 1; j < allConnectors.size(); j++) {
+                RoadConnectorDescription first = allConnectors.get(i);
+                RoadConnectorDescription second = allConnectors.get(j);
+                if (first.getFrom().getName().equals(second.getFrom().getName())
+                        && first.getFromLane() == second.getFromLane())  {
+                    //non conflict when from the same lane
+                    result.get(first).add(second);
+                    result.get(second).add(first);
+                    continue;
+                }
+                BezierCurve connector = getConnector(first);
+                BezierCurve anotherConnector = getConnector(second);
+                double distance = connector.getDistance(anotherConnector);
+                boolean connectorsConflict = distance < laneWidth * 0.8;
+                if (!connectorsConflict) {
+                    result.get(first).add(second);
+                    result.get(second).add(first);
+                }
+            }
+        }
+        return result;
     }
 }
