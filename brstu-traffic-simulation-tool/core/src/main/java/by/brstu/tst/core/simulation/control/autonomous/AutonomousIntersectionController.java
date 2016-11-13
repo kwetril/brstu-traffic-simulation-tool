@@ -1,23 +1,19 @@
 package by.brstu.tst.core.simulation.control.autonomous;
 
-import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.Intersection;
-import by.brstu.tst.core.map.primitives.BezierCurve;
-import by.brstu.tst.core.map.primitives.MapPoint;
-import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IControllerVisitor;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
-import by.brstu.tst.core.simulation.control.autonomous.algorithm.LaneChoosingAlgorithm;
+import by.brstu.tst.core.simulation.control.autonomous.algorithm.laning.AutonomousLaneChoosingAlgorithm;
 import by.brstu.tst.core.simulation.control.autonomous.algorithm.StateRecalculationAlgorithm;
-import by.brstu.tst.core.simulation.control.autonomous.algorithm.VehiclePerDirectionStats;
+import by.brstu.tst.core.simulation.control.autonomous.algorithm.laning.BaseLaneChoosingAlgorithm;
+import by.brstu.tst.core.simulation.control.autonomous.algorithm.laning.PredefinedLaneChoosingAlgorithm;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.autonomous.*;
 import by.brstu.tst.core.simulation.messaging.BroadcastIntersectionStateMessage;
-import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,10 +32,10 @@ public class AutonomousIntersectionController implements IntersectionController 
     private double simulationTime;
     private MessagingQueue messagingQueue;
 
-    private LaneChoosingAlgorithm laneChoosingAlgorithm;
+    private BaseLaneChoosingAlgorithm laneChoosingAlgorithm;
 
     public AutonomousIntersectionController(Intersection intersection, double recalculationPeriod,
-                                            double operationRange) {
+                                            double operationRange, boolean autonomousLaning) {
         this.intersection = intersection;
         this.recalculationPeriod = recalculationPeriod;
         this.operationRange = operationRange;
@@ -48,7 +44,11 @@ public class AutonomousIntersectionController implements IntersectionController 
         stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection.getName(), nonConflictConnectors);
         simulationTime = 0;
 
-        laneChoosingAlgorithm = new LaneChoosingAlgorithm(intersection);
+        if (autonomousLaning) {
+            laneChoosingAlgorithm = new AutonomousLaneChoosingAlgorithm(intersection);
+        } else {
+            laneChoosingAlgorithm = new PredefinedLaneChoosingAlgorithm(intersection);
+        }
     }
 
 

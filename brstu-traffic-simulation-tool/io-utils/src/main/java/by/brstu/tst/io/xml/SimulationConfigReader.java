@@ -165,7 +165,7 @@ public class SimulationConfigReader {
             case "autonomous":
                 float recalculationPeriod = getFloatAttr(controllerAttributes, "recalculationPeriod");
                 float operationRadius = getFloatAttr(controllerAttributes, "operationRadius");
-                return new AutonomousIntersectionController(intersection, recalculationPeriod, operationRadius);
+                return new AutonomousIntersectionController(intersection, recalculationPeriod, operationRadius, false);
             case "adaptive":
                 double period = getDoubleAttr(controllerAttributes, "period");
                 int historyMinutes = getIntAttr(controllerAttributes, "historyMinutes");
