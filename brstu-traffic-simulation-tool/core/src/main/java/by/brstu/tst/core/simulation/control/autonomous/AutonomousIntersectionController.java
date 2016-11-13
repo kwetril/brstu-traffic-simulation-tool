@@ -1,16 +1,23 @@
 package by.brstu.tst.core.simulation.control.autonomous;
 
+import by.brstu.tst.core.map.Map;
 import by.brstu.tst.core.map.elements.Intersection;
+import by.brstu.tst.core.map.primitives.BezierCurve;
+import by.brstu.tst.core.map.primitives.MapPoint;
+import by.brstu.tst.core.map.primitives.Vector;
 import by.brstu.tst.core.map.utils.RoadConnectorDescription;
 import by.brstu.tst.core.simulation.SimulationState;
 import by.brstu.tst.core.simulation.control.IControllerVisitor;
 import by.brstu.tst.core.simulation.control.IntersectionController;
 import by.brstu.tst.core.simulation.control.IntersectionState;
+import by.brstu.tst.core.simulation.control.autonomous.algorithm.LaneChoosingAlgorithm;
 import by.brstu.tst.core.simulation.control.autonomous.algorithm.StateRecalculationAlgorithm;
+import by.brstu.tst.core.simulation.control.autonomous.algorithm.VehiclePerDirectionStats;
 import by.brstu.tst.core.simulation.messaging.ControlMessage;
 import by.brstu.tst.core.simulation.messaging.MessagingQueue;
 import by.brstu.tst.core.simulation.messaging.autonomous.*;
 import by.brstu.tst.core.simulation.messaging.BroadcastIntersectionStateMessage;
+import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,9 +36,7 @@ public class AutonomousIntersectionController implements IntersectionController 
     private double simulationTime;
     private MessagingQueue messagingQueue;
 
-    //statistics, key is road-road pair, value - number of vehicles seen
-    //it is used to find best lanes to move for this road-road pair
-    private HashMap<String, Integer> directionToCount;
+    private LaneChoosingAlgorithm laneChoosingAlgorithm;
 
     public AutonomousIntersectionController(Intersection intersection, double recalculationPeriod,
                                             double operationRange) {
@@ -43,7 +48,7 @@ public class AutonomousIntersectionController implements IntersectionController 
         stateRecalculationAlgorithm = new StateRecalculationAlgorithm(intersection.getName(), nonConflictConnectors);
         simulationTime = 0;
 
-        directionToCount = new HashMap<>();
+        laneChoosingAlgorithm = new LaneChoosingAlgorithm(intersection);
     }
 
 
@@ -84,12 +89,16 @@ public class AutonomousIntersectionController implements IntersectionController 
                                 directionResponse.getConnectorDescription(), directionResponse.getWaitingTime());
                         break;
                     case AUTONOMOUS_INTERSECTION_PASSED:
+                        laneChoosingAlgorithm.removeVehicle(message.getSender());
                         if (stateRecalculationAlgorithm.vehiclePassed(message.getSender(), simulationTime)) {
                             messagingQueue.addMessage(new BroadcastIntersectionStateMessage(intersection.getName(), getState()));
                         }
                         break;
                     case AUTONOMOUS_REQUEST_PREFFERED_LANES:
-                        messagingQueue.addMessage(responseToPrefferedLanesRequst((RequestPrefferedLanes) message));
+                        RequestPrefferedLanes requestPrefferedLanes = (RequestPrefferedLanes) message;
+                        laneChoosingAlgorithm.addVehicle(requestPrefferedLanes.getSender(),
+                                requestPrefferedLanes.getRoadFrom(), requestPrefferedLanes.getRoadTo());
+                        messagingQueue.addMessage(responseToPrefferedLanesRequst(requestPrefferedLanes));
                         break;
                     default:
                         throw new RuntimeException("Not supported message type");
@@ -98,61 +107,14 @@ public class AutonomousIntersectionController implements IntersectionController 
         }
     }
 
+
+
     private ResponsePrefferedLanes responseToPrefferedLanesRequst(RequestPrefferedLanes request) {
-        double[] priorities = new double[request.getRoadFrom().getNumLanes()];
-        double min = Double.MAX_VALUE;
         HashMap<Integer, Double> data = new HashMap<>();
-        for (int laneFrom = 0; laneFrom < request.getRoadFrom().getNumLanes(); laneFrom++) {
-            int laneTo = Math.min(laneFrom, request.getRoadTo().getNumLanes());
-            priorities[laneFrom] = nonConflictConnectors.get(new RoadConnectorDescription(
-                    request.getRoadFrom(), laneFrom,
-                    request.getRoadTo(), laneTo
-            )).size();
-            if (min > priorities[laneFrom]) {
-                min = priorities[laneFrom];
-            }
-        }
-        /*
-        int maxIndex = 0;
-        for (int i = 1; i < priorities.length; i++) {
-            if (priorities[i] > priorities[maxIndex]) {
-                maxIndex = i;
-            }
-        }
-        */
-        //TODO change this logic to more generic
-        int x = (int) Math.round(priorities[0]);
-        priorities[0] = priorities[1] = priorities[2] = 0;
-        switch (x) {
-            case 96:
-                priorities[2] = 1;
-                break;
-            case 75:
-            case 80:
-                priorities[0] = 1;
-                break;
-            case 72:
-                priorities[0] = 0;
-                priorities[1] = 1.0;
-                priorities[2] = 0.0;
-                break;
-            default:
-                System.out.println(x);
-                throw new RuntimeException("!");
-        }
+        double[] priorities = laneChoosingAlgorithm.getLanePriorities(request.getRoadFrom(), request.getRoadTo());
         for (int i = 0; i < priorities.length; i++) {
             data.put(i, priorities[i]);
         }
-        /*
-        double sum = 0;
-        for (int i = 0; i < priorities.length; i++) {
-            priorities[i] -= min - 1;
-            sum += priorities[i];
-        }
-        for (int i = 0; i < priorities.length; i++) {
-            data.put(i, priorities[i] / sum);
-        }
-        */
         return new ResponsePrefferedLanes(request.getReceiver(), request.getSender(), data);
     }
 
