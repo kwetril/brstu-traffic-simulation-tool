@@ -77,13 +77,9 @@ class AdaptiveVehicleDriver extends BaseVehicleDriver {
     }
 
     private void updateVehicleState(SimulationState simulationState) {
-        vehicle.setAcceletation(getPrefferedAcceleration());
-        if (checkCarsInfront(simulationState)) {
-            return;
-        }
-        if (checkIntersectionClosed(intersectionState)) {
-            return;
-        }
+        vehicle.setAcceletation(getPrefferedAcceleration(), true);
+        checkCarsInfront(simulationState);
+        checkIntersectionClosed(intersectionState);
         if (vehicle.getSpeed() > 10) {
             checkLaneChanging();
         }

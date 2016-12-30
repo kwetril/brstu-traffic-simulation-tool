@@ -40,6 +40,9 @@ public class MovingVehicle {
 
     public void updatePosition(float timeDelta) {
         double deltaSpeed = acceletation * timeDelta;
+        if (speed + deltaSpeed < 0) {
+            deltaSpeed = -speed;
+        }
         double deltaDistance = speed * timeDelta + deltaSpeed * timeDelta / 2;
         routeState.updatePosition(deltaDistance);
         speed = Math.max(0, Math.min(20, speed + deltaSpeed));
@@ -65,8 +68,15 @@ public class MovingVehicle {
     }
 
     public void setAcceletation(double acceletation) {
-        this.acceletation = acceletation;
+        setAcceletation(acceletation, false);
     }
+
+    public void setAcceletation(double acceletation, boolean force) {
+        if (acceletation < this.acceletation || force) {
+            this.acceletation = acceletation;
+        }
+    }
+
 
     public double getSpeed() {
         return speed;
