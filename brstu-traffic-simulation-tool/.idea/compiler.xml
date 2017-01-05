@@ -23,6 +23,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="core" />
+        <module name="experiment-tool" />
         <module name="io-utils" />
         <module name="map-editor" />
         <module name="osm-parsing" />
@@ -33,6 +34,7 @@
     <bytecodeTargetLevel target="1.8">
       <module name="brstu-traffic-simulation-tool" target="1.8" />
       <module name="core" target="1.8" />
+      <module name="experiment-tool" target="1.8" />
       <module name="io-utils" target="1.8" />
       <module name="map-editor" target="1.8" />
       <module name="osm-parsing" target="1.8" />

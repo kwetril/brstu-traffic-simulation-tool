@@ -1,0 +1,4 @@
+<controllers>
+    <controller type="autonomous" intersection="i-c" recalculationPeriod="5"
+                operationRadius="300" />
+</controllers>

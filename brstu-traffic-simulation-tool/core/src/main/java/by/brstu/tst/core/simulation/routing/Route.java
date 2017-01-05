@@ -38,10 +38,16 @@ public class Route {
                 nextNodeMap.put(prevName, node);
                 prevName = node.getName();
             } else {
-                DirectedRoad edge = map.getEdge(routeElements[i]).getDirectedRoadByStartNode(node);
-                roads.add(edge);
-                nextRoadMap.put(prevName, edge);
-                prevName = edge.getName();
+                try {
+                    DirectedRoad edge = map.getEdge(routeElements[i]).getDirectedRoadByStartNode(node);
+                    roads.add(edge);
+                    nextRoadMap.put(prevName, edge);
+                    prevName = edge.getName();
+                }
+                catch (Exception e) {
+                    System.out.println(routeElements[i]);
+                    System.out.println(node);
+                }
             }
         }
         nextRoadMap.put(prevName, null); //no edge after destination node

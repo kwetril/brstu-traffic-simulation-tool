@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulation timeStep="0.1" type="cyclic">
+    <flows>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="1" />
+            <route>
+                <routeElement name="s-w" />
+                <routeElement name="wc" />
+                <routeElement name="i-c" />
+                <routeElement name="ce" />
+                <routeElement name="d-e" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="2" />
+            <route>
+                <routeElement name="s-w" />
+                <routeElement name="wc" />
+                <routeElement name="i-c" />
+                <routeElement name="cs" />
+                <routeElement name="d-s" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="3" />
+            <route>
+                <routeElement name="s-w" />
+                <routeElement name="wc" />
+                <routeElement name="i-c" />
+                <routeElement name="cn" />
+                <routeElement name="d-n" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="4" />
+            <route>
+                <routeElement name="s-e" />
+                <routeElement name="ec" />
+                <routeElement name="i-c" />
+                <routeElement name="cw" />
+                <routeElement name="d-w" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="5" />
+            <route>
+                <routeElement name="s-e" />
+                <routeElement name="ec" />
+                <routeElement name="i-c" />
+                <routeElement name="cs" />
+                <routeElement name="d-s" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="6" />
+            <route>
+                <routeElement name="s-e" />
+                <routeElement name="ec" />
+                <routeElement name="i-c" />
+                <routeElement name="cn" />
+                <routeElement name="d-n" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="7" />
+            <route>
+                <routeElement name="s-n" />
+                <routeElement name="nc" />
+                <routeElement name="i-c" />
+                <routeElement name="cs" />
+                <routeElement name="d-s" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="8" />
+            <route>
+                <routeElement name="s-n" />
+                <routeElement name="nc" />
+                <routeElement name="i-c" />
+                <routeElement name="ce" />
+                <routeElement name="d-e" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="9" />
+            <route>
+                <routeElement name="s-n" />
+                <routeElement name="nc" />
+                <routeElement name="i-c" />
+                <routeElement name="cw" />
+                <routeElement name="d-w" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="10" />
+            <route>
+                <routeElement name="s-s" />
+                <routeElement name="sc" />
+                <routeElement name="i-c" />
+                <routeElement name="cn" />
+                <routeElement name="d-n" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="11" />
+            <route>
+                <routeElement name="s-s" />
+                <routeElement name="sc" />
+                <routeElement name="i-c" />
+                <routeElement name="ce" />
+                <routeElement name="d-e" />
+            </route>
+        </flow>
+        <flow type="static" vehicleType="car">
+            <activation from="0" to="1000000" />
+            <distribution type="exponential" lambda="0.05" seed="12" />
+            <route>
+                <routeElement name="s-s" />
+                <routeElement name="sc" />
+                <routeElement name="i-c" />
+                <routeElement name="cw" />
+                <routeElement name="d-w" />
+            </route>
+        </flow>
+    </flows>
+    <controllers>
+        <controller type="cycled" intersection="i-c">
+            <cycle>
+                <section duration="20">
+                    <connectors>
+                        <connector from="ec" fromLane="0" to="cw" toLane="0" />
+                        <connector from="ec" fromLane="0" to="cs" toLane="0" />
+                        <connector from="ec" fromLane="1" to="cw" toLane="1" />
+                        <connector from="ec" fromLane="2" to="cw" toLane="2" />
+                        <connector from="ec" fromLane="2" to="cn" toLane="2" />
+                        <connector from="sc" fromLane="2" to="ce" toLane="2" />
+                        <connector from="wc" fromLane="2" to="cs" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="5">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="20">
+                    <connectors>
+                        <connector from="wc" fromLane="0" to="ce" toLane="0" />
+                        <connector from="wc" fromLane="0" to="cn" toLane="0" />
+                        <connector from="wc" fromLane="1" to="ce" toLane="1" />
+                        <connector from="wc" fromLane="2" to="ce" toLane="2" />
+                        <connector from="wc" fromLane="2" to="cs" toLane="2" />
+                        <connector from="nc" fromLane="2" to="cw" toLane="2" />
+                        <connector from="ec" fromLane="2" to="cn" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="5">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="20">
+                    <connectors>
+                        <connector from="nc" fromLane="0" to="cs" toLane="0" />
+                        <connector from="nc" fromLane="0" to="ce" toLane="0" />
+                        <connector from="nc" fromLane="1" to="cs" toLane="1" />
+                        <connector from="nc" fromLane="2" to="cs" toLane="2" />
+                        <connector from="nc" fromLane="2" to="cw" toLane="2" />
+                        <connector from="ec" fromLane="2" to="cn" toLane="2" />
+                        <connector from="sc" fromLane="2" to="ce" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="5">
+                    <connectors>
+                    </connectors>
+                </section>
+                <section duration="20">
+                    <connectors>
+                        <connector from="sc" fromLane="0" to="cn" toLane="0" />
+                        <connector from="sc" fromLane="0" to="cw" toLane="0" />
+                        <connector from="sc" fromLane="1" to="cn" toLane="1" />
+                        <connector from="sc" fromLane="2" to="cn" toLane="2" />
+                        <connector from="sc" fromLane="2" to="ce" toLane="2" />
+                        <connector from="wc" fromLane="2" to="cs" toLane="2" />
+                        <connector from="nc" fromLane="2" to="cw" toLane="2" />
+                    </connectors>
+                </section>
+                <section duration="5">
+                    <connectors>
+                    </connectors>
+                </section>
+            </cycle>
+        </controller>
+    </controllers>
+</simulation>

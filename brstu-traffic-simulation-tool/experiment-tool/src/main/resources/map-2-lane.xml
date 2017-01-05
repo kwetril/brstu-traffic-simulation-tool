@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map name="map-2-lane">
+    <nodes>
+        <node type="intersection" name="i-c">
+            <basePoint x="1000.000000" y="1000.000000" />
+        </node>
+        <node type="source" name="s-e">
+            <basePoint x="1516.000000" y="1004.500000" />
+        </node>
+        <node type="destination" name="d-e">
+            <basePoint x="1516.000000" y="995.500000" />
+        </node>
+        <node type="source" name="s-w">
+            <basePoint x="484.000000" y="995.500000" />
+        </node>
+        <node type="destination" name="d-w">
+            <basePoint x="484.000000" y="1004.500000" />
+        </node>
+        <node type="source" name="s-s">
+            <basePoint x="1004.500000" y="484.000000" />
+        </node>
+        <node type="destination" name="d-s">
+            <basePoint x="995.500000" y="484.000000" />
+        </node>
+        <node type="source" name="s-n">
+            <basePoint x="995.500000" y="1516.000000" />
+        </node>
+        <node type="destination" name="d-n">
+            <basePoint x="1004.500000" y="1516.000000" />
+        </node>
+    </nodes>
+    <edges>
+        <edge type="directed" name="ec" lanes="2" laneWidth="3.500000" fromNode="s-e" toNode="i-c">
+            <segments>
+                <curve>
+                    <point x="1516.000000" y="1004.500000" />
+                    <point x="1391.000000" y="1004.500000" />
+                    <point x="1141.000000" y="1004.500000" />
+                    <point x="1016.000000" y="1004.500000" />
+                </curve>
+            </segments>
+        </edge>
+        <edge type="directed" name="ce" lanes="2" laneWidth="3.500000" fromNode="i-c" toNode="d-e">
+            <segments>
+                <curve>
+                    <point x="1016.000000" y="995.500000" />
+                    <point x="1141.000000" y="995.500000" />
+                    <point x="1391.000000" y="995.500000" />
+                    <point x="1516.000000" y="995.500000" />
+                </curve>
+            </segments>
+        </edge>
+        <edge type="directed" name="wc" lanes="2" laneWidth="3.500000" fromNode="s-w" toNode="i-c">
+            <segments>
+                <curve>
+                    <point x="484.000000" y="995.500000" />
+                    <point x="609.000000" y="995.500000" />
+                    <point x="859.000000" y="995.500000" />
+                    <point x="984.000000" y="995.500000" />
+                </curve>
+            </segments>
+        </edge>
+        <edge type="directed" name="cw" lanes="2" laneWidth="3.500000" fromNode="i-c" toNode="d-w">
+            <segments>
+                <curve>
+                    <point x="984.000000" y="1004.500000" />
+                    <point x="859.000000" y="1004.500000" />
+                    <point x="609.000000" y="1004.500000" />
+                    <point x="484.000000" y="1004.500000" />
+                </curve>
+            </segments>
+        </edge>
+        <edge type="directed" name="sc" lanes="2" laneWidth="3.500000" fromNode="s-s" toNode="i-c">
+            <segments>
+                <curve>
+                    <point x="1004.500000" y="484.000000" />
+                    <point x="1004.500000" y="609.000000" />
+                    <point x="1004.500000" y="859.000000" />
+                    <point x="1004.500000" y="984.000000" />
+                </curve>
+            </segments>
+        </edge>
+        <edge type="directed" name="cs" lanes="2" laneWidth="3.500000" fromNode="i-c" toNode="d-s">
+            <segments>
+                <curve>
+                    <point x="995.500000" y="984.000000" />
+                    <point x="995.500000" y="859.000000" />
+                    <point x="995.500000" y="609.000000" />
+                    <point x="995.500000" y="484.000000" />
+                </curve>
+            </segments>
+        </edge>
+        <edge type="directed" name="nc" lanes="2" laneWidth="3.500000" fromNode="s-n" toNode="i-c">
+            <segments>
+                <curve>
+                    <point x="995.500000" y="1516.000000" />
+                    <point x="995.500000" y="1391.000000" />
+                    <point x="995.500000" y="1141.000000" />
+                    <point x="995.500000" y="1016.000000" />
+                </curve>
+            </segments>
+        </edge>
+        <edge type="directed" name="cn" lanes="2" laneWidth="3.500000" fromNode="i-c" toNode="d-n">
+            <segments>
+                <curve>
+                    <point x="1004.500000" y="1016.000000" />
+                    <point x="1004.500000" y="1141.000000" />
+                    <point x="1004.500000" y="1391.000000" />
+                    <point x="1004.500000" y="1516.000000" />
+                </curve>
+            </segments>
+        </edge>
+    </edges>
+</map>

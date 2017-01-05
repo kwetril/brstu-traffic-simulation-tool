@@ -1,0 +1,46 @@
+<controllers>
+    <controller type="adaptive" period="120" intersection="i-c" historyMinutes="10">
+        <cycle>
+            <section road="ec">
+                <connectors>
+                    <connector from="ec" fromLane="0" to="cw" toLane="0" />
+                    <connector from="ec" fromLane="0" to="cs" toLane="0" />
+                    <connector from="ec" fromLane="1" to="cw" toLane="1" />
+                    <connector from="ec" fromLane="1" to="cn" toLane="1" />
+                    <connector from="sc" fromLane="1" to="ce" toLane="1" />
+                    <connector from="wc" fromLane="1" to="cs" toLane="1" />
+                </connectors>
+            </section>
+            <section road="wc">
+                <connectors>
+                    <connector from="wc" fromLane="0" to="ce" toLane="0" />
+                    <connector from="wc" fromLane="0" to="cn" toLane="0" />
+                    <connector from="wc" fromLane="1" to="ce" toLane="1" />
+                    <connector from="wc" fromLane="1" to="cs" toLane="1" />
+                    <connector from="nc" fromLane="1" to="cw" toLane="1" />
+                    <connector from="ec" fromLane="1" to="cn" toLane="1" />
+                </connectors>
+            </section>
+            <section road="nc">
+                <connectors>
+                    <connector from="nc" fromLane="0" to="cs" toLane="0" />
+                    <connector from="nc" fromLane="0" to="ce" toLane="0" />
+                    <connector from="nc" fromLane="1" to="cs" toLane="1" />
+                    <connector from="nc" fromLane="1" to="cw" toLane="1" />
+                    <connector from="ec" fromLane="1" to="cn" toLane="1" />
+                    <connector from="sc" fromLane="1" to="ce" toLane="1" />
+                </connectors>
+            </section>
+            <section road="sc">
+                <connectors>
+                    <connector from="sc" fromLane="0" to="cn" toLane="0" />
+                    <connector from="sc" fromLane="0" to="cw" toLane="0" />
+                    <connector from="sc" fromLane="1" to="cn" toLane="1" />
+                    <connector from="sc" fromLane="1" to="ce" toLane="1" />
+                    <connector from="wc" fromLane="1" to="cs" toLane="1" />
+                    <connector from="nc" fromLane="1" to="cw" toLane="1" />
+                </connectors>
+            </section>
+        </cycle>
+    </controller>
+</controllers>

@@ -77,8 +77,8 @@ public class StateRecalculationAlgorithm {
                             continue;
                         }
                         vehicles.add(vehicleDescriptions.get(i).getId());
-                        weight += 10 + Math.exp(-0.01 * vehicleDescriptions.get(i).getDistance());
-                        weight += Math.exp(0.1 * vehicleDescriptions.get(i).getWaitingTime()) - 1;
+                        weight += 20;// + Math.exp(-0.01 * vehicleDescriptions.get(i).getDistance());
+                        //weight += Math.exp(0.1 * vehicleDescriptions.get(i).getWaitingTime()) - 1;
                         i++;
                     }
                     weightedConnectors.add(new WeightedSectionPart(connectorDescriptions, weight, nonConflictConnectors, vehicles));

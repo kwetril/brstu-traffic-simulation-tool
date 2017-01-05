@@ -1,0 +1,134 @@
+<flows>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#base-flow#" seed="1" />
+        <route>
+            <routeElement name="s-w" />
+            <routeElement name="wc" />
+            <routeElement name="i-c" />
+            <routeElement name="ce" />
+            <routeElement name="d-e" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#half-flow#" seed="2" />
+        <route>
+            <routeElement name="s-w" />
+            <routeElement name="wc" />
+            <routeElement name="i-c" />
+            <routeElement name="cs" />
+            <routeElement name="d-s" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#half-flow#" seed="3" />
+        <route>
+            <routeElement name="s-w" />
+            <routeElement name="wc" />
+            <routeElement name="i-c" />
+            <routeElement name="cn" />
+            <routeElement name="d-n" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#base-flow#" seed="4" />
+        <route>
+            <routeElement name="s-e" />
+            <routeElement name="ec" />
+            <routeElement name="i-c" />
+            <routeElement name="cw" />
+            <routeElement name="d-w" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#half-flow#" seed="5" />
+        <route>
+            <routeElement name="s-e" />
+            <routeElement name="ec" />
+            <routeElement name="i-c" />
+            <routeElement name="cs" />
+            <routeElement name="d-s" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#half-flow#" seed="6" />
+        <route>
+            <routeElement name="s-e" />
+            <routeElement name="ec" />
+            <routeElement name="i-c" />
+            <routeElement name="cn" />
+            <routeElement name="d-n" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#base-flow#" seed="7" />
+        <route>
+            <routeElement name="s-n" />
+            <routeElement name="nc" />
+            <routeElement name="i-c" />
+            <routeElement name="cs" />
+            <routeElement name="d-s" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#half-flow#" seed="8" />
+        <route>
+            <routeElement name="s-n" />
+            <routeElement name="nc" />
+            <routeElement name="i-c" />
+            <routeElement name="ce" />
+            <routeElement name="d-e" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#half-flow#" seed="9" />
+        <route>
+            <routeElement name="s-n" />
+            <routeElement name="nc" />
+            <routeElement name="i-c" />
+            <routeElement name="cw" />
+            <routeElement name="d-w" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#base-flow#" seed="10" />
+        <route>
+            <routeElement name="s-s" />
+            <routeElement name="sc" />
+            <routeElement name="i-c" />
+            <routeElement name="cn" />
+            <routeElement name="d-n" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#half-flow#" seed="11" />
+        <route>
+            <routeElement name="s-s" />
+            <routeElement name="sc" />
+            <routeElement name="i-c" />
+            <routeElement name="ce" />
+            <routeElement name="d-e" />
+        </route>
+    </flow>
+    <flow type="static" vehicleType="car">
+        <activation from="0" to="1000000" />
+        <distribution type="exponential" lambda="#half-flow#" seed="12" />
+        <route>
+            <routeElement name="s-s" />
+            <routeElement name="sc" />
+            <routeElement name="i-c" />
+            <routeElement name="cw" />
+            <routeElement name="d-w" />
+        </route>
+    </flow>
+</flows>

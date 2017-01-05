@@ -14,6 +14,9 @@ public class TimeInSystemStatsCollector implements IStatsCollector {
     private double updatePeriod;
     private double nextUpdate;
 
+    private double avgTimeSum = 0.0;
+    private int avgNumRecords = 0;
+
     public TimeInSystemStatsCollector(double updatePeriodInSeconds) {
         listeners = new ArrayList<>();
         timeInSystem = new HashMap<>();
@@ -23,7 +26,7 @@ public class TimeInSystemStatsCollector implements IStatsCollector {
 
     @Override
     public void updateStats(SimulationState state) {
-        System.out.println("UpdateStats: " + Thread.currentThread().getId());
+        //System.out.println("UpdateStats: " + Thread.currentThread().getId());
         double currentTime = state.getSimulationTime();
         HashSet<String> currentVehicles = new HashSet<>();
         for (MovingVehicle vehicle : state.getVehicles()) {
@@ -36,6 +39,8 @@ public class TimeInSystemStatsCollector implements IStatsCollector {
         while (iterator.hasNext()) {
             Map.Entry<String, Double> entry = iterator.next();
             if (!currentVehicles.contains(entry.getKey())) {
+                avgTimeSum += currentTime - entry.getValue();
+                avgNumRecords++;
                 iterator.remove();
             }
         }
@@ -44,7 +49,7 @@ public class TimeInSystemStatsCollector implements IStatsCollector {
             ArrayList<Double> times = new ArrayList<>(timeInSystem.values());
             int size = times.size();
             if (size > 0) {
-                times.sort((x1, x2) -> Double.compare(x1, x2));
+                times.sort((x1, x2) -> -Double.compare(x1, x2));
                 for (int i = 0; i < times.size(); i++) {
                     times.set(i, currentTime - times.get(i));
                 }
@@ -54,11 +59,12 @@ public class TimeInSystemStatsCollector implements IStatsCollector {
                     listener.addPoint(currentTime, times.get((int) (0.5 * size)), "50%");
                     listener.addPoint(currentTime, times.get((int) (0.75 * size)), "75%");
                     listener.addPoint(currentTime, times.get(size - 1), "max");
+                    listener.addPoint(currentTime, avgTimeSum / Math.max(1, avgNumRecords), "avg");
                 }
             }
             nextUpdate = currentTime + updatePeriod;
         }
-        System.out.println("End UpdateStats: " + Thread.currentThread().getId());
+        //System.out.println("End UpdateStats: " + Thread.currentThread().getId());
     }
 
     @Override

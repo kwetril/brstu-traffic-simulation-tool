@@ -82,7 +82,7 @@ public class SimulationPanel extends TransformableCanvas {
     public void startSimulation() {
         final int FRAMES_PER_SECOND = 20;
         final long NANO_SEC_PER_FRAME = 1000000000 / FRAMES_PER_SECOND;
-        final float simulationPlayVelocity = 1.0f;
+        final float simulationPlayVelocity = 4.0f;
         final float simulationTimeStepSec = 0.1f;
 
         simulationStarted = true;

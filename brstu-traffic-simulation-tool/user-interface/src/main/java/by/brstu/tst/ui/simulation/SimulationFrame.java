@@ -121,7 +121,7 @@ public class SimulationFrame extends JFrame {
         try {
             SimulationConfigReader simulationConfigReader = new SimulationConfigReader(map);
             SimulationConfig simulationConfig = simulationConfigReader.readSimulationConfig(
-                    "io-utils\\data\\autonomous-simulation-3.xml");
+                    "io-utils\\data\\experiments\\map-1-cyclic-v2.xml");
             SimulationModel simulationModel = new SimulationModel(map, simulationConfig.getVehicleFlows(),
                     simulationConfig.getIntersectionControllers(), simulationConfig.getTimeStep());
             SpeedStatsCollector speedStatsCollector = new SpeedStatsCollector(1.0);
@@ -143,7 +143,7 @@ public class SimulationFrame extends JFrame {
                     vehicleDynmicsStatCollector);
             ChartPanel timeInSystemStatsPanel = ChartPanelHelper.createPanel("Time in system",
                     "Simulation time", "Time in system",
-                    new String[] {"min", "25%", "50%", "75%", "max"},
+                    new String[] {"min", "25%", "50%", "75%", "max", "avg"},
                     timeInSystemStatsCollector);
             statsGridFrame = new StatsGridFrame("Stats grid", 2, 2, new ChartPanel[] {
                speedStatsPanel, totalVehiclesStatPanel, vehicleDynamicsStatsPanel, timeInSystemStatsPanel
@@ -159,7 +159,7 @@ public class SimulationFrame extends JFrame {
     private void openMap() {
         try {
             MapReader mapReader = new MapReader();
-            map = mapReader.readMap("io-utils\\data\\map.xml");
+            map = mapReader.readMap("io-utils\\data\\experiments\\map-2-lane.xml");
             simulationPanel.showMap(map);
             startSimulationMenuItem.setEnabled(true);
         } catch (Exception exception) {

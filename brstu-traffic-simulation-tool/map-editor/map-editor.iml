@@ -17,7 +17,7 @@
     <orderEntry type="library" name="Maven: org.geotools:gt-api:14.2" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-epsg-hsql:14.2" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-opengis:14.2" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:20.0-rc1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:21.0-rc2" level="project" />
     <orderEntry type="module" module-name="ui-utils" />
     <orderEntry type="module" module-name="io-utils" />
     <orderEntry type="library" name="Maven: de.topobyte:osm4j-core:0.0.9" level="project" />

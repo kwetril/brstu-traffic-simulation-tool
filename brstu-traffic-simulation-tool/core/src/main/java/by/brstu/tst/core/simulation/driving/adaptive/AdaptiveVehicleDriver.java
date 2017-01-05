@@ -21,7 +21,6 @@ import java.util.List;
  * Created by a.klimovich on 02.10.2016.
  */
 class AdaptiveVehicleDriver extends BaseVehicleDriver {
-    private RouteStateInfo routeState;
     private IntersectionState intersectionState;
     private List<Integer> suitableLanes;
 
@@ -77,6 +76,7 @@ class AdaptiveVehicleDriver extends BaseVehicleDriver {
     }
 
     private void updateVehicleState(SimulationState simulationState) {
+        routeState = vehicle.getRouteStateInfo();
         vehicle.setAcceletation(getPrefferedAcceleration(), true);
         checkCarsInfront(simulationState);
         checkIntersectionClosed(intersectionState);

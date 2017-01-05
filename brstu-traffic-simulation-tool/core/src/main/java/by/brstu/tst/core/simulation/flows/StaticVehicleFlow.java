@@ -47,7 +47,7 @@ public class StaticVehicleFlow implements IVehicleFlow {
             Vehicle vehicle = VehicleFactory.createVehicle(vehicleType);
             vehicles.add(new MovingVehicle(vehicle, driverFactory, route, 20, laneGenerator.nextInt(lanes)));
             nextVehicleGenerationTime += flowDistribution.generateNextValue();
-            System.out.printf("Time: %s; next time: %s\n", time, nextVehicleGenerationTime);
+            //System.out.printf("Time: %s; next time: %s\n", time, nextVehicleGenerationTime);
         }
     }
 }

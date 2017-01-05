@@ -56,10 +56,17 @@ public class DirectedRoad extends EdgeRoadElement {
 
     @Override
     public DirectedRoad getDirectedRoadByEndNode(NodeRoadElement endNode) {
-        if (endNode.getName().equals(this.secondNodeElement.getName())) {
-            return this;
+        try {
+            if (endNode.getName().equals(this.secondNodeElement.getName())) {
+                return this;
+            }
+            return null;
         }
-        return null;
+        catch (Exception ex) {
+            System.out.println(this.getName());
+            System.out.println(endNode.getName());
+            return null;
+        }
     }
 
     @Override

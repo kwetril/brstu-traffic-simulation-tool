@@ -60,20 +60,20 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
             graphics.fill(path);
             graphics.draw(path);
         }
-        graphics.setColor(nodeElementColor);
-        graphics.setStroke(roadEdgeStroke);
-        graphics.draw(ShapeUtils.circleFromPoint(point, 4));
+        //graphics.setColor(nodeElementColor);
+        //graphics.setStroke(roadEdgeStroke);
+        //graphics.draw(ShapeUtils.circleFromPoint(point, 4));
     }
 
     @Override
     public void visit(DirectedRoad road) {
         for (RoadSegment segment : road.getSegments()) {
             BezierCurve curve = segment.getCenterCurve();
-            for (MapPoint pt : curve.getPoints()) {
+            /*for (MapPoint pt : curve.getPoints()) {
                 graphics.setColor(nodeElementColor);
                 graphics.setStroke(roadEdgeStroke);
                 graphics.draw(ShapeUtils.circleFromPoint(pt, 2));
-            }
+            }*/
 
             int numLanes = road.getNumLanes();
             float laneWidth = road.getLaneWidth();
@@ -99,27 +99,26 @@ public class RoadElementDrawVisitor extends BaseRoadElementVisitor {
             graphics.draw(path);
 
             graphics.setStroke(roadLaneMarkupStroke);
-            int startLane;
             float deltaLane;
             if (numLanes % 2 == 0) {
                 path = new Path2D.Float();
                 ShapeUtils.updatePathWithBezierCurve(path, curve);
-                startLane = 1;
                 deltaLane = 0.0f;
             } else {
-                startLane = 0;
                 deltaLane = 0.5f;
             }
-            for (int lane = startLane; lane < numLanes / 2; lane++) {
+            for (int i = 0; i < numLanes / 2; i++) {
                 path = new Path2D.Float();
-                tmp = MapUtils.moveCurveLeft(curve, (lane + deltaLane) * laneWidth);
+                tmp = MapUtils.moveCurveLeft(curve, (i + deltaLane) * laneWidth);
                 ShapeUtils.updatePathWithBezierCurve(path, tmp);
                 graphics.draw(path);
 
-                path = new Path2D.Float();
-                tmp = MapUtils.moveCurveRight(curve, (lane + deltaLane) * laneWidth);
-                ShapeUtils.updatePathWithBezierCurve(path, tmp);
-                graphics.draw(path);
+                if (i > 0 || deltaLane > 0) {
+                    path = new Path2D.Float();
+                    tmp = MapUtils.moveCurveRight(curve, (i + deltaLane) * laneWidth);
+                    ShapeUtils.updatePathWithBezierCurve(path, tmp);
+                    graphics.draw(path);
+                }
             }
         }
     }
